@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.community.IFeedMapper">
+
+
+	<insert id="likePost">
+		insert into feed_like(
+			fl_no,user_no,feed_no
+			)values(
+			
+			seq_feed_like.nextval,#{userNo},#{feedNo})
+	
+	</insert>
+
+
+	<select id="alreadyLiked" resultType="String">
+		SELECT * FROM feed_like 
+		WHERE user_no = #{userNo}
+		AND feed_no = #{feedNo}
+	
+	</select>
+	<select id="getLikeCount" resultType="int">
+		SELECT 
+		COUNT(*) AS likeCount
+		FROM FEED_LIKE
+		WHERE feed_no =#{feedNo}
+	
+	</select>
+	
+	<delete id="deleteLike">
+	DELETE FROM Feed_Like
+		WHERE feed_No = #{feedNo}
+		AND user_No =  #{userNo}
+	
+	
+	</delete>
+	
+
+	<insert id="likefeedPost">
+		insert into comment_like(
+			cl_no,user_no,fc_no
+			)values(
+			
+			seq_comment_like.nextval,#{userNo},#{fcNo})
+	
+	</insert>
+
+
+	<select id="alreadyFeedLiked" resultType="String">
+		SELECT * FROM comment_like 
+		WHERE user_no = #{userNo}
+		AND fc_no = #{fcNo}
+	
+	</select>
+	<select id="getCommentLikeCount" resultType="int">
+		SELECT 
+		COUNT(*) AS likeCommentCount
+		FROM comment_LIKE
+		WHERE fc_no =#{fcNo}
+	
+	</select>
+	
+	<delete id="deleteFeedLike">
+	DELETE FROM comment_like
+		WHERE fc_No = #{fcNo}
+		AND user_No =  #{userNo}
+	
+	
+	</delete>
+	
+
+</mapper>

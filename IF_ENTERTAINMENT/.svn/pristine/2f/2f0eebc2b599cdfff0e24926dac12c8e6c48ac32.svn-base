@@ -1,0 +1,91 @@
+package kr.or.ddit.controller.community;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.service.community.IFeedService;
+import kr.or.ddit.vo.community.CommunityVO;
+import kr.or.ddit.vo.community.FeedVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 마이피드컨트롤러
+ * @author 임민혁
+ *
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/feed")
+public class MyFeedController {
+	
+	 @Inject
+	    private IFeedService feedService;
+	 
+	 @GetMapping("/myFeed.do")
+	    public String userProfile(@RequestParam("userNo") int userNo,
+	                              @RequestParam("agId") String agId,
+	                              @RequestParam(name ="userType", required = false, defaultValue = "2") String userType,
+	                              Model model) {
+	        model.addAttribute("userNo", userNo);
+	        model.addAttribute("agId", agId);
+	        CommunityVO communityVO = new CommunityVO();
+	        //로그인 하드코딩
+	        communityVO.setUserNo(30);
+	        communityVO.setAgId(agId);
+	        CommunityVO comId = feedService.selectUser(communityVO);
+	        model.addAttribute("UserInfo", comId);
+	        Date cjDate = comId.getCjDate();
+		    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		    String formattedCjDate = sdf.format(cjDate);
+		    model.addAttribute("cjDate", formattedCjDate);
+	        List<FeedVO> myFeedList = feedService.myFeedList(userNo,agId);
+	        for (FeedVO feed : myFeedList) {
+	        	String userProfile=feed.getUserProfile();
+	        	String mnNickName=feed.getMnNickName();
+	        	model.addAttribute("mnNickName",mnNickName);
+	        	model.addAttribute("userProfile",userProfile);
+	        	
+	        }
+	        model.addAttribute("myFeedList", myFeedList);
+	       
+	        
+	        
+	        
+	        
+	        
+	        
+	        List<FeedVO> myCommentList =feedService.myCommentList(userNo,agId);
+	        model.addAttribute("myCommentList", myCommentList);
+	        
+	        
+	        return "community/myFeed";  
+	    }
+	 
+		@GetMapping("/myFeedComment.do")
+	    @ResponseBody
+	    public Map<String, Object> getArtistFeed(@RequestParam("feedNo") int feedNo ,Model model) {
+			Map<String, Object> responseData = new HashMap<>();
+
+			
+			FeedVO feedVO = feedService.selectFeed(feedNo);
+			List<FeedVO> feedCommentList=feedService.getArtistFeedComment(feedNo);
+			responseData.put("feedVO", feedVO);
+		    responseData.put("feedCommentList", feedCommentList);
+	        return responseData;
+	    }
+		
+	 
+}

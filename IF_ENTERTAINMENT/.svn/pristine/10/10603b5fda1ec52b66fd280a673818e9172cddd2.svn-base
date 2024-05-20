@@ -1,0 +1,312 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
+<html lang="en">
+<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<meta charset="UTF-8">
+<meta id="_csrf" name="_csrf" content=${_csrf.token }>
+<meta id="_csrf_header" name="_csrf_header" content=${_csrf.headerName }>
+<style type="text/css">
+:root {
+  --space-root: 1rem;
+  --space-xs: calc(var(--space-root) / 2);
+  --space-s: calc(var(--space-root) / 1.5);
+  --space-m: var(--space-root);
+  --space-l: calc(var(--space-root) * 1.5);
+  --space-xl: calc(var(--space-root) * 2);
+  --color-primary: mediumslateblue;
+  --color-secondary: black;
+  --color-tertiary: hotpink;
+  --base-border-radius: 0.25rem;
+  --ease: cubic-bezier(0.075, 0.82, 0.165, 1);
+  --duration: 350ms;
+  --font-family: 'GmarketSansMedium', sans-serif;
+  --font-size: 1.25rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@font-face {
+	font-family: 'GmarketSansMedium';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
+		format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+body {
+	font-family: 'GmarketSansMedium', sans-serif;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  height: 100vh;
+  padding: var(--space-m);
+  font-size: var(--font-size);
+  font-family: var(--font-family);
+  line-height: 1.2;
+  background-color: var(--white);
+	background-image: url("${pageContext.request.contextPath}/resources/images/bts.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+}
+}
+
+a {
+  color: var(--color-primary);
+}
+
+a:focus {
+  color: var(--color-secondary);
+}
+
+h2 {
+  font-weight: 700;
+  font-size: calc(var(--font-size) * 1.5);
+}
+
+.form {
+  position: relative;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+  transform: skewY(-5deg) translateY(10%) scale(0.94);
+  transition: 
+    box-shadow var(--duration) var(--ease),
+    transform var(--duration) var(--ease);
+}
+
+.form:before,
+.form:after {
+  display: none;
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  background-color: rgba(255, 255, 255, 0.92);
+  width: 25%;
+  height: 100%;
+  transition: 
+    background-color var(--duration) var(--ease),
+    transform var(--duration) var(--ease);
+}
+
+.form:before {
+  top: 0;
+  right: calc(100% - 1px);
+  transform-origin: 100% 100%;
+  transform: skewY(-35deg) scaleX(-1);
+  z-index: -1;
+}
+
+.form:after {
+  top: 0;
+  left: calc(100% - 1px);
+  transform-origin: 0 0;
+  transform: skewY(-35deg) scaleX(-1);
+  z-index: 2;
+}
+
+.form:hover,
+.form:focus-within {
+  transform: scale(1.0001);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1);
+}
+
+.form:hover:before,
+.form:hover:after,
+.form:focus-within:before,
+.form:focus-within:after {
+  background-color: white;
+  transform: skewY(0);
+}
+
+.form-inner {
+  padding: var(--space-xl);
+  background-color: white;
+  z-index: 1;
+  border-radius: 10px;
+}
+
+.form-inner > * + * {
+  margin-top: var(--space-xl);
+}
+
+.input-wrapper:focus-within label {
+  color: var(--color-secondary);
+}
+
+.input-wrapper:focus-within .icon {
+  background-color: var(--color-secondary);
+}
+
+.input-wrapper:focus-within input {
+  border-color: var(--color-secondary);
+}
+
+.input-wrapper + .input-wrapper {
+  margin-top: var(--space-l);
+}
+
+.input-group {
+  position: relative;
+}
+
+.input-group input {
+  border-radius: var(--base-border-radius);
+  padding-left: calc(var(--space-s) + 60px);
+}
+
+.input-group .icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-top-left-radius: var(--base-border-radius);
+  border-bottom-left-radius: var(--base-border-radius);
+}
+
+label {
+  font-size: calc(var(--font-size) / 1.65);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.065rem;
+  display: block;
+  margin-bottom: var(--space-xs);
+  color: var(--color-primary);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  flex: 0 1 auto;
+  padding: var(--space-m);
+  background-color: var(--color-primary);
+}
+
+.icon svg {
+  width: 1.25em;
+  height: 1.25em;
+  fill: white;
+  pointer-events: none;
+  user-select: none;
+  transition: transform var(--duration) var(--ease);
+}
+
+input {
+  flex: 1 1 0;
+  width: 100%;
+  outline: none;
+  padding: var(--space-m);
+  font-size: var(--font-size);
+  font-family: var(--font-family);
+  color: var(--color-secondary);
+  border: 2px solid var(--color-primary);
+}
+
+input:focus {
+  color: var(--color-primary);
+}
+
+.btn-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn-group > * + * {
+  margin-left: var(--space-s);
+}
+
+.btn {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  outline: none;
+  padding: var(--space-m) var(--space-l);
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: var(--base-border-radius);
+}
+
+.btn--primary {
+  font-size: calc(var(--font-size) / 1.65);
+  font-weight: 700;
+  text-transform: uppercase;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.btn--primary:focus {
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+.btn--text {
+  font-size: calc(var(--font-size) / 1.5);
+  padding: 0;
+}
+
+
+</style>
+
+
+</head>
+<body>
+<!-- Start Page Loading -->
+
+<form  action="${pageContext.request.contextPath}/community/communitySignUp" id="comForm" method="post" class="form" autocomplete="off" >
+     <input type="hidden" name="agId" value="${artistGroup[0].agId}" />
+     <input type="hidden" name="userInfo" value="${userInfo}" />
+  <div class="form-inner">
+    <h2>Community</h2>
+    <div class="input-wrapper">
+      <label for="login-username">😄 커뮤니티에 사용할 닉네임을 입력해주세요</label>
+      <div class="input-group">
+        <span class="icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"></path>
+          </svg>
+        </span>
+        <input type="text" id="mnNickname" name="mnNickname" data-lpignore="true"
+        placeholder="Nickname">
+      </div>
+    </div>
+    <c:if test="${not empty error}">
+	<div style="color:red;">${error}</div>
+	</c:if>
+    <div class="btn-group">
+      <button type="submit" id="comBtn" class="btn btn--primary">완료</button>
+      <a class="btn--text" href="/community/main.do">메인으로 돌아가기</a>
+    </div>
+  </div>
+  <sec:csrfInput/>
+</form>
+
+<script type="text/javascript">
+	    var mnNickname =$("#mnNickname");
+		var comBtn=$("#comBtn");
+	    var comForm=$("#comForm");
+	    
+	    comBtn.on("click",function(){
+	        var artistGroup = "${artistGroup}";
+	        var userInfo = "${userInfo}";
+	        var mnNick =$("#mnNickname").val();
+	        console.log("userInfouserInfo",userInfo);
+	        console.log("artistGroupartistGroup",artistGroup);
+	        console.log("mnNickmnNick",mnNick);
+	        comForm.submit();
+   });
+</script>
+</body>
+</html>

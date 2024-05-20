@@ -1,0 +1,42 @@
+package kr.or.ddit.controller.community;
+
+import javax.inject.Inject;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import kr.or.ddit.service.common.IMypageService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 마이페이지 컨트롤러
+ * @author 서어진
+ *
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/mypage")
+public class MypageController {
+	// 1. 마이페이지 조회
+	
+	// 2. 마이페이지 수정
+	// 비밀번호 수정 시 passwordEncoder 방식으로 암호화하여 업데이트
+	
+	@Inject
+	private IMypageService mypageService;
+
+	/*
+	 * @Inject private PasswordEncoder pe;
+	 */
+	
+	
+	/* @PreAuthorize("hasRole('ROLE_MEMBER')") */
+	@RequestMapping(value="/form.do", method = RequestMethod.GET)
+	public String myPageForm(Model model){
+		model.addAttribute("status", 4);
+		return "commons/myPageForm";
+	}
+}

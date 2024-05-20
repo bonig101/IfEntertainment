@@ -1,0 +1,490 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script src="${pageContext.request.contextPath }/resources/js/main.min.js"></script>
+<script src="${pageContext.request.contextPath }/resources/js/script.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/main.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/color.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/responsive.css">
+<link rel="icon" href="${pageContext.request.contextPath }/resources/images/fav.png" type="image/png" sizes="16x16">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<title>회원정보 수정하기</title>
+<meta id="_csrf" name="_csrf" content=${_csrf.token }>
+<meta id="_csrf_header" name="_csrf_header" content=${_csrf.headerName }>
+	
+
+<style type="text/css">
+@font-face {
+	font-family: 'LOTTERIACHAB';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/LOTTERIACHAB.woff2')
+		format('woff2');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'GmarketSansMedium';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
+		format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+body {
+	font-family: 'GmarketSansMedium', sans-serif;
+}
+
+.medium-opacity:before {
+	-webkit-opacity: .3;
+	-moz-opacity: .3;
+	-ms-opacity: .3;
+	-o-opacity: .3;
+	opacity: .3;
+}
+
+.radio {
+	display: flex;
+	flex-direction: row;
+}
+
+.frame {
+	width: 90%;
+	margin: 40px auto;
+	text-align: center;
+}
+
+.custom-btn {
+	width: 130px;
+	height: 40px;
+	color: #fff;
+	border-radius: 5px;
+	padding: 10px 25px;
+	font-weight: 500;
+	background: transparent;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	position: relative;
+	display: inline-block;
+	box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5), 7px 7px 20px
+		0px rgba(0, 0, 0, .1), 4px 4px 5px 0px rgba(0, 0, 0, .1);
+	outline: none;
+}
+
+.btn-16 {
+	border: none;
+}
+
+.btn-16:after {
+	position: absolute;
+	content: "";
+	width: 0;
+	height: 100%;
+	top: 0;
+	left: 0;
+	direction: rtl;
+	z-index: -1;
+	box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9, 7px 7px
+		20px 0px #0002, 4px 4px 5px 0px #0001;
+	transition: all 0.3s ease;
+}
+
+.btn-16:hover {
+	color: #fff;
+	background: #6f42c1;
+}
+
+.btn-16:hover:after {
+	left: auto;
+	right: 0;
+	width: 100%;
+	border-radius: 7px;
+}
+
+.btn-16:active {
+	top: 2px;
+}
+
+.big-ad>figure {
+	margin-bottom: 0;
+}
+
+.gap.signin .bg-image {
+    height: 100%;
+}
+
+.gap.signin:before {
+    z-index: 0;
+    height: 100%;
+}
+
+</style>
+</head>
+
+<body>
+	<div class="www-layout">
+		<section>
+			<div class="gap no-gap signin whitish medium-opacity register">
+				<div class="bg-image"
+					style="background-image: url(https://incheontimes.co.kr/boardImage/incheontimes/20230118/MC4wMDQ2NDQwMCAxNjczOTQwNjk5.jpg)">
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-3">
+							<div class="big-ad" style="text-align: center;">
+								
+								<form method="post" id="userVO" enctype="multipart/form-data">
+								<div class="profile-author-thumb">
+									<img src="${userVO.userProfile}" alt="${pageContext.request.contextPath }" style="width: 150px; height: 150px;">
+									<div class="edit-dp">
+										<label class="fileContainer"> <i class="fa fa-camera"></i>
+											<input type="file" id="myFile" name="myFile" data-userno="${userVO.userNo }">
+										</label>
+									</div>
+								</div>
+								<sec:csrfInput/>
+								</form>
+								
+								
+								<figure
+									style="font-family: 'LOTTERIACHAB'; font-size: 30px; padding: 10px; color: white;">
+									If entertainment
+									<br/>Fan ${userVO.userName } 님
+									<i class="fa-brands fa-waze"></i>
+								</figure>
+								
+								<div>
+ <button class="custom-btn btn-16">탈퇴하기</button>
+ <button class="custom-btn btn-16">뒤로가기</button>
+							</div>
+							
+							</div>
+
+						</div>
+						<div class="col-lg-9">
+							<div class="reg-from" style="margin-top: 100px; margin-bottom: 100px;">
+								<span>🛠️회원정보 수정하기</span>
+								<p>회원님의 소중한 정보를 안전하게 관리하세요 ❗</p>
+
+								<form class="c-form" mthoed="post">
+									<div class="row merged10">
+										<div class="col-lg-6 col-md-6 col-sm-6">
+											<label>🆔 아이디  </label>
+											<input class="mb-2" type="text"  value="${userVO.userId }"
+												readonly
+												placeholder="ID">
+										</div>
+										<div class="col-lg-6 col-md-6 col-sm-6">
+											<label>👑 이름</label>
+											<input class="mb-2" type="text" value="${userVO.userName }"
+												readonly
+												placeholder="Name">
+										</div>
+										
+										<div class="col-lg-12 col-md-12 col-sm-12">
+										<span><br></span>
+										</div>
+										
+										<div class="col-lg-6 col-md-6 col-sm-6">
+											<label>🔐 새 비밀번호</label>
+										<input class="mb-2" type="password" id="userPw" name="userPw" 
+											placeholder="변경할 비밀번호를 입력해주세요">
+										</div>
+										<div class="col-lg-6 col-md-6 col-sm-6">
+											<label>🔐 새 비밀번호 확인</label>
+											<input class="mb-2" type="password" id="userPw1" name="userPw1"
+												placeholder="변경할 비밀번호를 한번 더 입력해주세요">
+										</div>
+										
+										<div id="message"></div>
+										
+										<div class="col-lg-12 col-md-12 col-sm-12">
+										<span><br></span>
+										</div>
+										
+										<div class="col-lg-2 col-md-2 col-sm-2">
+												<label>👫 성별</label>
+												<input class="mb-2" type="text"
+												readonly
+												value="${userVO.memberGender }">
+										</div>
+										
+										<div class="col-lg-4 col-md-4 col-sm-4">
+											<label>📅 생년월일</label>
+											<input class="mb-2" type="text"
+												readonly
+												value="${userVO.memberBirth }">
+										</div>
+										<div class="col-lg-6 col-md-6 col-sm-6">
+											<label>📱 전화번호</label>
+											<input class="mb-2" type="text"
+												readonly
+												value="${userVO.memberTelno }">
+										</div>
+										
+										<div class="col-lg-12 col-md-12 col-sm-12">
+										<span><br></span>
+										</div>
+										
+										<div class="col-lg-12 col-md-12 col-sm-12">
+										<span><br></span>
+										</div>
+										
+										<div class="col-lg-12 col-md-12 col-sm-12">
+											<label>💌 이메일</label>
+											<input class="mb-2" type="text"
+												readonly
+												value="${userVO.memberEmail }">
+										</div>
+										
+										<div class="col-lg-12 col-md-12 col-sm-12">
+										<span><br></span>
+										</div>
+										
+										<div class="col-lg-2 col-md-2 col-sm-2">
+											<label>📫 우편번호</label>
+											<input class="mb-2"
+												readonly 
+												value="${userVO.memberPostcode }">
+										</div>
+										<div class="col-lg-5 col-md-5 col-sm-5">
+											<label>🚩 주소</label>
+											<input class="mb-2"
+												readonly 
+												value="${userVO.memberAddress1 }">
+										</div>
+										<div class="col-lg-5 col-md-5 col-sm-5">
+											<label>상세주소</label>
+											<input class="mb-2"
+												readonly
+												value="${userVO.memberAddress2 }">
+										</div>
+										
+										<div class="col-lg-12 col-md-12 col-sm-12">
+										<span><br></span>
+										</div>
+										
+										<div class="col-lg-5 col-md-5 col-sm-5">
+											<div class="gender mb-2">
+												<label>💡 알림수신 여부</label>
+												<div class="form-radio">
+													<div class="radio" style="border: none; background: none; display: flex;">
+				<label style="width: 250px;">
+					<input type="radio" name="receive_option" <c:if test="${userVO.memberNotification eq 'Y' }">checked</c:if>>
+					<i class="check-box"></i>동의
+				</label>
+				
+				<label>
+					<input type="radio" <c:if test="${userVO.memberNotification ne 'Y' }">checked</c:if> name="receive_option">
+					<i class="check-box"></i> 비동의
+				</label>
+													</div>
+												</div>
+											</div>
+										</div>
+										
+										<div class="col-lg-7 col-md-7 col-sm-7">
+											<div class="gender mb-2">
+												<label>🚀 알림수신 채널 선택</label>
+												<div class="form-radio">
+													<div class="radio" style="border: none; background: none; display: flex;">
+				<label>
+					<input type="checkbox" name="channel_option"
+					<c:if test="${userVO.nsGoods eq 'Y' && userVO.nsArtist eq 'Y' && userVO.nsCompany eq 'Y' }">checked</c:if>>
+					<i class="check-box"></i>전체동의
+				</label>
+				
+				<label>
+					<input type="checkbox" name="channel_option" <c:if test="${userVO.nsArtist eq 'Y'}">checked</c:if>>
+					<i class="check-box"></i>커뮤니티
+				</label>
+				
+				<label>
+					<input type="checkbox" name="channel_option" <c:if test="${userVO.nsGoods eq 'Y'}">checked</c:if>>
+					<i class="check-box"></i>굿즈샵
+				</label>
+				
+				<label>
+					<input type="checkbox" name="channel_option" <c:if test="${userVO.nsCompany eq 'Y'}">checked</c:if>>
+					<i class="check-box"></i>이벤트
+				</label>
+														
+													</div>
+												</div>
+											</div>
+										</div>
+										
+										<div class="col-lg-12 col-md-12 col-sm-12 mb-2">
+											<div class="checkbox mb-1">
+												<label>
+													<input type="checkbox" <c:if test="${userVO.memberNotification eq 'Y'}">checked</c:if>>
+													<i class="check-box"></i> 서비스·이벤트 정보 수신에 동의합니다.
+												</label>
+											</div>
+										</div>
+										
+										<div class="col-lg-8 col-md-6 mt-2">
+											<span class="reg-with">Register With</span>
+											<ul class="social-reg">
+												<li>
+												<a class="facebook" href="#" title="" data-ripple="">굿즈샵 이용</a>
+												</li>
+												<li>
+												<a class="twitter" href="#" title="" data-ripple="">
+												커뮤니티 이용</a></li>
+											</ul>
+										</div>
+										<div class="col-lg-4 col-md-6 mt-2">
+											<button type="submit">회원정보 수정하기</button>
+										</div>
+									</div>
+									<sec:csrfInput/>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</body>
+
+<script type="text/javascript">
+var header = "";
+var token = "";
+$(function(){
+	// 시큐리티 적용 시, header 키 값과 토큰을 설정 
+	// (동적 페이지마다 전역변수로 설정된 header, token을 가져다 쓸 수 있다)
+	header = $("meta[name='_csrf_header']").attr("content");
+	token = $("meta[name='_csrf']").attr("content");
+});
+
+
+	// 프로필 사진 변경 및 저장 
+	$("#myFile").on(
+			"change",
+			function(event) {
+				var file = event.target.files[0];
+				var userNo = $(this).data("userno");
+				var formData = new FormData();
+				formData.append("file", file);
+				formData.append("userNo", userNo);
+
+				$.ajax({
+					url : "/community/mypage/uploadAjax",
+					type : "post",
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader(header, token);
+					},
+					data : formData,
+					dataType : "text", // 비동기 통신의 최종 결과물을 text 형식으로 받겠다고 알리고 전달되는 서버 메소드에서는 produces를 통해 텍스트 인것을 인지하고 받는다
+					processData : false, // 이진 데이터로 직렬화가 되어 파일이 제대로 전송되지 않게 되는것을 막는다 (Default값은 true)
+					contentType : false,
+					success : function(data) {
+						$("#thumbLink").attr(
+								"href",
+								"/community/mypage/displayFile?fileName="
+										+ data);
+					}
+				});
+
+				if (isimgFile(file)) { // 이미지인지를 체크하여 다른 타입은 파일을 업로드할 수 없도록 한다.
+					var reader = new FileReader();
+					reader.onload = function(e) {
+						$("#thumimg").attr("src", e.target.result);
+					}
+					reader.readAsDataURL(file);
+					thumbPassed = true;
+				} else {
+					Swal.fire({
+						icon : "error",
+						title : "이미지 파일만 등록가능합니다.",
+						showConfirmButton : false,
+						timer : 1500
+					});
+					thumbPassed = false;
+				}
+
+			});
+
+	//임시 파일로 썸네일 이미지 만들기
+	function getThumbnailName(fileName) {
+		var front = fileName.substr(0, 12); // /2024/03/06/ 폴더 
+		var end = fileName.substr(12); // 뒤 파일명
+
+		console.log("front : " + front);
+		console.log("end : " + end);
+
+		return front + "s_" + end;
+	}
+
+	// 파일의 타입을 리턴해준다.
+	function isimgFile(file) {
+		var ext = file.name.split(".").pop().toLowerCase(); // 파일명에서 확장자를 가져온다.
+		return ($.inArray(ext, [ "jpg", "jpeg", "png", "gif" ]) === -1) ? false
+				: true;
+	}
+
+	document.getElementById("myFile").onchange = function(event) {
+		var file = event.target.files[0];
+		var reader = new FileReader();
+
+		if (isimgFile(file)) {
+			reader.onload = function() {
+				var thumbnail = document
+						.querySelector('.profile-author-thumb img');
+				thumbnail.src = reader.result;
+				Swal.fire({
+					title : '프로필 사진이 변경되었습니다!',
+					icon : 'success'
+				});
+			};
+			reader.readAsDataURL(file);
+		} else {
+			Swal.fire({
+				icon : "error",
+				title : "이미지 파일만 등록가능합니다.",
+				showConfirmButton : false,
+				timer : 1500
+			});
+			thumbPassed = false;
+		}
+	};
+
+	//비밀번호
+	document.addEventListener('DOMContentLoaded', function() {
+		var pwInput = document.getElementById('userPw');
+		var confirmpwInput = document.getElementById('userPw1');
+		var message = document.getElementById('message');
+
+		function validate() {
+			if (confirmpwInput.value !== '') {
+				if (pwInput.value === confirmpwInput.value) {
+					message.innerHTML = '비밀번호가 일치합니다.';
+					message.style.color = 'green';
+				} else {
+					message.innerHTML = '비밀번호가 일치하지 않습니다.';
+					message.style.color = 'red';
+				}
+			} else {
+				message.innerHTML = '';
+			}
+		}
+		pwInput.addEventListener('input', validate);
+		confirmpwInput.addEventListener('input', validate);
+	});
+	
+</script>
+

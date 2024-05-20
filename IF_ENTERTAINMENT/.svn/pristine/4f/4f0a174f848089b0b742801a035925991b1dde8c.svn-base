@@ -1,0 +1,266 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<style type="text/css">	
+ .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        overflow-y: auto;
+        max-height: 200px; 
+    }
+
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-content a:hover {background-color: #f1f1f1}
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .dropdown button::after {
+        content: "▼"; 
+        margin-left: 5px;
+    }
+@font-face {
+	font-family: 'LOTTERIACHAB';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/LOTTERIACHAB.woff2')
+		format('woff2');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.logo > a {
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 100%; 
+    width: 100%; 
+}
+.alarmList > li {
+	display: flex;
+}
+.logoimg-box {
+	width: 80px !important;
+}
+.logoimg-box img {
+	width: 100%;
+}
+.noti_date:before {
+    background-color: #c4c4c4;
+    border-radius: 50%;
+    content: "";
+    display: inline-block;
+    height: 2px;
+    margin: 10px 6px 0;
+    vertical-align: top;
+    width: 2px
+}
+.noti_noti{
+	color: #a6a6a6;
+}
+
+@font-face {
+	font-family: 'GmarketSansMedium';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
+		format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+body {
+	font-family: 'GmarketSansMedium', sans-serif;
+}
+
+</style>	
+		<!-- responsive header 시작 -->
+		<div class="topbar stick">
+			<div class="logo">
+				<a title="" href="/community/main.do">
+				<span style="font-family: 'LOTTERIACHAB'; color: white; font-size: 28px;">
+				If ent  <i class="fa-brands fa-waze"></i>
+				</span>
+		</a>
+			</div>
+			<c:if test="${not empty UserInfo.agId}">
+			    <div class="dropdown">
+			        <button style="position: absolute;bottom: -22px;background-color: transparent;width: 100px;height: 50px; font-size: 20px;   margin-top: 2px;">${UserInfo.agId}</button>
+			        <div class="dropdown-content" style="top: 20px;">
+			            <c:forEach items="${mycommunity}" var="community">
+			                <a href="/community/artist?agId=${community.agId}">${community.agId}</a>
+			            </c:forEach>
+			        </div>
+			    </div>
+			</c:if>
+
+			<div class="top-area">
+
+			<div class="main-menu">
+					<span>
+						<a href="#"><i class="fa fa-search" style="margin-right: 10px; color: white;" aria-hidden="true"></i></a>
+						<a href="/community/mypage/list.do"><i class="fa fa-user" style="margin-right:10px; color: white;" aria-hidden="true"></i></a>
+						<a href="/community/joined/mymembership.do"><i class="fa fa-user-plus" style="margin-right: 10px; color: white;" aria-hidden="true"></i></a>
+						<a href="/community/myCollection.do"><i class="fa fa-star" style="margin-right: 10px; color: white;" aria-hidden="true"></i></a>
+						<a href="/goods/main.do"><i class="fa fa-shopping-bag" style="color: white;" aria-hidden="true"></i></a>
+					</span>
+			</div>
+
+		<ul class="setting-area">
+			<li>
+				<a href="#" class="notiBtn" style="position: relative;">
+					<i class="fa fa-bell" style="margin-right: 10px; color: white; font-size: 20px;" aria-hidden="true"></i>
+					<em class="noti"></em>
+				</a>
+				<div class="dropdowns" style="width: 350px; left: -200px">
+					<ul class="drops-menu alarmList">
+					</ul>
+				</div>
+			</li>
+			<li>
+				<a href="#" title="Languages" data-ripple=""><i> 
+				<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+					stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-globe">
+					<circle cx="12" cy="12" r="10"></circle>
+					<line x1="2" y1="12" x2="22" y2="12"></line>
+					<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+				</svg></i><span>한국어</span></a>
+				<div class="dropdowns languages">
+					<div data-gutter="10" class="row">
+						<div class="col-md-3">
+							<ul class="dropdown-meganav-select-list-lang">
+								<li class="active">
+									<a href="#"> 
+										<img title="Image Title" alt="Image Alternative text" src="images/flags/US.png">English(US)
+									</a>
+								</li>
+								<li class="active">
+									<a href="#"> 
+										<img title="Image Title" alt="Image Alternative text" src="images/flags/KOR.png">한국어
+									</a>
+								</li>
+								<li>
+									<a href="#"> 
+										<img title="Image Title" alt="Image Alternative text" src="images/flags/JP.png">日本語
+									</a>
+								</li>
+								<li>
+									<a href="#"> 
+										<img title="Image Title" alt="Image Alternative text" src="images/flags/CN.png">简体中文
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<!-- 밑 하위 메뉴 -->
+	<nav>
+		<ul class="nav-list">
+			<li><a class="" href="/community/artist?agId=${UserInfo.agId}" title="">Feed</a></li>
+			<li><a class="" href="/community/artist?agId=${UserInfo.agId}&userType=3" title="">Artist</a> </li>
+			<li><a class="" href="/community/feed/live/live.do" title="">Live</a></li>
+			<li><a class="" href="/community/artist/schedule/artistSchedule.do" title="">Schedule</a></li>
+			<li><a class="" href="/goods/main.do" title="">Shop</a></li>
+		</ul>
+	</nav>
+	<!-- nav menu -->
+</div>
+<!-- 헤더 끝 -->
+
+<sec:authentication property="principal.user.userId" var="idInfo"/>
+<script type="text/javascript">
+$(function () {
+	var userId = "${idInfo}";
+	
+	$.ajax({
+		url : "/socket/selectAlarm.do?userId=" + userId,
+		type : "get",
+		beforeSend: function(xhr){
+			xhr.setRequestHeader(header, token);
+		},
+		success : function (res) {
+			var html = "";
+			if (res.length > 0) {
+				$(".noti").css("opacity", "1");
+				
+				for (var i = 0; i < res.length; i++) {
+					
+					var notiNo = res[i].notiNo;
+					var agIcon = res[i].agIcon;
+					if (agIcon == null) {
+						agIcon = "/resources/iflogo/iflogo_3.png";
+					}
+					var notiUrl = res[i].notiUrl;
+					var notiContent = res[i].notiContent;
+					var notiSender = res[i].notiSender;
+					if (notiSender == 'admin001') {
+						notiSender = 'IF담당자';
+					}
+					var Date = res[i].notiDate.toString();;
+					var spaceIndex = Date.indexOf(" ");
+					var notiDate = Date.substring(0, spaceIndex);
+					var notiCnfrm = res[i].notiCnfrm;
+					
+					html += '<li class="alramli" data-notino="'+notiNo+'">';
+					html += '	<div class="logoimg-box">';
+					html += '		<img alt="" src="'+agIcon+'">';
+					html += '	</div>';
+					html += '	<div class="notiInfo">';
+					html += '		<div class="mesg-meta" style="width: 100%;">';
+					html += '			<h6><a href="'+notiUrl+'">'+notiContent+'</a></h6>';
+					html += '			<div class="noti_noti">';
+					html += '				<a href="'+notiUrl+'">';
+					html += '					<span>'+notiSender+'</span><span class="noti_date">'+notiDate+'</span>';
+					html += '				</a>';
+					html += '			</div>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '</li>';
+				}
+			}else {
+				
+				html += '<li class="nonList">';
+				html += '	<div class="notiInfo">';
+				html += '		<h6>알림이 없습니다.</h6>';
+				html += '	</div>';
+				html += '</li>';
+			}
+			$(".alarmList").html(html);
+		}
+	});
+	
+	$(".alarmList").on("click", ".alramli", function () {
+		var notiNo = $(this).data("notino");
+		
+		$.ajax({
+			url : "/socket/updateReadAlarm.do?notiNo=" + notiNo,
+			type : "post",
+			beforeSend: function(xhr){
+				xhr.setRequestHeader(header, token);
+			},
+			success : function (res) {
+				console.log(res);
+			}
+		});
+	});
+	
+});
+
+
+</script>

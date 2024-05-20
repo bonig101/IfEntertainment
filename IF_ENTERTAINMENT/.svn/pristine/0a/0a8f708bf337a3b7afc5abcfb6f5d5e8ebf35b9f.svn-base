@@ -1,0 +1,26 @@
+package kr.or.ddit.controller.entertain;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.entertain.IIRService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 주식정보 컨트롤러
+ * @author 홍진영
+ *
+ */
+@Controller
+@Slf4j
+@RequestMapping("/entertain/stock")
+public class StockController {
+	
+	// 1. 주식가격 가져올 수 있는 API 활용해서 예쁘게 뿌려보기
+	
+	
+	
+
+}

@@ -1,0 +1,77 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+</head>
+<body>
+<span class="create-post">IR 행사일정</span>
+<div class="container">
+    <div class="row merged20">
+        <c:set value="${pagingVO.dataList }" var="UserCheckirEventList" />
+        <c:choose>
+            <c:when test="${empty UserCheckirEventList }">
+                <div class="col-lg-6 col-md-6">조회한 게시물이 없습니다 !!!!!</div>
+            </c:when>
+            <c:otherwise>
+                <c:forEach items="${UserCheckirEventList }" var="irEvent" varStatus="loop">
+                    <div class="col-lg-6 col-md-6" style="padding: 5px;">
+                        <div class="central-meta" data-bfNo="${irEvent.bfNo }"
+                        style="margin-bottom: 0;">
+                            <div class="blog-post">
+                                <div class="friend-info">
+                                    <div class="post-meta" style="margin-top: 0;">
+                                        <div class="description">
+                                            <h5>
+                                                <a href="/entertain/ir/userdetail.do?bfNo=${irEvent.bfNo }" title=""> ${irEvent.bfTitle } </a>
+                                            </h5>
+                                            <div class="date">
+                                                <span>일정 &emsp;${irEvent.irSchedule }</span>
+                                            </div>
+                                            <div class="place">
+                                                <span>장소 &emsp;${irEvent.irPlace }</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 매 두 번째 게시물마다 새로운 row 시작 -->
+                    <c:if test="${loop.index % 2 == 1}">
+                        <div class="w-100"></div> <!-- 한 줄 띄우기 -->
+                    </c:if>
+                </c:forEach>
+            </c:otherwise>
+        </c:choose>
+    </div>
+</div>
+
+	<div class="col-lg-7 col-md-7 col-sm-7" id="pagingArea" >
+		<form method="post" id="irPagingForm">
+			<input type="hidden" name="page" id="page" />
+		</form>
+		${pagingVO.pagingHTML }
+	</div>
+
+	<script type="text/javascript">
+		$(function() {
+			var irPagingForm = $("#irPagingForm");
+			var pagingArea = $("#pagingArea");
+
+			pagingArea.on("click", "a", function(event) {
+				event.preventDefault();
+				var pageNo = $(this).data("page");
+				irPagingForm.find("#page").val(pageNo);
+				irPagingForm.submit();
+			});
+		});
+	</script>
+</body>
+</html>

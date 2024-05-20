@@ -1,0 +1,11 @@
+package kr.or.ddit.service.community;
+
+import java.util.List;
+
+import kr.or.ddit.vo.entertain.ArtistGroupVO;
+
+public interface IJoinService {
+
+	public List<ArtistGroupVO> selectmyMembershipList(int userNo);
+
+}

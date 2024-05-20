@@ -1,0 +1,21 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!-- bottom bar 시작-->
+		<div class="bottombar footerbar detailFooterbar">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<span class="copyright meCopyright">© WELL SEE CODING 2024. All rights reserved.</span>
+					</div>
+					<div class="col-md-12 golink">
+						<span class="golinkCommunity detail_golinkCommunity">
+							<a href="#">커뮤니티바로가기</a>
+						</span>
+						<span class="golinkGoods">
+							<a href="#">굿즈샵바로가기</a>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- bottom bar 끝-->

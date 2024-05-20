@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.IWebSocketMapper">
+
+	<select id="selectFeedJoinedList" parameterType="string" resultType="String">
+		SELECT USER_ID
+		FROM "USER" U 
+		LEFT OUTER JOIN
+		COMMUNITY C ON (C.USER_NO = U.USER_NO)
+		LEFT OUTER JOIN 
+		ARTIST_GROUP AG ON (C.AG_ID = AG.AG_ID)
+		WHERE 
+		C.AG_ID = #{agId}
+		AND U.USER_TYPE = 2
+	</select>
+
+	<update id="updateReadAlarm" parameterType="int">
+		UPDATE NOTIFICATION
+		SET
+		NOTI_CNFRM  = 'Y'
+		WHERE NOTI_NO = #{notiNo}
+	</update>
+
+	<select id="selectAlarmList" parameterType="string" resultType="notifictionVO">
+		SELECT 
+			NOTI_NO, NOTI_SENDER, NOTI_RECIEVER, U.USER_ID, NOTI_URL, NOTI_CONTENT, NOTI_TYPE, NOTI_DATE, NOTI_CNFRM, AG.AG_ICON
+		FROM NOTIFICATION N
+		LEFT OUTER JOIN "USER" U ON(N.NOTI_RECIEVER = U.USER_ID)
+		LEFT OUTER JOIN ARTIST_GROUP AG ON(N.NOTI_SENDER = AG.AG_ID)
+		WHERE U.USER_ID = #{userId} AND NOTI_CNFRM = 'N'
+	</select>
+
+	<insert id="insertInquiry" parameterType="notifictionVO" useGeneratedKeys="true">
+	<selectKey keyProperty="notiNo" resultType="int" order="BEFORE">
+		select seq_notification.nextval from dual
+	</selectKey>
+		insert into NOTIFICATION(
+		    NOTI_NO, NOTI_SENDER, NOTI_RECIEVER, NOTI_URL, NOTI_CONTENT, 
+		    NOTI_TYPE, NOTI_DATE, NOTI_CNFRM
+		)values(
+		    #{notiNo}, #{notiSender}, #{notiReciever}, #{notiUrl}, 
+		    #{notiContent}, #{notiType}, sysdate, 'N'
+		)
+	</insert>
+
+
+</mapper>

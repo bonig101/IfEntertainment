@@ -1,0 +1,186 @@
+package kr.or.ddit.service.impl.goods;
+
+import java.io.File;
+import java.util.List;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.goods.IGoodsNoticeMapper;
+import kr.or.ddit.service.goods.IGoodsNoticeService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.goods.GoodsAttachfileVO;
+import kr.or.ddit.vo.goods.GoodsNoticeAttachFileVO;
+import kr.or.ddit.vo.goods.GoodsNoticeVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class GoodsNoticeServiceImpl implements IGoodsNoticeService {
+	
+	@Inject
+	private IGoodsNoticeMapper goodsNoticeMapper;
+
+	@Override
+	public ServiceResult insertGoodsNotice(HttpServletRequest req, GoodsNoticeVO goodsNoticeVO) {
+		ServiceResult result = null;
+		
+		int status = goodsNoticeMapper.insertGoodsNotice(goodsNoticeVO);
+		
+		if (status > 0) {
+			
+			GoodsNoticeAttachFileVO goodsNoticeFileVO = goodsNoticeVO.getGoodsNoticeThumbnail();
+			try {
+				goodsNoticeFileUpload(goodsNoticeFileVO, goodsNoticeVO.getBfNo(), req);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public int selectGoodsNoticeListCount(PaginationInfoVO<GoodsNoticeVO> pagingVO) {
+		return goodsNoticeMapper.selectGoodsNoticeListCount(pagingVO);
+	}
+
+	@Override
+	public List<GoodsNoticeVO> selectgoodsNoticeList(PaginationInfoVO<GoodsNoticeVO> pagingVO) {
+		return goodsNoticeMapper.selectgoodsNoticeList(pagingVO);
+	}
+	
+	
+
+	@Override
+	public GoodsNoticeVO selectGoodsNotice(int bfNo) {
+		goodsNoticeMapper.incrementHit(bfNo);
+		return goodsNoticeMapper.selectGoodsNotice(bfNo);
+	}
+
+	@Override
+	public ServiceResult updateGoodsNotice(HttpServletRequest req, GoodsNoticeVO goodsNoticeVO) {
+		ServiceResult result = null;
+
+		int status = goodsNoticeMapper.updateGoodsNotice(goodsNoticeVO);
+		
+		if (status > 0) {
+			
+			if (StringUtils.isBlank(goodsNoticeVO.getGoodsNoticeThumb().getOriginalFilename()) ) {
+				return ServiceResult.OK;
+				
+			} else {
+				
+				GoodsNoticeAttachFileVO goodsNoticeFileVO = goodsNoticeVO.getGoodsNoticeThumbnail();
+				
+				try {
+					
+					goodsNoticeMapper.deleteGoodsNoticeFile(goodsNoticeVO.getBfNo());
+					File file = new File(req.getServletContext().getRealPath("/" + goodsNoticeFileVO.getBaSavepath()));
+					file.delete();
+					
+					goodsNoticeFileUpload(goodsNoticeFileVO, goodsNoticeVO.getBfNo(), req);
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+	
+	private void goodsNoticeFileUpload(GoodsNoticeAttachFileVO goodsNoticeFileVO, int bfNo,
+			HttpServletRequest req) throws Exception {
+		
+		String savePath = "/resources/goodsnotice/";
+		
+		if (goodsNoticeFileVO != null) {
+			String saveName = UUID.randomUUID().toString();
+			saveName += "_" + goodsNoticeFileVO.getBaName();
+			String saveLocate = req.getServletContext().getRealPath(savePath+bfNo);
+			
+			File file = new File(saveLocate);
+			if (!file.exists()) {
+				file.mkdirs();
+			}
+
+			savePath += bfNo + "/" + saveName;
+			saveLocate = saveLocate  + File.separator + saveName;
+			
+			goodsNoticeFileVO.setBfNo(bfNo);
+			goodsNoticeFileVO.setBaSavepath(savePath);
+			
+			goodsNoticeMapper.insertGoodsNoticeFile(goodsNoticeFileVO);
+			
+			File saveFile = new File(saveLocate);
+			goodsNoticeFileVO.getItem().transferTo(saveFile);
+			
+		}
+	}
+
+	@Override
+	public ServiceResult deleteGoodsNotice(HttpServletRequest req, int bfNo) {
+		ServiceResult result = null;
+		
+		GoodsNoticeVO goodsNoticeVO = goodsNoticeMapper.selectGoodsNotice(bfNo);
+		goodsNoticeMapper.deleteGoodsNoticeFile(bfNo);
+		
+		//상품 삭제(사실은 업데이트)
+		int status = goodsNoticeMapper.deleteGoodsNotice(bfNo);
+		
+		if (status > 0) {
+			GoodsNoticeAttachFileVO goodsNoticeFileVO = goodsNoticeVO.getGoodsNoticeThumbnail();
+			
+			try {
+				if (goodsNoticeFileVO != null) {
+					String[] fileName = goodsNoticeFileVO.getBaName().split("/");
+					String name = fileName[0];
+					deleteFodler(req, name);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	private void deleteFodler(HttpServletRequest req, String name) {
+		File folder = new File(name);
+
+		try {
+			if (folder.exists()) {
+				File[] folderFileList = folder.listFiles();
+
+				for (int i = 0; i < folderFileList.length; i++) {
+					if (folderFileList[i].isFile()) {
+						folderFileList[i].delete();
+					} else {
+						deleteFodler(req, folderFileList[i].getPath());
+					}
+				}
+				folder.delete();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public List<GoodsNoticeVO> selectgoodsNoticeMainList() {
+		return goodsNoticeMapper.selectgoodsNoticeMainList();
+	}
+
+}

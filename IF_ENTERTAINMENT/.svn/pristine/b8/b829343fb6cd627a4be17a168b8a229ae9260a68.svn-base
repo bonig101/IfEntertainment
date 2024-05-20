@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.goods.IInquiryMapper">
+
+	<sql id="goodsinquirySearch">
+	
+		<where>
+			<if test="searchType != null and searchType == 'question'">
+				and gi_content like '%'||#{searchWord}||'%'
+			</if>
+			<if test="searchType != null and searchType == 'userid'">
+				and USER_ID like '%'||#{searchWord}||'%'
+			</if>
+		</where>
+	</sql>
+
+	<select id="selectInquiryListCount" parameterType="pagingVO" resultType="int">
+		select count(gi_no)
+		from GOODS_INQUIRY
+		<include refid="goodsinquirySearch"></include>
+	</select>
+	
+	<select id="selectInquiryList" parameterType="pagingVO" resultType="goodsInquiryVO">
+		select
+			b.*
+		from(
+			select
+				a.*, row_number() over(order by gi_no desc) rnum	
+			from(
+				select 
+				    GI.GI_NO, (select user_id from "USER" where user_no = gi.user_no) as "USER_ID", GI_TYPE, GI_TITLE, GI_CONTENT, GI_REPLY, GI_REGDATE, GI_ANSDATE
+				from GOODS_INQUIRY gi left outer join "USER" u on(gi.user_no = u.user_no)
+				<include refid="goodsinquirySearch"></include>
+				order by gi_no desc
+				) a
+			) b
+			<![CDATA[
+			where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+			]]>
+	</select>
+
+
+
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.goods.IAddressMapper">
+
+	<select id="addressManaege" resultType="addressVO">
+    SELECT * FROM member_address
+    WHERE user_no = #{userNo}
+    ORDER BY CASE WHEN MA_DEFAULT = 'Y' THEN 1 ELSE 2 END, user_no
+	</select>
+
+
+	<insert id="addressInsert" parameterType="addressVO">
+		insert into member_address(
+			MA_NUMBER, MA_POSTCODE, MA_ADDRESS1, MA_ADDRESS2, MA_RECIEVER, MA_TELNO, MA_DEFAULT,MA_NATION,MA_PLACE,USER_NO
+		)values(
+		SEQ_MEMBER_ADDRESS.NEXTVAL,#{maPostcode},#{maAddress1},#{maAddress2},#{maReciever},#{maTelno},'N',#{maNation},#{maPlace},#{userNo}
+		)
+	</insert>
+	
+	<delete id="addressDelete" parameterType="addressVO">
+		delete from member_address
+		where ma_number = #{maNumber}
+	
+	</delete>
+	
+	<select id="addressDefault" resultType="int">
+		select ma_number from member_address
+		where user_no = #{userNo} and ma_default = 'Y'
+	</select>
+	
+	<update id="addressDefaultUpdate" parameterType="int">
+		update member_address
+		set ma_default = 'N'
+		where ma_number = #{maNumber} 
+	</update>
+	
+	<update id="addressDefaultInsert" parameterType="addressVO">
+		update member_address
+		set ma_default = 'Y'
+		where ma_number = #{maNumber}
+	</update>
+	
+	<select id="nationSelect" resultType="nationVO">
+		select * from nation
+	</select>
+	
+	<update id="addressUpdate" parameterType="addressVO">
+		update member_address
+		SET 
+		    ma_place = #{maPlace},
+		    ma_reciever = #{maReciever},
+		    ma_address1 = #{maAddress1},
+		    ma_address2 = #{maAddress2},
+		    ma_postcode = #{maPostcode},
+		    ma_telno = #{maTelno},
+		    ma_nation = #{maNation}
+		WHERE
+    		ma_number = #{maNumber}
+	</update>
+
+</mapper>

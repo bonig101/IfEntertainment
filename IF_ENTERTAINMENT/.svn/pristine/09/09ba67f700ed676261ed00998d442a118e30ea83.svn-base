@@ -1,0 +1,70 @@
+package kr.or.ddit.vo.goods;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.or.ddit.controller.goods.GoodsRetrieveController;
+import lombok.Data;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
+
+@Data
+@Slf4j
+public class GoodsVO {
+	 private int goodsNo;
+	 private String goodsName;
+	 private Integer goodsPrice;
+	 private Integer goodsQuantity;
+	 private String goodsRegdate;
+	 private String goodsMembership;
+	 private String goodsArtist;
+	 private String goodsDisplay;
+	 private String goodsThumbnail;
+	 private Integer goodsLimit;
+	 private Integer goodsAutocndtn;
+	 private Integer goodsAutobuycount;
+	 private String gcId;
+	 
+	 private MultipartFile goodsThumb;
+	 
+	 private Integer[] delProdNo;
+	 private String[] goodsTag; 
+	 private List<GoodsTagVO> goodsTagList;
+	 private MultipartFile[] goodsFile;
+	 private List<GoodsAttachfileVO> goodsFileList;
+	 
+	 public void setGoodsFile(MultipartFile[] goodsFile) {
+		 this.goodsFile = goodsFile;
+		 if (goodsFile != null) {
+			List<GoodsAttachfileVO> goodsFileList = new ArrayList<GoodsAttachfileVO>();
+			for (MultipartFile item : goodsFile) {
+				if (StringUtils.isBlank(item.getOriginalFilename())) {
+					continue;
+				}
+				GoodsAttachfileVO goodsFileVO = new GoodsAttachfileVO(item);
+				goodsFileList.add(goodsFileVO);
+			}
+			this.goodsFileList = goodsFileList;
+		}
+		 
+	 }
+	 public void setGoodsTag(String[] goodsTag) {
+		 if(goodsTag != null && goodsTag.length > 0) {
+			 this.goodsTag = goodsTag;
+//			 goodsTagList = new ArrayList<GoodsTagVO>();
+			 for (String tag : goodsTag) {
+				if(tag.equals("membership")) {
+					goodsMembership = "Y";
+				}else {
+					goodsMembership = "N";
+				}
+//				GoodsTagVO goodsTagVO = new GoodsTagVO(goodsNo, tag);
+//				goodsTagList.add(goodsTagVO);
+			 }
+		 }
+	 }
+	 
+}

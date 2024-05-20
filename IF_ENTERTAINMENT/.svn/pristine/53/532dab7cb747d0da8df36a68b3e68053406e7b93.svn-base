@@ -1,0 +1,16 @@
+package kr.or.ddit.mapper.common;
+
+import java.util.List;
+
+import kr.or.ddit.vo.common.NotificationVO;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.goods.OrderVO;
+import kr.or.ddit.vo.goods.goodsBuyVO;
+
+public interface IWebSocketMapper {
+	public int insertInquiry(NotificationVO notificationVO);
+	public List<NotificationVO> selectAlarmList(String userId);
+	public int updateReadAlarm(int notiNo);
+	public List<String> selectFeedJoinedList(String agId);
+	public OrderVO selectTotalOrderPrice(int userNo);
+}

@@ -1,0 +1,400 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div class="loadMore">
+		<div class="central-meta item">
+			<div class="user-post">
+				<div class="friend-info">
+					<figure>
+						<img src="${pageContext.request.contextPath }/resources/images/resources/nearly1.jpg" alt="">
+					</figure>
+					<div class="friend-name">
+						<div class="more">
+							<div class="more-post-optns">
+								<i class="ti-more-alt"></i>
+								<ul>
+									<li><i class="fa-sharp fa-regular fa-square-pen"></i> Edit
+										Post</li>
+									<li><i class="fa-regular fa-trash"></i> Delete Post</li>
+									<li class="bad-report"><i
+										class="fa-solid fa-flag-checkered"></i> Report Post</li>
+									<li><i class="fa-regular fa-address-card"></i> Boost This
+										Post</li>
+									<li><i class="fa-regular fa-alarm-clock"></i> Schedule
+										Post</li>
+									<li><i class="fa-regular fa-fire-flame"></i> Select as
+										featured</li>
+									<li><i class="fa-sharp fa-regular fa-bell"></i> Turn off
+										Notifications</li>
+								</ul>
+							</div>
+						</div>
+						<ins>
+							<a href="time-line.html" title="">Jack Carter</a> Post Album
+						</ins>
+						<span><i class="fa fa-globe"></i> published: September,15
+							2024 19:PM </span>
+					</div>
+					<div class="post-meta">
+						<p>
+							Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget
+							condimentum rhoncus, sem quam semper libero. <a
+								href="social-post-detail.html" title="">Read More</a>
+						</p>
+						<figure>
+							<div class="img-bunch">
+								<div class="row">
+									<div class="col-lg-6 col-md-6 col-sm-6">
+										<figure>
+											<a href="#" title="" data-toggle="modal"
+												data-target="#img-comt"> <img
+												src="${pageContext.request.contextPath }/resources/images/resources/album1.jpg" alt="">
+											</a>
+										</figure>
+										<figure>
+											<a href="#" title="" data-toggle="modal"
+												data-target="#img-comt"> <img
+												src="${pageContext.request.contextPath }/resources/images/resources/album2.jpg" alt="">
+											</a>
+										</figure>
+									</div>
+									<div class="col-lg-6 col-md-6 col-sm-6">
+										<figure>
+											<a href="#" title="" data-toggle="modal"
+												data-target="#img-comt"> <img
+												src="${pageContext.request.contextPath }/resources/images/resources/album6.jpg" alt="">
+											</a>
+										</figure>
+										<figure>
+											<a href="#" title="" data-toggle="modal"
+												data-target="#img-comt"> <img
+												src="${pageContext.request.contextPath }/resources/images/resources/album5.jpg" alt="">
+											</a>
+										</figure>
+										<figure>
+											<a href="#" title="" data-toggle="modal"
+												data-target="#img-comt"> <img
+												src="${pageContext.request.contextPath }/resources/images/resources/album4.jpg" alt="">
+											</a>
+											<div class="more-photos">
+												<span>+15</span>
+											</div>
+										</figure>
+									</div>
+								</div>
+							</div>
+							<ul class="like-dislike">
+								<li><a class="bg-purple" href="#" title="Save to Pin Post"><i
+										class="ti-pin2"></i></a></li>
+								<li><a class="bg-blue" href="#" title="Like Post"><i
+										class="ti-thumb-up"></i></a></li>
+								<li><a class="bg-red" href="#" title="dislike Post"><i
+										class="ti-thumb-down"></i></a></li>
+							</ul>
+						</figure>
+						<div class="we-video-info">
+							<ul>
+								<li><span class="views" title="views"> <i
+										class="fa fa-eye"></i> <ins>1.2k</ins>
+								</span></li>
+								<li>
+									<div class="likes heart" title="Like/Dislike">
+										❤ <span>2K</span>
+									</div>
+								</li>
+								<li><span class="comment" title="Comments"> <i
+										class="fa fa-commenting"></i> <ins>52</ins>
+								</span></li>
+
+								<li><span> <a class="share-pst" href="#"
+										title="Share"> <i class="fa fa-share-alt"></i>
+									</a> <ins>20</ins>
+								</span></li>
+							</ul>
+							<div class="users-thumb-list">
+								<a data-toggle="tooltip" title="Anderw" href="#"> <img
+									alt="" src="${pageContext.request.contextPath }/resourcesimages/resources/userlist-1.jpg">
+								</a> <a data-toggle="tooltip" title="frank" href="#"> <img
+									alt="" src="${pageContext.request.contextPath }/resourcesimages/resources/userlist-2.jpg">
+								</a> <a data-toggle="tooltip" title="Sara" href="#"> <img alt=""
+									src="${pageContext.request.contextPath }/resourcesimages/resources/userlist-3.jpg">
+								</a> <a data-toggle="tooltip" title="Amy" href="#"> <img alt=""
+									src="${pageContext.request.contextPath }/resourcesimages/resources/userlist-4.jpg">
+								</a> <a data-toggle="tooltip" title="Ema" href="#"> <img alt=""
+									src="${pageContext.request.contextPath }/resourcesimages/resources/userlist-5.jpg">
+								</a> <span><strong>You</strong>, <b>Sarah</b> and <a href="#"
+									title="">24+ more</a> liked</span>
+							</div>
+						</div>
+					</div>
+					<div class="coment-area" style="display: block;">
+						<ul class="we-comet">
+							<li>
+								<div class="comet-avatar">
+									<img src="${pageContext.request.contextPath }/resourcesimages/resources/nearly3.jpg" alt="">
+								</div>
+								<div class="we-comment">
+									<h5>
+										<a href="time-line.html" title="">Jason borne</a>
+									</h5>
+									<p>we are working for the dance and sing songs. this video
+										is very awesome for the youngster. please vote this video and
+										like our channel</p>
+									<div class="inline-itms">
+										<span>1 year ago</span> <a class="we-reply" href="#"
+											title="Reply"><i class="fa fa-reply"></i></a> <a href="#"
+											title=""><i class="fa fa-heart"></i><span>20</span></a>
+									</div>
+								</div>
+
+							</li>
+							<li>
+								<div class="comet-avatar">
+									<img src="${pageContext.request.contextPath }/resources/images/resources/comet-4.jpg" alt="">
+								</div>
+								<div class="we-comment">
+									<h5>
+										<a href="time-line.html" title="">Sophia</a>
+									</h5>
+									<p>
+										we are working for the dance and sing songs. this video is
+										very awesome for the youngster. <i class="em em-smiley"></i>
+									</p>
+									<div class="inline-itms">
+										<span>1 year ago</span> <a class="we-reply" href="#"
+											title="Reply"><i class="fa fa-reply"></i></a> <a href="#"
+											title=""><i class="fa fa-heart"></i><span>20</span></a>
+									</div>
+								</div>
+							</li>
+							<li><a href="#" title="" class="showmore underline">more
+									comments+</a></li>
+							<li class="post-comment">
+								<div class="comet-avatar">
+									<img src="${pageContext.request.contextPath }/resources/images/resources/nearly1.jpg" alt="">
+								</div>
+								<div class="post-comt-box">
+									<form method="post">
+										<textarea placeholder="Post your comment"></textarea>
+										<div class="add-smiles">
+											<div class="uploadimage">
+												<i class="fa fa-image"></i> <label class="fileContainer">
+													<input type="file">
+												</label>
+											</div>
+											<span class="em em-expressionless" title="add icon"></span>
+											<div class="smiles-bunch">
+												<i class="em em---1"></i> <i class="em em-smiley"></i> <i
+													class="em em-anguished"></i> <i class="em em-laughing"></i>
+												<i class="em em-angry"></i> <i class="em em-astonished"></i>
+												<i class="em em-blush"></i> <i class="em em-disappointed"></i>
+												<i class="em em-worried"></i> <i class="em em-kissing_heart"></i>
+												<i class="em em-rage"></i> <i class="em em-stuck_out_tongue"></i>
+											</div>
+										</div>
+
+										<button type="submit"></button>
+									</form>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+		<div class="modal fade" id="img-comt">
+			<div class="modal-dialog">
+				<div class="modal-content">
+
+					<!-- Modal Header -->
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">×</button>
+					</div>
+
+					<!-- Modal body -->
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-lg-8">
+								<div class="pop-image">
+									<div id="demo" class="carousel slide" data-interval="false"
+										data-ride="carousel" data-pause="hover">
+										<!-- The slideshow -->
+										<div class="pop-item">
+											<div class="carousel-item active">
+												<img src="${pageContext.request.contextPath }/resources/images/resources/blog-detail.jpg" alt="">
+											</div>
+											<div class="carousel-item">
+												<img src="${pageContext.request.contextPath }/resources/images/resources/blog-detail2.jpg" alt="">
+											</div>
+											<div class="carousel-item">
+												<img src="${pageContext.request.contextPath }/resources/images/resources/blog2.jpg" alt="">
+											</div>
+										</div>
+
+										<!-- Left and right controls -->
+										<a class="carousel-control-prev" href="#demo"
+											data-slide="prev"> <span
+											class="carousel-control-prev-icon"></span>
+										</a> <a class="carousel-control-next" href="#demo"
+											data-slide="next"> <span
+											class="carousel-control-next-icon"></span>
+										</a>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="user">
+									<figure>
+										<img src="${pageContext.request.contextPath }/resources/images/resources/user1.jpg" alt="">
+									</figure>
+									<div class="user-information">
+										<h4>
+											<a href="#" title="">Danile Walker</a>
+										</h4>
+										<span>2 hours ago</span>
+									</div>
+									<a href="#" title="Follow" data-ripple="">Follow</a>
+								</div>
+								<div class="we-video-info">
+									<ul>
+										<li>
+											<div title="Approvals/Disapprovals" class="likes heart">
+												❤ <span>2K</span>
+											</div>
+										</li>
+										<li><span title="Comments" class="comment"> <i
+												class="fa fa-commenting"></i> <ins>52</ins>
+										</span></li>
+
+										<li><span> <a title="Share" href="#" class="">
+													<i class="fa fa-share-alt"></i>
+											</a> <ins>20</ins>
+										</span></li>
+									</ul>
+									<div class="users-thumb-list">
+										<a href="#" title="" data-toggle="tooltip"
+											data-original-title="Anderw"> <img
+											src="${pageContext.request.contextPath }/resources/images/resources/userlist-1.jpg" alt="">
+										</a> <a href="#" title="" data-toggle="tooltip"
+											data-original-title="frank"> <img
+											src="${pageContext.request.contextPath }/resources/images/resources/userlist-2.jpg" alt="">
+										</a> <a href="#" title="" data-toggle="tooltip"
+											data-original-title="Sara"> <img
+											src="${pageContext.request.contextPath }/resources/images/resources/userlist-3.jpg" alt="">
+										</a> <a href="#" title="" data-toggle="tooltip"
+											data-original-title="Amy"> <img
+											src="${pageContext.request.contextPath }/resources/images/resources/userlist-4.jpg" alt="">
+										</a> <span><strong>You</strong>, <b>Sarah</b> and <a
+											title="" href="#">24+ more</a> liked</span>
+									</div>
+								</div>
+								<div style="display: block;" class="coment-area">
+									<ul class="we-comet">
+										<li>
+											<div class="comet-avatar">
+												<img alt="" src="${pageContext.request.contextPath }/resources/images/resources/nearly3.jpg">
+											</div>
+											<div class="we-comment">
+												<h5>
+													<a title="" href="time-line.html">Jason borne</a>
+												</h5>
+												<p>we are working for the dance and sing songs. this
+													video is very awesome for the youngster. please vote this
+													video and like our channel</p>
+												<div class="inline-itms">
+													<span>1 year ago</span> <a title="Reply" href="#"
+														class="we-reply"><i class="fa fa-reply"></i></a> <a
+														title="" href="#"><i class="fa-solid fa-circle-check"></i><span>20</span></a>
+												</div>
+											</div>
+
+										</li>
+										<li>
+											<div class="comet-avatar">
+												<img alt="" src="${pageContext.request.contextPath }/resources/images/resources/comet-4.jpg">
+											</div>
+											<div class="we-comment">
+												<h5>
+													<a title="" href="time-line.html">Sophia</a>
+												</h5>
+												<p>
+													we are working for the dance and sing songs. this video is
+													very awesome for the youngster. <i class="em em-smiley"></i>
+												</p>
+												<div class="inline-itms">
+													<span>1 year ago</span> <a title="Reply" href="#"
+														class="we-reply"><i class="fa fa-reply"></i></a> <a
+														title="" href="#"><i class="fa-solid fa-circle-check"></i><span>20</span></a>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="comet-avatar">
+												<img alt="" src="${pageContext.request.contextPath }/resources/images/resources/comet-4.jpg">
+											</div>
+											<div class="we-comment">
+												<h5>
+													<a title="" href="time-line.html">Sophia</a>
+												</h5>
+												<p>
+													we are working for the dance and sing songs. this video is
+													very awesome for the youngster. <i class="em em-smiley"></i>
+												</p>
+												<div class="inline-itms">
+													<span>1 year ago</span> <a title="Reply" href="#"
+														class="we-reply"><i class="fa fa-reply"></i></a> <a
+														title="" href="#"><i class="fa-solid fa-circle-check"></i><span>20</span></a>
+												</div>
+											</div>
+										</li>
+										<li><a class="showmore underline" title="" href="#">more
+												comments+</a></li>
+										<li class="post-comment">
+											<div class="comet-avatar">
+												<img alt="" src="${pageContext.request.contextPath }/resources/images/resources/nearly1.jpg">
+											</div>
+											<div class="post-comt-box">
+												<form method="post">
+													<textarea placeholder="Post your comment"></textarea>
+													<div class="add-smiles">
+														<div class="uploadimage">
+															<i class="fa fa-image"></i> <label class="fileContainer">
+																<input type="file">
+															</label>
+														</div>
+														<span title="add icon" class="em em-expressionless"></span>
+														<div class="smiles-bunch">
+															<i class="em em---1"></i> <i class="em em-smiley"></i> <i
+																class="em em-anguished"></i> <i class="em em-laughing"></i>
+															<i class="em em-angry"></i> <i class="em em-astonished"></i>
+															<i class="em em-blush"></i> <i class="em em-disappointed"></i>
+															<i class="em em-worried"></i> <i
+																class="em em-kissing_heart"></i> <i class="em em-rage"></i>
+															<i class="em em-stuck_out_tongue"></i>
+														</div>
+													</div>
+
+													<button type="submit"></button>
+												</form>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</body>
+</html>

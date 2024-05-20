@@ -1,0 +1,36 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<div class="gap no-gap">
+	<div class="inner-bg">
+		<div class="element-title">
+			<h4>IR 행사일정</h4>
+		</div>
+		<div class="add-prod-from">
+			<div class="row">
+					<div class="con_view_box">
+            <div class="view_header">
+                <h3>2023 4분기 및 연간 실적보고</h3>
+                        <span class="c_writer display-inline-block">컨퍼런스콜</span>
+                        <span class="c_writer">관리자</span>
+                        <span class="c_date">2024-02-26 16:30</span>
+            </div>
+            <div class="view_body">
+                <!-- if exists image-->
+                    <img src="https://hybecorp.com/archive/XqgMZee3EY2gk7SBC4m3qCcmqVqNu2O0hP88EUTy2JEQV3faOmf1FJBYtcUnbtAiEK0zmFJuWgd3vS4cSJJswnLSXQLMMLqLYrxUEv1j6Tk8vphph0hIyUBkax0K4d4C.png">
+                <!--이미지 출처-->
+                <!-- 내용 -->
+                    <p>2023년 4분기 및 2023년 연간 경영실적 발표와 질의응답</p>
+                <!-- URL -->
+                        <span class="url_link">URL : <a href="https://ircc.kudosworks.co.kr/webcastCall.do?evntId=EV00000380" target="_blank">https://ircc.kudosworks.co.kr/webcastCall.do?evntId=EV00000380</a></span>
+            </div>
+        </div>
+				<div class="col-md-12">
+					<div class="buttonz">
+						<button type="submit">수정</button>
+						<button type="submit">목록</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,134 @@
+img<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!-- <header> -->
+<!-- 	<div class="side-menus"> -->
+<!-- 		<div class="side-header"> -->
+<!-- 			<div class="logo"> -->
+<!-- 				<a title="" href="index.html"><img alt="" src="images/logo2.png"></a> -->
+<!-- 			</div> -->
+<!-- 			<nav class="slide-menu"> -->
+<!-- 				<div class="profile"> -->
+<!-- 					<div class="pro-img"> -->
+<!-- 						<img src="images1/istockphoto-1495088043-612x612.jpg" alt=""> -->
+<!-- 					</div> -->
+<!-- 					<span>YISOO723</span> -->
+<!-- 				</div> -->
+<!-- 			</nav> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
+<!-- </header> -->
+<style type="text/css">
+
+@font-face {
+	font-family: 'GmarketSansMedium';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
+		format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+body {
+	font-family: 'GmarketSansMedium', sans-serif;
+}
+
+</style>
+<!-- community side-bar -->
+<header>
+	<div class="side-menus">
+		<div class="side-header">
+			<div class="logo">
+				<a title="" href="index.html"><img alt="" src=""></a>
+			</div>
+			<nav class="slide-menu">
+				<ul class="parent-menu">
+					<li class="menu-item-has-children active"><a title="#"> <i
+							class="fa fa-dashboard"></i> <span>회원 관리</span>
+					</a></li>
+					<li class="menu-item-has-children"><a title=""> <i
+							class="fa fa-laptop"></i> <span>신고 관리</span>
+					</a>
+						<ul class="mega">
+							<li><a href="index-boxed.html" title="">게시물 신고 관리</a></li>
+							<li><a href="overlap-sidebar.html">유저 신고 관리</a></li>
+						</ul></li>
+					<li class="menu-item-has-children"><a title=""> <i
+							class="fa fa-inbox"></i> <span>설문조사 관리</span>
+					</a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</header>
+<!-- community side-bar end -->
+
+<!-- entertain side-bar -->
+<!-- <header> -->
+<!-- 	<div class="side-menus"> -->
+<!-- 		<div class="side-header"> -->
+<!-- 			<div class="logo"> -->
+<!-- 				<a title="" href="index.html"><img alt="" src="images/logo2.png"></a> -->
+<!-- 			</div> -->
+<!-- 			<nav class="slide-menu"> -->
+<!-- 				<ul class="parent-menu"> -->
+<!-- 					<li class="menu-item-has-children active"><a title="#"> <i -->
+<!-- 							class="fa fa-dashboard"></i> <span>아티스트 메뉴관리</span> -->
+<!-- 					</a></li> -->
+<!-- 					<li class="menu-item-has-children"><a title=""> <i -->
+<!-- 							class="fa fa-laptop"></i> <span>IR 자료실 관리</span> -->
+<!-- 					</a></li> -->
+<!-- 					<li class="menu-item-has-children"><a title=""> <i -->
+<!-- 							class="fa fa-inbox"></i> <span>IR 행사일정 관리</span> -->
+<!-- 					</a></li> -->
+<!-- 					<li class="menu-item-has-children"><a title="#"> <i -->
+<!-- 							class="fa fa-bookmark-o"></i> <span>재무정보 관리</span> -->
+<!-- 					</a></li> -->
+<!-- 					<li class="menu-item-has-children"><a href="inbox.html" -->
+<!-- 						title=""> <i class="fa fa-flag"></i> <span>공지관리</span> -->
+<!-- 					</a></li> -->
+<!-- 				</ul> -->
+<!-- 			</nav> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
+<!-- </header> -->
+<!-- entertain side-bar end -->
+
+<!-- goods side-bar -->
+<!-- <header> -->
+<!-- 	<div class="side-menus"> -->
+<!-- 		<div class="side-header"> -->
+<!-- 			<div class="logo"> -->
+<!-- 				<a title="" href="index.html"><img alt="" src="images/logo2.png"></a> -->
+<!-- 			</div> -->
+<!-- 			<nav class="slide-menu"> -->
+<!-- 				<ul class="parent-menu"> -->
+<!-- 					<li class="menu-item-has-children active"><a title="#"> <i -->
+<!-- 							class="fa fa-dashboard"></i> <span>상품 관리</span> -->
+<!-- 					</a></li> -->
+<!-- 					<li class="menu-item-has-children"><a title=""> <i -->
+<!-- 							class="fa fa-laptop"></i> <span>주문/배송</span> -->
+<!-- 					</a> -->
+<!-- 						<ul class="mega"> -->
+<!-- 							<li><a href="index-boxed.html" title="">주문/배송 관리</a></li> -->
+<!-- 							<li><a href="overlap-sidebar.html">취소 관리</a></li> -->
+<!-- 							<li><a href="index-boxed.html" title="">교환 관리</a></li> -->
+<!-- 							<li><a href="index-boxed.html" title="">환불 관리</a></li> -->
+<!-- 						</ul></li> -->
+<!-- 					<li class="menu-item-has-children"><a title=""> <i -->
+<!-- 							class="fa fa-inbox"></i> <span>발주 내역 확인</span> -->
+<!-- 					</a></li> -->
+<!-- 					<li class="menu-item-has-children"><a title=""> <i -->
+<!-- 							class="fa fa-bookmark-o"></i> <span>문의 관리</span> -->
+<!-- 					</a> -->
+<!-- 						<ul class="mega"> -->
+<!-- 							<li><a href="index-boxed.html" title="">1: 1문의 관리</a></li> -->
+<!-- 							<li><a href="overlap-sidebar.html">FAQ 관리</a></li> -->
+<!-- 						</ul></li> -->
+<!-- 					<li class="menu-item-has-children"><a title=""> <i -->
+<!-- 							class="fa fa-flag"></i> <span>게시판 관리</span> -->
+<!-- 					</a></li> -->
+<!-- 				</ul> -->
+<!-- 			</nav> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
+<!-- </header> -->
+<!-- goods side-bar end -->

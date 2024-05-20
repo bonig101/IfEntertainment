@@ -1,0 +1,215 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<script src="${pageContext.request.contextPath }/resources/sweetAlertCustom/sweetAlertCustom.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<div class="gap inner-bg">
+  <div class="table-styles">
+  
+  <div class="little-heading">
+  	<h2 style="margin-bottom: 30px">취소 내역</h2>
+  </div>
+  
+  	<div class="gap listbar-container">
+    <div class="discount-copon list-bar">
+      <div class="row">
+        <div class="col-md-4">
+          <form method="post" id="searchForm">
+	        <input type="hidden" name="page" id="page"/>
+          	<div class="searchform-box" style="display: flex">
+	          	 <select>
+		            <option value="orderNo" <c:if test="${searchType eq 'orderNo' }">selected</c:if>>주문번호</option>
+		            <option value="userId" <c:if test="${searchType eq 'userId' }">selected</c:if>>주문자아이디</option>
+	        	</select>
+
+	            <input type="text" name="searchWord" value="${searchWord }" placeholder="검색">
+		          
+		        <button type="submit">검색</button>
+	          </div>
+          </form>
+        </div>
+        <div class="col-md-3" style="display: flex;">
+        	<form>
+        	<button type="submit" style="width: 150px">선택항목 삭제하기</button>
+        	</form>
+        	<form>
+        	<button type="button" id="newBtn"><i class="fa-solid fa-plus"></i>등록하기</button>
+        	</form>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+    <div class="widget">
+      <table class="prj-tbl striped table-responsive">
+        <thead class="color">
+           <tr class="prodTitle">
+             <th><i class="all-slct"></i></th>
+             <th><em>번호</em></th>
+             <th><em>이미지</em></th>
+             <th><em>제품명</em></th>
+             <th><em>수량</em></th>
+             <th><em>가격</em></th>
+             <th><em>총주문액</em></th>
+             <th><em>주문자</em></th>
+             <th><em>결제방법</em></th>
+             <th><em>주문일</em></th>
+             <th><em>취소일</em></th>
+             <th><em>상태</em></th>
+           </tr>
+        </thead>
+        <tbody>
+        <c:set value="${pagingVO.dataList }" var="cancelList"/>
+        <c:choose>
+        	<c:when test="${empty cancelList}">
+        		<tr>
+        			<td colspan="12">상품 리스트가 존재하지 않습니다.</td>
+        		</tr>
+        	</c:when>
+        	<c:otherwise>
+        		<c:forEach items="${cancelList }" var="cancel" varStatus="vs1">
+       				<span class="guidate" style="display: hidden;">${cancel.guiDate }</span>
+       				<span class="guireason" style="display: hidden;"></span>
+       				<span class="guidetail" style="display: hidden;"></span>
+        			<c:forEach items="${cancel.orderDetailList }" var="cancelDetail" varStatus="vs2">
+	        			<tr class="cancelList" >
+	        				<c:if test="${vs2.index eq 0 }">
+					            <td rowspan="${fn:length(cancel.orderDetailList) }" style="padding-left: 40px">
+					            	<i class="sngl-slct"></i>
+					            </td>
+					            <td rowspan="${fn:length(cancel.orderDetailList) }"><span>${cancel.orderNo }</span></td>
+	        				</c:if>
+				            
+				            <td>
+				            	<img alt="" src="${cancelDetail.goodsThumbnail }"  style="width:40px;">
+				            </td>
+				            <td>
+				            	<a class="goodsBtn" data-prodNo="${cancelDetail.goodsNo }">
+				            		<span>${cancelDetail.goodsName }</span>
+				            	</a>
+				            </td>
+				            <td><span>${cancelDetail.odQuantity }</span></td>
+				            <td style="padding-right: 0;"><span>${cancelDetail.odPrice }</span></td>
+				            
+				            <c:if test="${vs2.index eq 0 }">
+					            <td rowspan="${fn:length(cancel.orderDetailList) }"><span>${cancel.orderTotalprice }</span></td>
+					            <td rowspan="${fn:length(cancel.orderDetailList) }"><span>${cancel.userId }</span></td>
+					            <td rowspan="${fn:length(cancel.orderDetailList) }"><span>${cancel.orderPay }</span></td>
+					            <td rowspan="${fn:length(cancel.orderDetailList) }">
+					            	<fmt:parseDate value="${cancel.orderDate}" var="orderDate" pattern="yyyy-MM-dd" />
+					            	<span><fmt:formatDate value="${orderDate}" pattern="yyyy-MM-dd" /></span>
+					            </td>
+					            <td rowspan="${fn:length(cancel.orderDetailList) }"><span><fmt:formatDate value="${cancel.guiDate}" pattern="yyyy-MM-dd" /></span></td>
+					            <td rowspan="${fn:length(cancel.orderDetailList) }">
+					            	<span>
+						            	<a type="button" class="detailBtn" data-index="${vs1.index}">자세히보기
+						            	</a>
+					            	</span>
+					            </td>
+				            </c:if>
+						</tr>
+        			</c:forEach>
+        		</c:forEach>
+        	</c:otherwise>
+        </c:choose>
+        </tbody> 
+      </table>
+    </div>
+    <div class="card-footer prod-footer clearfix" id="pagingArea">
+		${pagingVO.pagingHTML }
+	</div>
+  </div>
+</div>
+
+<!-- 모달시작 -->
+<div class="modal fade" id="inputModal" tabindex="-1" aria-labelledby="inputModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-di">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inputModalLabel">취소 상세정보</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb">
+			    <div class="form-group inquiry">
+			        <div class="inq">
+			            <label>처리일자  :&nbsp</label>
+			            <span class="guiDate"></span>
+			        </div>
+		       		<hr>
+			        <div class="inq inq_con">
+			            <div><label style="width: 83px;">사유  :&nbsp</label></div>
+			            <div><span class="guiReason"></span></div>
+			        </div>
+		       		<hr>
+			        <div class="inq">
+			            <label>사유 상세  :&nbsp</label>
+			            <span class="guiDetail"></span>
+			        </div>
+		    	</div>
+			</div>
+            <div class="modal-footer mf">
+                <button id="cancelBtn" type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                <button id="ansBtn" type="button" class="btn btn-primary">답변 등록</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 모달 끝 -->
+<script src="${pageContext.request.contextPath }/resources/js1/bootstrap.min.js"></script>
+<script>
+$(function () {
+	var prod_update = $(".prod_update");
+	
+	prod_update.on("click", function () {
+	    var prodNo = $(this).data("prodno"); 
+	    location.href = "/goods/update.do?goodsNo=" + prodNo;
+	});
+
+	$('.all-slct').on("click",function(){
+		$(this).toggleClass('active');
+	    $(".sngl-slct").toggleClass('active'); 
+	});
+	
+	
+	var searchForm = $("#searchForm")
+	var pagingArea = $("#pagingArea");
+	
+	pagingArea.on("click", "a", function (event) {
+		event.preventDefault();
+		var pageNo = $(this).data("page");
+		searchForm.find("#page").val(pageNo);
+		searchForm.submit();
+	});
+	
+	var detailBtn = $(".detailBtn");
+	
+	detailBtn.on("click", function () {
+		var index = $(this).data("index");
+		
+		var date = $(".guidate").eq(index).text();
+		//var reason = 
+		//var detail = 
+		
+		$(".guiDate").text(date);
+ 		modal.modal('show'); 
+		
+	});
+	
+	var modal = $("#inputModal"); 
+	
+	modal.on('show.bs.modal', function () {     
+         var modal = $(this);
+         modal.appendTo('body');
+    });
+	
+	
+	
+});
+</script>

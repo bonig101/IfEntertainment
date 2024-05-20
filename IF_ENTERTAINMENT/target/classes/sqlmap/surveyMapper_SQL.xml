@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.community.ISurveyMapper">
+
+	<!-- 설문지 폼 등록 쿼리 -->
+	<insert id="insertSurvey" parameterType="surveyFormVO" useGeneratedKeys="true">
+		<selectKey keyProperty="sfNo" resultType="int" order="BEFORE">
+			select seq_survey_form.nextval from dual
+		</selectKey>
+	
+		insert into survey_form (
+		    sf_no
+		    , sf_title
+		    , sf_regdate
+		    , sf_enddate
+		    , sf_photo
+		    , sf_display
+		    , sf_clos
+		) values (
+		    #{sfNo}
+		    , #{sfTitle}
+		    , #{sfRegdate}
+		    , #{sfEnddate}
+		    , #{sfPhoto}
+		    , #{sfDisplay}
+		    , 'N'
+		)
+	</insert>
+
+	<!-- 설문지 질문 등록 쿼리 -->
+	<insert id="insertSurveyQuestion" parameterType="surveyQuestionVO" useGeneratedKeys="true">
+		<selectKey keyProperty="sqNo" resultType="int" order="BEFORE">
+			select seq_survey_question.nextval from dual
+		</selectKey>
+		insert into survey_question (
+		    sq_no
+		    , sq_title
+		    , sq_type
+		    , sf_no
+		) values (
+		    #{sqNo}
+		    , #{sqTitle}
+		    , #{sqType}
+		    , #{sfNo}
+		)
+	</insert>
+
+	<!-- 설문지 보기 등록 쿼리 -->
+	<insert id="insertSurveyOption">
+		insert into survey_option(
+		    so_no
+		    , so_content
+		    , sq_no
+		) values (
+		    seq_survey_option.nextval
+		    , #{soContent}
+		    , #{sqNo}
+		)
+	</insert>
+	
+	<!-- 설문지 폼 리스트 검색처리 -->
+	<sql id="surveySearch">
+		<if test="searchWord != null">
+			and(sf_title like '%'||#{searchWord}||'%')
+		</if>
+	</sql>
+	
+	<!-- 페이지 토탈레코드 세팅을 위한 개수 리턴 쿼리 -->
+	<select id="selectSurveyCount" parameterType="pagingVO" resultType="int">
+		select 
+			count(sf_no)
+		from 
+			survey_form
+		where
+			1 = 1
+		<include refid="surveySearch"></include>
+	</select>
+
+	<!-- 설문지 목록 리스트 조회 쿼리 -->
+	<select id="selectSurveyList" parameterType="pagingVO" resultType="surveyFormVO">
+		    select b.*
+			from (
+			    select a.*, row_number() over(order by case when sf_display = 'Y' then 0 else 1 end, sf_no desc) rnum
+			    from (
+			        select 
+			            sf_no
+			            , sf_title
+			            , sf_regdate
+			            , sf_enddate
+			            , sf_photo
+			            , sf_display
+			        from 
+			            survey_form
+			        where
+			            1 = 1
+			        order by sf_no desc
+			        <include refid="surveySearch"></include>
+			    ) a
+			) b
+			<![CDATA[
+			where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		    ]]>
+		    
+	</select>
+	
+	<resultMap type="surveyFormVO" id="surveyMap">
+		<id property="sfNo" column="sf_no"/>
+		<result property="sfNo" column="sf_no"/>
+		<result property="sfTitle" column="sf_title"/>
+		<result property="sfRegdate" column="sf_regdate"/>
+		<result property="sfEnddate" column="sf_enddate"/>
+		<result property="sfPhoto" column="sf_photo"/>
+		<result property="sfDisplay" column="sf_display"/>
+		<collection property="surveyQuestionList" resultMap="surveyQuestionMap"/>
+	</resultMap>
+	
+	<resultMap type="surveyQuestionVO" id="surveyQuestionMap">
+		<id property="sqNo" column="sq_no"/>
+		<result property="sqNo" column="sq_no"/>
+		<result property="sqTitle" column="sq_title"/>
+		<result property="sqType" column="sq_type"/>
+		<result property="sfNo" column="sf_no"/>
+		<collection property="optionList" resultMap="surveyOptionMap"/>
+	</resultMap>
+	
+	<resultMap type="surveyOptionVO" id="surveyOptionMap">
+		<id property="soNo" column="so_no"/>
+		<result property="soNo" column="so_no"/>
+		<result property="soContent" column="so_content"/>
+		<result property="sqNo" column="sq_no"/>
+		<result property="cnt" column="cnt"/>
+	</resultMap>
+	
+	<resultMap type="surveyResultVO" id="surveyResultMap">
+		<result property="sfNo" column="sf_no"/>
+		<result property="sfTitle" column="sf_title"/>
+		<collection property="surveyQuestionList" resultMap="surveyQuestionMap"/>
+	</resultMap>
+	
+	<!-- 설문지 디테일 페이지 조회 -->
+	<select id="selectSurvey" parameterType="int" resultMap="surveyMap">
+		select
+		    sf.sf_no, sf_title, sf_regdate, sf_enddate, sf_photo, sf_display,
+		    sq.sq_no, sq_title, sq_type, sq.sf_no,
+		    so_no, so_content, so.sq_no                                           
+		from
+		    survey_form sf
+		    left outer join survey_question sq on(sf.sf_no = sq.sf_no)
+		    left outer join survey_option so on(sq.sq_no = so.sq_no)
+		where sf.sf_no = #{sfNo}
+	</select>
+	
+	<update id="modifySurvey" parameterType="surveyFormVO">
+		update 
+			survey_form
+		set
+		    sf_title = #{sfTitle}
+		    , sf_regdate = #{sfRegdate}
+		    , sf_enddate = #{sfEnddate}
+		    , sf_photo = #{sfPhoto}
+		    , sf_display = #{sfDisplay}
+		    , sf_clos = #{sfClos}
+		where
+		    sf_no = #{sfNo}
+	</update>
+	
+	<!-- 설문지 수정 쿼리  -->
+	<update id="modifySurveyQuestion" parameterType="surveyQuestionVO">
+		update 
+			survey_question
+		set 
+			sq_title = #{sqTitle}
+			, sq_type = #{sqType}
+		where
+			sq_no = #{sqNo}
+	</update>
+	
+	<!-- 설문지 옵션 개별 수정 쿼리 -->
+	<update id="modifySurveyOption" parameterType="surveyOptionVO">
+		update
+			survey_option
+		set 
+			so_content = #{soContent}
+		where
+			so_no = #{soNo}
+	</update>
+	
+	<!-- 설문 보기 삭제 쿼리 -->
+	<delete id="deleteSurveyOption" parameterType="int">
+		delete from survey_option
+		where sq_no = #{sqNo}
+	</delete>
+	
+	<!-- 설문 질문 삭제 쿼리 -->
+	<delete id="deleteSurveyQuestion" parameterType="int">
+		delete from survey_question
+		where sf_no = #{sfNo}
+	</delete>
+	
+	<!-- 설문지 삭제 쿼리 -->
+	<delete id="deleteSurvey" parameterType="int">
+		delete from survey_form
+		where sf_no = #{sfNo}
+	</delete>
+	
+	<!-- 파업정보를 나타낼 설문지 정보 하나를 가져온다 -->
+	<select id="selectSurveyPopup" resultMap="surveyMap">
+		select
+		    sf.sf_no, sf_title, sf_regdate, sf_enddate, sf_photo, sf_display,
+		    sq.sq_no, sq_title, sq_type, sq.sf_no,
+		    so_no, so_content, so.sq_no                                           
+		from
+		    survey_form sf
+		    left outer join survey_question sq on(sf.sf_no = sq.sf_no)
+		    left outer join survey_option so on(sq.sq_no = so.sq_no)
+		where sf.sf_display = 'Y'
+	</select>
+	
+	<!-- 설문조사 등록 쿼리 -->
+	<insert id="conductSurvey" parameterType="surveyVO" useGeneratedKeys="true">
+		<selectKey keyProperty="surveyNo" resultType="int" order="BEFORE">
+			select seq_survey.nextval from dual
+		</selectKey>
+		insert into survey(
+			survey_no
+			, survey_regdate
+			, user_no
+			, sf_no
+		) values (
+			#{surveyNo}
+			, sysdate
+			, #{userNo}
+			, #{sfNo}
+		)
+	</insert>
+	
+	<!-- 설문조사에서 응답한 질문과 답 등록 쿼리 -->
+	<insert id="insertSurveyResult" parameterType="surveyResultVO">
+		insert into survey_result(
+			sr_no, sr_answer, survey_no, sq_no
+		) values (
+			seq_survey_result.nextval
+			, #{srAnswer}
+			, #{surveyNo}
+			, #{sqNo}
+		)
+	</insert>
+	
+	<!-- 설문을 마감하는 쿼리 -->
+	<update id="closeSurvey" parameterType="int">
+		update 
+			survey_form
+		set 
+			sf_display = 'N'
+			, sf_clos = 'Y'
+		where 
+			sf_no = #{sfNo}
+	</update>
+	
+<!-- 	<resultMap type="surveyResultVO" id="surveyResultMap"> -->
+<!-- 		<result property="surveyNo" column="survey_no"/> -->
+<!-- 		<result property="sfTitle" column="sf_title"/> -->
+<!-- 		<collection property="answerList" resultMap="answerListMap"/> -->
+<!-- 		<collection property="questionList" resultMap="surveyQuestionMap"/> -->
+<!-- 	</resultMap> -->
+	
+<!-- 	<resultMap type="String" id="answerListMap"> -->
+<!-- 		<result property="answerList" column="sr_answer"/> -->
+<!-- 	</resultMap> -->
+
+	
+	
+	<!-- 설문 번호를 받아 해당설문의 결과리스트를 조회하는 쿼리 -->
+	<select id="getsurveyResultList" parameterType="int" resultMap="surveyResultMap">
+<!-- 		select -->
+<!--             sr.survey_no,  -->
+<!-- 		    user_no, -->
+<!-- 		    sr_answer, sq.sq_no, -->
+<!-- 		    sf_title, -->
+<!-- 		    sq_title, sq_type, -->
+<!-- 		    so.so_no, so_content -->
+<!-- 		from survey_result sr left outer join survey s on(sr.survey_no = s.survey_no) -->
+<!-- 		                    left outer join survey_form sf on(s.sf_no = sf.sf_no) -->
+<!-- 		                    left outer join survey_question sq on(sr.sq_no = sq.sq_no) -->
+<!-- 		                    left outer join survey_option so on(sq.sq_no = so.sq_no) -->
+<!-- 		where s.sf_no = #{sfNo} -->
+<!-- 		order by sr.survey_no, sq.sq_no, so.so_no -->
+		SELECT 
+		    SF.SF_NO, SF.SF_TITLE, SQ.SQ_NO, SQ.SQ_TITLE, SQ.SQ_TYPE, SO.SO_NO, SO.SO_CONTENT,
+		    (
+		        SELECT COUNT(SR.SR_ANSWER)
+		        FROM SURVEY SV
+		        INNER JOIN SURVEY_RESULT SR ON SV.SURVEY_NO = SR.SURVEY_NO
+		        WHERE SV.SF_NO = SF.SF_NO
+		        AND SR.SQ_NO = SQ.SQ_NO
+		        AND SR.SR_ANSWER LIKE '%' || SO.SO_NO || '%'
+		    ) AS CNT
+		FROM 
+		    SURVEY_FORM SF
+		JOIN 
+		    SURVEY_QUESTION SQ ON SF.SF_NO = SQ.SF_NO
+		JOIN 
+		    SURVEY_OPTION SO ON SQ.SQ_NO = SO.SQ_NO
+		WHERE 
+		    SF.SF_NO = #{sfNo}
+	</select>
+	
+	<select id="popupCheck" resultType="Integer">
+		select 
+			sf_no
+		from
+			survey_form
+		where 
+			sf_display = 'Y'
+	</select>
+	
+	<update id="finishSurveyAjax">
+		update 
+			survey_form
+		set 
+			sf_display = 'N'
+			, sf_clos = 'Y'
+		where 
+			sf_display = 'Y'
+	</update>
+	
+</mapper>

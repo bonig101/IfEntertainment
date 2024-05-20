@@ -1,0 +1,99 @@
+package kr.or.ddit.service.impl.entertain;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.or.ddit.mapper.entertain.IAuditionMapper;
+import kr.or.ddit.service.entertain.IAuditionService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.AuditionBoardVO;
+import kr.or.ddit.vo.entertain.AuditionRegisterVO;
+import kr.or.ddit.vo.entertain.NationVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class AuditionServiceImpl implements IAuditionService {
+
+	@Inject
+	private IAuditionMapper auditionMapper;
+
+	@Override
+	public int selectNoticeCount(PaginationInfoVO<AuditionBoardVO> pagingVO) {
+		return auditionMapper.selectNoticeCount(pagingVO);
+	}
+
+	@Override
+	public List<AuditionBoardVO> auditionScheduleList(PaginationInfoVO<AuditionBoardVO> pagingVO) {
+		
+//		log.info("pagingVO.getStartRow()"+pagingVO.getStartRow());
+//		log.info("##########"+pagingVO.getEndRow());
+		return auditionMapper.auditionScheduleList(pagingVO);
+	}
+
+	@Override
+	public AuditionBoardVO auditionScheduleDetail(int bfNo) {
+		return auditionMapper.auditionScheduleDetail(bfNo);
+	}
+
+	@Override
+	public List<NationVO> nationList() {
+		return auditionMapper.nationList();
+	}
+
+	@Override
+	public ServiceResult auditionSupportRegister(HttpServletRequest req, AuditionRegisterVO auditionRegisterVO,
+			NationVO nationVO) {
+		ServiceResult result = null;
+		
+		try {
+			auditionPhotoFileUpload(auditionRegisterVO.getAuditionPhotoFile(),auditionRegisterVO, nationVO, req);
+			
+			auditionMapper.auditionSupportRegister(auditionRegisterVO, nationVO);
+			result = ServiceResult.OK;
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	private void auditionPhotoFileUpload(MultipartFile auditionPhotoFile, AuditionRegisterVO auditionRegisterVO,
+			NationVO nationVO, HttpServletRequest req) throws Exception {
+		
+		String savePath = "/resources/upload/audition/";
+		
+		String saveLocate = null;
+		
+		if(auditionPhotoFile != null) {
+			String saveName = UUID.randomUUID().toString();
+			saveName += "_" + auditionRegisterVO.getAuditionPhotoFile().getOriginalFilename();
+			saveLocate = req.getServletContext().getRealPath(savePath);
+			
+			File file = new File(saveLocate);
+			if(!file.exists()) {
+				file.mkdirs();
+			}
+			
+			saveLocate += saveName;
+			
+			File saveFile = new File(saveLocate);
+			auditionRegisterVO.getAuditionPhotoFile().transferTo(saveFile);
+			
+			savePath += saveName;
+			
+		}
+		
+	}
+
+}

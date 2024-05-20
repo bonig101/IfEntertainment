@@ -1,0 +1,23 @@
+package kr.or.ddit.controller.goods;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.goods.IOrderService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 교환/환불/취소와 배송전/배송완료 등 주문이슈와 관련된 내역을 처리하는 컨트롤러
+ * @author 성이수
+ */
+@Controller
+@Slf4j
+@RequestMapping("/goods/order")
+public class OrderIssueController {
+
+	@Inject
+	private IOrderService orderService;
+	
+}

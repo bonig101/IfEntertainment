@@ -1,0 +1,131 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!-- topbar 시작 -->
+		<div class="topbar stick top_headerbar">
+			<div class="logo top_logo">
+				<a title="" href="/"><img src="images/main/폰트동일 로고.png" alt="logo"></a>
+			</div>
+			<div class="top-area">
+				<ul class="setting-area float-left nav_menu_bar">
+					<li>
+						<a href="newsfeed.html" title="Home" data-ripple="" class="nav_menu">
+							<span>COMPANY</span>
+						</a>
+						<div class="dropdowns nav_2depth">
+							<ul class="drops-menu nav_2depth_menu">
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/company/info.do" title="" class="company_introduce">기업소개</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/company/history.do" title="">연혁</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/company/news/userlist.do" title="">기업소식</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/company/visit.do" title="">찾아오는 길</a></h6>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<a href="" title="INVESTORS" data-ripple="" class="nav_menu">
+							<span>INVESTORS</span>
+						</a>
+						<div class="dropdowns nav_2depth">
+							<ul class="drops-menu nav_2depth_menu">
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/irFile/list.do" title="">IR 자료실</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/ir/userlist.do" title="">IR 행사일정</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/stock/info.do" title="">주가 정보</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/finance/finance.do" title="">재무정보</a></h6>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<a href="#" data-ripple="" class="nav_menu">
+							<span onclick="javascript:location.href='/entertain/artist/profile/artistList.do'">ARTISTS</span>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="NOTICE" data-ripple="" class="nav_menu">
+							<span onclick="javascript:location.href='/entertain/company/notice/userlist.do'">NOTICE</span>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="AUDITION" data-ripple="" class="nav_menu">
+							<span>AUDITION</span>
+						</a>
+						<div class="dropdowns nav_2depth">
+							<ul class="drops-menu nav_2depth_menu">
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/audition/scheduleList.do" title="">오디션일정확인</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/audition/auditionSupportGuide.do" title="">지원하기</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/audition/auditionSupportList.do" title="">지원내역확인</a></h6>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+				<ul class="setting-area float-left nav_menu_bar nav_language">
+					<li class="">
+						<a href="#" title="LANGUAGE" data-ripple="" class="nav_menu nav_menu_language">
+							<span>KOR</span>
+						</a>
+						<div class="dropdowns nav_2depth">
+							<ul class="drops-menu nav_2depth_menu">
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">ENG</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">CHN</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">JPN</a></h6>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- topbar 끝 -->

@@ -1,0 +1,28 @@
+package kr.or.ddit.controller.common;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+
+import kr.or.ddit.service.common.ISignService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * @author 임민혁
+ */
+@Controller
+@Slf4j
+public class FindIdPassController {
+	
+	// 아이디 찾기 : 이름과 이메일 입력하여 알러트로 띄워주기
+	
+	// 비밀번호 찾기 : 이름, 이메일, 아이디 입력시 이메일로 임시 비밀번호 전송
+	// 1. 비밀번호 랜덤난수로 뽑은 후 업데이트 쿼리 (PasswordEncoder) 방식으로 암호화 하여 난수 업데이트
+	// 2. 비밀번호 전송
+	// 3. 사용자가 입력 받은 패스워드로 로그인 
+	// 4. 비밀번호 변경하면 변경된 비밀번호를 다시 암호화 하여 업데이트할 수 있도록
+	
+	@Inject
+	private ISignService signService;
+
+}

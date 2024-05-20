@@ -1,0 +1,860 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta id="_csrf" name="_csrf" content=${_csrf.token }>
+<meta id="_csrf_header" name="_csrf_header" content=${_csrf.headerName }>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b0e81bb721b9e121366ca32dad175741&libraries=services"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<title>If entertainment 회원가입</title>
+	<link rel="icon" href="images/fav.png" type="image/png" sizes="16x16">
+
+	<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/main.min.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/style.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/color.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/responsive.css">
+
+	<style>
+		@font-face {
+			font-family: 'LOTTERIACHAB';
+			src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/LOTTERIACHAB.woff2') format('woff2');
+			font-weight: normal;
+			font-style: normal;
+		}
+
+		@font-face {
+			font-family: 'GmarketSansMedium';
+			src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+			font-weight: normal;
+			font-style: normal;
+		}
+
+		body {
+			font-family: 'GmarketSansMedium', sans-serif;
+		}
+
+		.medium-opacity:before {
+			-webkit-opacity: .1;
+			-moz-opacity: .1;
+			-ms-opacity: .1;
+			-o-opacity: .1;
+			opacity: .1;
+		}
+
+		.radio {
+			display: flex;
+			flex-direction: row;
+		}
+
+		.line-spacing {
+        margin-bottom: 20px; /* 원하는 간격(px)으로 조절합니다. */
+    }
+
+		.gap.signin .bg-image {
+    height: 100%;
+		}
+
+		.gap.signin:before {
+    z-index: 0;
+    height: 100%;
+		}
+
+	</style>
+
+
+</head>
+
+<body>
+	<div class="www-layout">
+		<section>
+			<div class="gap no-gap signin whitish medium-opacity register">
+				<div class="bg-image"
+					style="background-image:url(https://blog.kakaocdn.net/dn/bieOxc/btqDQUnJdRk/eV2wvjXYaqZJUVgP2yKnq1/img.jpg)">
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-3">
+							<div class="big-ad" style="text-align: center;">
+								<div class="profile-author-thumb" id="imagePreview">
+									<img alt="author"
+										src="https://thumb.mtstarnews.com/06/2023/08/2023082118182730957_1.jpg/dims/optimize"
+										style="width: 150px; height: 150px;">
+									<div class="edit-dp">
+										<label class="fileContainer">
+											<i class="fa fa-camera"></i>
+											<input type="file" id="imgFile" name="imgFile">
+										</label>
+									</div>
+								</div>
+								<figure style="font-family: 'LOTTERIACHAB'; font-size: 30px; padding: 10px; color: white;">
+									If entertainment<br /> Sign Up <i class="fa-brands fa-waze"></i>
+									<p style="font-family: 'GmarketSansMedium'; color: white;">프로필 사진을 업로드 해주세요!</p>
+								</figure>
+							</div>
+
+						</div>
+						<div class="col-lg-6">
+							<div class="reg-from" style="margin-top: 60px; margin-bottom: 100px;">
+								<span>회원가입🧑‍🚀</span>
+								<p>We believe in music Welcome If entertainment 🎵</p>
+
+								<form action="/signup.do" class="c-form" method="post" id="signupForm" enctype="multipart/form-data">
+									<div class="row merged10">
+										<label>🆔 아이디</label>
+										<div class="col-lg-12 col-md-12 col-sm-12">
+											<input class="mb-2" id="userId" name="userId" type="text" placeholder="ID">
+											<button type="button" id="idChkBtn" class="main-btn" data-ripple="">중복확인</button>
+										</div>
+										<div class="errors">${userId }</div>
+
+										<label>👑 이름</label>
+										<div class="col-lg-12 col-md-12 col-sm-12">
+											<input class="mb-2"  id="userName" name="userName" type="text" placeholder="Name">
+										</div>
+
+										<label>🔐 비밀번호</label>
+										<div class="col-lg-6 col-md-6 col-sm-6">
+										    <input id="userPw" name="userPw" class="mb-2" type="password" placeholder="Password">
+										</div>
+										
+										<div class="col-lg-6 col-md-6 col-sm-6">
+										    <input id="userPw1" name="userPw1" class="mb-2" type="password" placeholder="Retype Password">
+										</div>
+										<div id="message"></div>
+
+										
+										
+										
+										<label>💌 이메일</label>
+										<div class="col-lg-6 col-md-6 col-sm-6">
+											<input type="text" name="memberEmail" id="memberEmail1" class="mb-2" type="text" placeholder="Email">
+										</div>
+
+										<div class="col-lg-6 col-md-6 col-sm-6">
+											<select class="form" name="memberEmail" id="memberEmail2">
+												<option selected="selected" disabled="true">이메일 주소를 선택하세요</option>
+												<option>@naver.com</option>
+												<option>@daum.net</option>
+												<option>@gmail.com</option>
+												<option>@hanmail.com</option>
+												<option>@yahoo.co.kr</option>
+											</select>
+										</div>
+
+										<div class="col-lg-12 col-md-12 col-sm-12">
+											<input class="form-control mail-check-input" placeholder="인증번호 6자리를 입력해주세요!" disabled="disabled" maxlength="6">
+										</div>
+										<button class="main-btn" type="button"  data-ripple="" id="mail-Check-Btn">이메일 인증번호 발송</button>
+										<span id="mail-check-warn" style="margin-bottom: 10px;"></span>
+										
+										<label>👫 성별</label>
+										<div class="col-lg-12 col-md-12 col-sm-12">
+											<div class="gender mb-2">
+												<div class="form-radio">
+													<div class="radio" style="border: none; background: none; display:  flex;">
+														<label style="width: 100px;">
+															<input type="radio" class="male" id="memGenderM" name="memberGender" value="M" checked="checked"><i class="check-box"></i>남자
+														</label>
+														<label>
+															<input type="radio" id="memGenderF" name="memberGender" value="F"><i class="check-box"></i>
+															여자
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<label >📅 생년월일</label>
+										<div class="col-lg-4 col-md-4 col-sm-4">
+											<select id="yearSelect" name="memberBirth" class="form-control">
+												<option value="">년</option>
+											</select>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-4">
+											<select id="monthSelect" name="memberBirth" class="form-control">
+												<option value="">월</option>
+											</select>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-4">
+											<select id="daySelect" name="memberBirth" class="form-control">
+												<option value="">일</option>
+											</select>
+										</div>
+
+										<!--간격용 지우면 안됩니다 !! -->
+										<div class="line-spacing"></div>
+
+										<label for="address">📫 우편번호</label>
+										<div class="col-lg-12 col-md-12 col-sm-12">
+											<input class="mb-2" type="text" placeholder="postcode"  id="memberPostcode" name="memberPostcode">
+											<button class="main-btn" type="button" data-ripple="" onclick="DaumPostcode()">
+												우편번호 찾기
+											</button>
+										</div>
+										<label>🚩 주소</label>
+										<div class="col-lg-7 col-md-7 col-sm-7">
+											<input class="mb-2" type="text"  id="memberAddress1"
+											name="memberAddress1" placeholder="address1">
+										</div>
+										<div class="col-lg-5 col-md-5 col-sm-5">
+											<input class="mb-2" type="text" placeholder="상세주소" id="memberAddress2"
+												name="memberAddress2">
+										</div>
+										<label>📱 전화번호</label>
+										<div class="col-lg-12 col-md-12 col-sm-12">
+											<input class="mb-2" type="text" id="memberTelno" name="memberTelno" placeholder="Phone">
+										</div>
+
+										<div class="col-lg-12 col-md-12 col-sm-12">
+										<span><br></span>
+										</div>
+
+										<div class="col-lg-5 col-md-5 col-sm-5">
+											<div class="gender mb-2">
+												<label>💡 알림수신 여부</label>
+												<div class="form-radio">
+													<div class="radio" style="border: none; background: none; display:  flex;">
+														<label style="width: 250px;">
+															<input type="radio" id="memberNotification1" name="memberNotification" value="Y" checked="checked"><i class="check-box"></i>동의
+														</label>
+														<label>
+															<input type="radio"  id="memberNotification2" name="memberNotification" value="N"><i class="check-box"></i>
+															비동의
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-lg-7 col-md-7 col-sm-7">
+											<div class="gender mb-2">
+												<label>🌞 알림 선택</label>
+												<div class="form-radio">
+													<div class="radio" style="border: none; background: none; display:  flex;">
+														<label>
+															<input type="checkbox" id="smsCheckbox" name="notiType" value="sms"><i class="check-box"></i>SMS
+														</label>
+														<label>
+															<input type="checkbox" id="emailCheckbox" name="notiType" value="email"><i class="check-box"></i>E-mail
+														</label>
+														<label>
+															<input type="checkBox" id="webCheckbox" name="notiType" value="web"><i class="check-box"></i>웹 실시간
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="col-lg-12 col-md-12 col-sm-12">
+											<span><br></span>
+										</div>
+
+										<div class="col-lg-5 col-md-5 col-sm-5">
+											<label>🚨 자동가입방지</label>
+											<label for="recaptcha" class="control-label col-sm-2"><span class="rq"></span></label>
+											<div class="col-sm-6">
+												<div class="g-recaptcha" data-sitekey="6LcKxUgpAAAAAAN-TGBKRTy8hzXUodck7LrXEUoA"></div>
+												<span id="recaptchaError" class="rq"></span>
+											</div>
+										</div>
+										<div class="col-lg-7 col-md-7 col-sm-7">
+											<div class="gender mb-2">
+												<label>🚀 알림수신 채널 선택</label>
+												<div class="form-radio">
+													<div class="radio" style="border: none; background: none; display:  flex;">
+														<label>
+															<input type="checkbox" id="commnotiSetting" name="notiSetting" checked="checked" value="power" ><i class="check-box"></i>커뮤니티
+														</label>
+														<label>
+															<input type="checkbox" id="goodsnotiSetting" name="notiSetting" checked="checked" value="book"><i class="check-box"></i>굿즈샵
+														</label>
+														<label>
+															<input type="checkbox" id="evennotiSetting" name="notiSetting" checked="checked" value="movie" ><i class="check-box"></i>이벤트
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-lg-12 col-md-12 col-sm-12 mb-2">
+											<div class="checkbox mb-1">
+												<label>
+													<input type="checkbox" checked="checked"><i class="check-box"></i>
+													서비스·이벤트 정보 수신에 동의합니다.
+												</label>
+											</div>
+										</div>
+										<div class="col-lg-8 col-md-6 mt-2">
+											<span class="reg-with">Register With</span>
+											<ul class="social-reg">
+												<li><a class="facebook" href="#" title="" data-ripple="">굿즈샵 이용</a></li>
+												<li><a class="twitter" href="#" title="" data-ripple="">IF 커뮤니티</a></li>
+											</ul>
+										</div>
+										<div class="col-lg-4 col-md-6 mt-2">
+											<input type="submit" id="signUpBtn" value="회원가입">
+										</div>
+									</div>
+								<sec:csrfInput/>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+<script type="text/javascript">
+header = $("meta[name='_csrf_header']").attr("content");
+token = $("meta[name='_csrf']").attr("content");
+// 동의/비동의 라디오 버튼 선택 시 처리
+document.querySelectorAll('input[type="radio"][name="memberNotification"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+        if (this.value === 'Y') {
+            document.querySelectorAll('input[type="checkbox"][name="notiSetting"]').forEach(function(checkbox) {
+                checkbox.disabled = false;
+            });
+        } else {
+            document.querySelectorAll('input[type="checkbox"][name="notiSetting"]').forEach(function(checkbox) {
+                checkbox.disabled = true;
+                checkbox.checked = false;
+            });
+        }
+    });
+});
+document.querySelectorAll('input[type="radio"][name="memberNotification"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+        if (this.value === 'Y') {
+            document.querySelectorAll('input[type="checkbox"][name="notiType"]').forEach(function(checkbox) {
+                checkbox.disabled = false;
+            });
+        } else {
+            document.querySelectorAll('input[type="checkbox"][name="notiType"]').forEach(function(checkbox) {
+                checkbox.disabled = true;
+                checkbox.checked = false;
+            });
+        }
+    });
+});
+
+																									
+
+document.querySelectorAll('input[type="radio"][name="memberNotification"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+        if (this.value === 'Y') {
+            document.querySelectorAll('input[type="checkbox"][name="notiType"]').forEach(function(checkbox) {
+                checkbox.disabled = false;
+            	document.getElementById('commnotiSetting').checked = true;
+                document.getElementById('goodsnotiSetting').checked = true;
+                document.getElementById('evennotiSetting').checked = true;
+            	document.getElementById('smsCheckbox').checked = true;
+                document.getElementById('emailCheckbox').checked = true;
+                document.getElementById('webCheckbox').checked = true;
+            });
+        } else {
+            document.querySelectorAll('input[type="checkbox"][name="notiType"]').forEach(function(checkbox) {
+                checkbox.disabled = true;
+                checkbox.checked = false;
+            });
+        }
+    });
+});
+
+
+
+//기본이미지 숨기기
+function previewFile() {
+        var fileInput = document.getElementById('imgFile');
+        var previewImage = document.getElementById('defaultImage');
+        var label = document.querySelector('.custom-file-label');
+
+        var file = fileInput.files[0];
+        var reader = new FileReader();
+
+        reader.onloadend = function () {
+            previewImage.src = reader.result;
+            label.textContent = file.name;
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            previewImage.src = "${pageContext.request.contextPath }/resources/images/user.png"; 
+        }
+    }
+
+
+
+
+$(document).ready(function(){
+    $("#imgFile").change(function() {
+        readURL(this);
+    });
+});
+
+//미리보기
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        
+        reader.onload = function(e) {
+            $('#imagePreview').html('<img src="' + e.target.result + '" alt="이미지 미리보기">');
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+$(function(){
+header = $("meta[name='_csrf_header']").attr("content");
+token = $("meta[name='_csrf']").attr("content");
+
+var idCheckFlag = false;
+var idChkBtn=$("#idChkBtn");
+var signUpBtn=$("#signUpBtn");
+var signupForm = $("#signupForm");	
+var imgFile=$("#imgFile");
+
+
+
+
+
+        signUpBtn.on("click", function(event) {
+            event.preventDefault(); 
+
+            
+            var userId = $("#userId").val();
+            var userPw = $("#userPw").val();
+            var userName = $("#userName").val();
+            var memberTelno = $("#memberTelno").val();
+            var memberEmail1 = $("#memberEmail1").val();
+            var memberEmail2 = $("#memberEmail2").val();
+            var memberPostcode = $("#memberPostcode").val();
+            var memberAddress1 = $("#memberAddress1").val();
+            var memberNotification = $("input[name='memberNotification']:checked").val(); 
+            var notiType = [];
+            var notiSetting = [];
+
+            $("input[name='notiType']:checked").each(function() {
+                notiType.push($(this).val());
+            });
+
+            $("input[name='notiSetting']:checked").each(function() {
+                notiSetting.push($(this).val());
+            });
+            if (userId === null || userId === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "아이디를 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#userId").focus(); // 아이디 입력란에 포커스 맞춤
+                return;  
+            } else if (!/^[a-zA-Z0-9]{8,12}$/.test(userId)) {
+                Swal.fire({
+                    icon: "error",
+                    title: "아이디는 영문 대소문자와 숫자로 8~12자 이내로 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#userId").focus(); 
+                return;  
+            }
+
+            if (userPw === null || userPw === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "비밀번호를 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#userPw").focus(); 
+                return;  
+            } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(userPw)) {
+                Swal.fire({
+                    icon: "error",
+                    title: "비밀번호는 영문 대소문자, 숫자를 포함하여 8자 이상이어야 합니다",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#userPw").focus(); 
+                return;  
+            }
+            if (userName === null || userName === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "이름을 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#userName").focus(); 
+                return;  
+            } else if (!/^[a-zA-Z가-힣]{2,10}$/.test(userName)) {
+                Swal.fire({
+                    icon: "error",
+                    title: "이름은 한글 또는 영문 대소문자로 2~10자 이내로 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+                $("#userName").focus();
+                return;  
+            }
+
+         
+            if (memberTelno === null || memberTelno === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "전화번호를 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#memberTelno").focus(); 
+                return;  
+            } else if (!/^\d{3}-\d{3,4}-\d{4}$/.test(memberTelno)) {
+                Swal.fire({
+                    icon: "error",
+                    title: "전화번호의 형식이 올바르지 않습니다 (예: 010-1234-5678)",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#memberTelno").focus(); 
+                return;  
+            }
+
+            if (memberEmail1 === null) {
+                Swal.fire({
+                    icon: "error",
+                    title: "이메일을 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#memberEmail1").focus(); 
+                return;  
+            }
+
+            // 우편번호 유효성 검사
+            if (memberPostcode === null || memberPostcode === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "우편번호를 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#memberPostcode").focus(); 
+                return;  
+            }
+
+            // 주소 유효성 검사
+            if (memberAddress1 === null || memberAddress1 === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "주소를 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#memberAddress1").focus(); 
+                return;  
+            }
+
+       
+            signupForm.submit();
+        });
+
+    
+idChkBtn.on("click", function(){
+	var userId=$("#userId").val();
+
+	if(userId == null || userId == ""){
+		Swal.fire({
+			  icon: "warning",
+			  title: "아이디를 입력해주세요",
+			  showConfirmButton: false,
+			  timer: 1500
+			});
+		$("#userId").focus();
+		return false;
+	}	
+    if (!/^[a-zA-Z0-9]{8,12}$/.test(userId)) {
+        Swal.fire({
+            icon: "error",
+            title: "아이디는 영문 대소문자와 숫자로 8~12자 이내로 입력해주세요",
+            showConfirmButton: false,
+            timer: 1500
+        });
+        return false;
+    }
+	
+	$.ajax({
+		url : "/idChk",
+		type : "POST",
+		beforeSend: function(xhr){	
+			xhr.setRequestHeader(header, token);
+		},
+		data : JSON.stringify({
+			userId : userId
+		}),
+		contentType : "application/json;charset=utf-8",
+		success : function(res){
+			console.log(res);
+			if(res == "NOTEXIST"){	
+				Swal.fire({
+					  icon: "success",
+					  title: "사용가능한 아이디 입니다",
+					  showConfirmButton: false,
+					  timer: 1500
+					});
+				idCheckFlag = true;
+				signUpBtn.prop('disabled', false);
+			}else {		
+				Swal.fire({
+					  icon: "error",
+					  title: "사용중인 아이디입니다.",
+					  showConfirmButton: false,
+					  timer: 1500
+				});
+				signUpBtn.prop('disabled', true);
+			}
+		}
+	});
+});
+
+imgFile.on("change", function(event){
+    var file = event.target.files[0];
+    
+    if(isImageFile(file)){  // 이미지 파일인 경우
+        var reader = new FileReader();
+        reader.onload = function(e){
+            $("#profileImg").attr("src", e.target.result);
+        }
+        reader.readAsDataURL(file);
+    }else {
+        alert("이미지 파일을 선택해주세요!");
+    }
+});
+
+
+
+});
+
+function isImageFile(file){
+	var ext = file.name.split(".").pop().toLowerCase();	
+	return ($.inArray(ext, ["jpg", "jpeg", "png", "gif"]) === -1) ? false : true;
+}
+
+
+
+//비밀번호
+document.addEventListener('DOMContentLoaded', function() {
+    var pwInput = document.getElementById('userPw');
+    var confirmpwInput = document.getElementById('userPw1');
+    var message = document.getElementById('message');
+
+    function validate() {
+        if (confirmpwInput.value !== '') {
+            if (pwInput.value === confirmpwInput.value) {
+                message.innerHTML = '비밀번호가 일치합니다.';
+                message.style.color = 'green';
+            } else {
+                message.innerHTML = '비밀번호가 일치하지 않습니다.';
+                message.style.color = 'red';
+            }
+        } else {
+            message.innerHTML = '';
+        }
+    }
+
+    pwInput.addEventListener('input', validate);
+    confirmpwInput.addEventListener('input', validate);
+});
+
+$('#mail-Check-Btn').click(function() {
+	const memberEmail1 = $('#memberEmail1').val(); 
+	const memberEmail2 = $('#memberEmail2').val(); 
+	const email1=memberEmail1; 
+	const email2=memberEmail2; 
+	const email=email1+email2; 
+	
+	
+	if (!memberEmail1) {
+		Swal.fire({
+			  icon: "error",
+			  title: "이메일을 입력해주세요",
+			  showConfirmButton: false,
+			  timer: 1500
+			});
+		return;
+	}
+	
+	console.log('완성된 이메일 : ' + email);
+	const checkInput = $('.mail-check-input') 
+	
+	$.ajax({
+		type : 'get',
+		beforeSend: function(xhr){	// 데이터 전송 전, 헤더에 csrf값 설정
+			xhr.setRequestHeader(header, token);
+		},
+		url : "/mailCheck?email="+email, 
+		success : function (data) {
+			console.log("data : " +  data);
+			checkInput.attr('disabled',false);
+			code =data;
+			Swal.fire({
+
+				  icon: "success",
+				  title: "전송 되었습니다.",
+				  showConfirmButton: false,
+				  timer: 1500
+				});
+		}			
+	}); 
+}); 
+
+// 인증번호 비교 
+// blur -> focus가 벗어나는 경우 발생
+$('.mail-check-input').blur(function () {
+	const inputCode = $(this).val();
+	const $resultMsg = $('#mail-check-warn');
+	
+	if(inputCode === code){
+		$resultMsg.html('인증번호가 일치합니다.');
+		$resultMsg.css('color','green');
+		$('#mail-Check-Btn').attr('disabled',true);
+		$('#memberEmail1').attr('readonly',true);
+		$('#memberEmail2').attr('readonly',true);
+		$('#memberEmail2').attr('onFocus', 'this.initialSelect = this.selectedIndex');
+         $('#memberEmail2').attr('onChange', 'this.selectedIndex = this.initialSelect');
+	}else{
+		$resultMsg.html('인증번호가 불일치 합니다. 다시 확인해주세요!.');
+		$resultMsg.css('color','red');
+	}
+});
+
+function DaumPostcode() {
+    new daum.Postcode({
+        oncomplete: function(data) {
+            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+            // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+            var addr = ''; // 주소 변수
+            var extraAddr = ''; // 참고항목 변수
+
+            //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                addr = data.roadAddress;
+            } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                addr = data.jibunAddress;
+            }
+
+            // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+            if(data.userSelectedType === 'R'){
+                // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                    extraAddr += data.bname;
+                }
+                // 건물명이 있고, 공동주택일 경우 추가한다.
+                if(data.buildingName !== '' && data.apartment === 'Y'){
+                    extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+            }
+
+            // 우편번호와 주소 정보를 해당 필드에 넣는다.
+            document.getElementById('memberPostcode').value = data.zonecode;
+            document.getElementById("memberAddress1").value = addr;
+            // 커서를 상세주소 필드로 이동한다.
+            document.getElementById("memberAddress2").focus();
+        }
+    }).open();
+}
+	
+	//년, 월, 일에 대한 옵션을 추가할 수 있는 함수 정의
+	function addOptions(selectElement, start, end) {
+	    for (let i = start; i <= end; i++) {
+	        let option = document.createElement('option');
+	        option.value = i;
+	        option.text = i;
+	        selectElement.appendChild(option);
+	    }
+	}
+	
+	// 년도 옵션 추가
+	let yearSelect = document.getElementById('yearSelect');
+	let currentYear = new Date().getFullYear();
+	addOptions(yearSelect, currentYear - 100, currentYear);
+	
+	// 월 옵션 추가
+	let monthSelect = document.getElementById('monthSelect');
+	for (let i = 1; i <= 12; i++) {
+	    let option = document.createElement('option');
+	    option.value = i;
+	    option.text = i;
+	    monthSelect.appendChild(option);
+	}
+	
+	// 일 옵션 추가
+	let daySelect = document.getElementById('daySelect');
+	for (let i = 1; i <= 31; i++) {
+	    let option = document.createElement('option');
+	    option.value = i;
+	    option.text = i;
+	    daySelect.appendChild(option);
+	}
+	
+	document.getElementById('commnotiSetting').checked = true;
+    document.getElementById('goodsnotiSetting').checked = true;
+    document.getElementById('evennotiSetting').checked = true;
+
+    
+    
+//     // 체크박스 체크
+//     document.getElementById('commnotiSetting').addEventListener('change', function() {
+//         console.log("commnotiSetting: " + this.checked);
+//     });
+
+//     document.getElementById('emailCheckbox').addEventListener('change', function() {
+//         console.log("goodsnotiSetting: " + this.checked);
+//     });
+
+//     document.getElementById('webCheckbox').addEventListener('change', function() {
+//         console.log("evennotiSetting: " + this.checked);
+//     });
+    
+    
+	document.getElementById('smsCheckbox').checked = true;
+    document.getElementById('emailCheckbox').checked = true;
+    document.getElementById('webCheckbox').checked = true;
+
+    
+    
+//     // 체크박스 체크
+//     document.getElementById('smsCheckbox').addEventListener('change', function() {
+//         console.log("sms: " + this.checked);
+//     });
+
+//     document.getElementById('emailCheckbox').addEventListener('change', function() {
+//         console.log("email: " + this.checked);
+//     });
+
+//     document.getElementById('webCheckbox').addEventListener('change', function() {
+//         console.log("web: " + this.checked);
+//     });
+		
+</script>
+
+	<script src="${pageContext.request.contextPath }/resources/js/main.min.js"></script>
+	<script src="${pageContext.request.contextPath }/resources/js/script.js"></script>
+</body>
+
+</html>

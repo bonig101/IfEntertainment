@@ -1,0 +1,14 @@
+package kr.or.ddit.vo.community;
+
+import lombok.Data;
+
+@Data
+public class MembershipVO {
+	 private int cjNo;
+	 private String membershipStartday;
+	 private String membershipEndday;
+	 
+	 //내가 구매한 멤버십 리스트를 가져오기 위해 넣은 필드
+	 private String agId;
+	 private String agProfile;
+}

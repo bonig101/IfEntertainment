@@ -1,0 +1,64 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<div class="gap no-gap">
+	<div class="inner-bg">
+		<div class="element-title">
+			<h4>IR 행사일정 상세보기</h4>
+		</div>
+		<div class="add-prod-from">
+			<div class="row">
+					<div class="con_view_box">
+            <div class="view_header">
+                <h3>${irevent.bfTitle }</h3>
+                        <span class="c_place display-inline-block">장소 ${irevent.irPlace }</span>
+                        <span class="c_schedule">일정 ${irevent.irSchedule }</span>
+                        <span class="c_writer">작성자 ${irevent.userNo }</span>
+                        <span class="c_date">작성일 ${irevent.bfRegdate }</span>
+                        <span class="c_date">삭제여부 ${irevent.bfDelyn }</span>
+            </div>
+            <div class="view_body">
+                ${irevent.bfContent }
+            </div>
+        </div>
+				<div class="col-md-12">
+					<div class="buttonz">
+						<button type="button" id="listBtn">목록</button>
+						<button type="button" id="updateBtn">수정</button>
+						<button type="button" id="deleteBtn">삭제</button>
+					</div>
+				</div>
+			<form action="/entertain/ir/delete.do" id="delForm" method="post">
+				<input type="hidden" name="bfNo" value="${irevent.bfNo }"/>
+			</form>				
+			</div>
+		</div>
+	</div>
+</div>
+ <script>
+ $(function(){
+	 
+	 var delForm = $("#delForm");
+	 var listBtn = $("#listBtn");
+	 var updateBtn = $("#updateBtn");
+	 var deleteBtn = $("#deleteBtn");
+	 
+	 listBtn.on("click", function(){
+		 location.href = "/entertain/ir/list.do";
+	 });
+	 
+	 updateBtn.on("click", function(){
+		 delForm.attr("method", "get");
+		 delForm.attr("action", "/entertain/ir/update.do");
+		 delForm.submit();
+	 });
+	 
+	 deleteBtn.on("click", function(){
+		if(confirm("정말로 삭제하시겠습니까?")){
+			delForm.submit();
+		} 
+	 });
+	 
+ });
+ </script>

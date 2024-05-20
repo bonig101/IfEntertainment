@@ -1,0 +1,24 @@
+package kr.or.ddit.vo.community;
+
+import java.util.List;
+
+import lombok.Data;
+
+/**
+ * 사용자가 응답한 설문 결과가 저장될 VO
+ * @author 홍진영
+ */
+@Data
+public class SurveyResultVO {
+	private int srNo;					// 설문결과 번호(시퀀스)
+	private String srAnswer;			// 설문답
+	private int surveyNo;				// 설문조사 ID
+	private int sqNo;					// 질문번호
+	
+	private String sfTitle;				// 설문지 이름
+	private List<String> answerList;	// 사용자들이 체크한 답 리스트
+	
+	// 질문 리스트
+	private List<SurveyQuestionVO> questionList;
+	
+}

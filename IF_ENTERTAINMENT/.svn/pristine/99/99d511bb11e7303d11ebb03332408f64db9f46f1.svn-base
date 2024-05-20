@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 카멜케이스 자동변환 -->
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+	
+	<!-- 자주 사용하는 타입의 별칭을 셋팅 -->
+	<typeAliases>
+		<typeAlias type="kr.or.ddit.vo.common.UserVO" alias="userVO"/> 
+		<typeAlias type="kr.or.ddit.vo.common.UserAuthVO" alias="userAuthVO"/> 
+		<typeAlias type="kr.or.ddit.vo.common.MemberVO" alias="memberVO"/> 
+		<typeAlias type="kr.or.ddit.vo.common.Noti_SettingVO" alias="notiSettionVO"/> 
+		<typeAlias type="kr.or.ddit.vo.common.Noti_TypeVO" alias="notiTypeVO"/> 
+		<typeAlias type="kr.or.ddit.vo.common.PaginationInfoVO" alias="pagingVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.MainArtistGroupVO" alias="mainartistGroupVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.MainArtistVO" alias="mainartistVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.FinanceExcelVO" alias="financeExcelVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.AuditionBoardVO" alias="auditionBoardVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.AlbumVO" alias="albumVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.TrackListVO" alias="trackListVO"/>
+		<typeAlias type="kr.or.ddit.vo.goods.GoodsVO" alias="goodsVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.ArtistGroupVO" alias="artistgroupVO"/>
+		<typeAlias type="kr.or.ddit.vo.goods.GoodsCategoryVO" alias="categoryVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.IREventVO" alias="IREventVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.CompanyNoticeVO" alias="CompanyNoticeVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.CompanyNewsVO" alias="CompanyNewsVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.IRFileVO" alias="IRFileVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.IRFileAttachVO" alias="IRFileAttachVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.AuditionBoardVO" alias="auditionBoardVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.AuditionRegisterVO" alias="auditionRegisterVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.NationVO" alias="nationVO"/>
+		<typeAlias type="kr.or.ddit.vo.goods.GoodsTagVO" alias="goodsTagVO"/>
+		<typeAlias type="kr.or.ddit.vo.goods.GoodsAttachfileVO" alias="goodsFileVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.ArtistVO" alias="artistVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.FeedVO" alias="feedVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.FeedAttachFileVO" alias="feedAttachFileVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.FeedLikeVO" alias="feedLikeVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.FeedCommentVO" alias="feedCommentVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.ArtistGroupVO" alias="artistGroupVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.CommunityVO" alias="communityVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.MemberNickNameVO" alias="memberNickNameVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.MembershipVO" alias="membershipVO"/>
+		<typeAlias type="kr.or.ddit.vo.goods.GoodsNoticeVO" alias="goodsNoticeVO"/>
+		<typeAlias type="kr.or.ddit.vo.goods.goodsInquiryVO" alias="goodsInquiryVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.SurveyFormVO" alias="surveyFormVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.SurveyQuestionVO" alias="surveyQuestionVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.SurveyOptionVO" alias="surveyOptionVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.SurveyVO" alias="surveyVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.SurveyResultVO" alias="surveyResultVO"/>
+		<typeAlias type="kr.or.ddit.vo.common.NotificationVO" alias="notifictionVO"/>
+		<typeAlias type="kr.or.ddit.vo.goods.OrderVO" alias="orderVO"/>
+		<typeAlias type="kr.or.ddit.vo.goods.OrderDetailVO" alias="orderDetailVO"/>
+		<typeAlias type="kr.or.ddit.vo.goods.CartVO" alias="cartVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.CalVO" alias="calVO"/>
+		<typeAlias type="kr.or.ddit.vo.community.FeedReportVO" alias="feedReportVO"/>
+		<typeAlias type="kr.or.ddit.controller.goods.OrderIssueController" alias="orderIssueVO"/>
+	</typeAliases>
+
+</configuration>

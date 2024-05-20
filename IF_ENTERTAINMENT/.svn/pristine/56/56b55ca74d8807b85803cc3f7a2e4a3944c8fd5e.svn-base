@@ -1,0 +1,24 @@
+package kr.or.ddit.controller.community;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.community.ISurveyService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 설문조사 등록 컨트롤러(관리자)
+ * 설문조사 실시 컨트롤러(사용자)
+ * @author 홍진영
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/survey")
+public class SurveyInsertController {
+
+	@Inject
+	private ISurveyService surveyService;
+	
+}

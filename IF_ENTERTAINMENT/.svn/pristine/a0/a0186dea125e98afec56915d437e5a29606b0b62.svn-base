@@ -1,0 +1,97 @@
+package kr.or.ddit.controller.goods;
+
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import kr.or.ddit.service.goods.IOrderService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.goods.OrderIssueVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 교환/환불/취소와 배송전/배송완료 등 주문이슈와 관련된 내역을 처리하는 컨트롤러
+ * @author 성이수
+ */
+@Controller
+@Slf4j
+@RequestMapping("/goods/order")
+public class OrderIssueController {
+
+	@Inject
+	private IOrderService orderService;
+	
+	/**
+	 * 주문 이슈 내역 확인페이지를 불러오는 컨트롤러
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/issue.do", method = RequestMethod.GET)
+	public String goodsOrderIssue(Model model) {
+		return "goods/goodsOrderIssue";
+	}
+	
+	/**
+	 * 주문한 제품 취소에 대한  실행 컨트롤러
+	 * @param map
+	 * @param ra
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/orderCancel.do", method = RequestMethod.POST)
+	public ResponseEntity<ServiceResult> insertOrderCancel(
+			@RequestBody  OrderIssueVO orderIssueVO, 
+			RedirectAttributes ra,
+			Model model) {
+		
+		
+		ResponseEntity<ServiceResult> entity = null;
+		
+		ServiceResult result = orderService.insertGoodsIssue(orderIssueVO);
+		
+		
+		if (result.equals(ServiceResult.OK)) {
+			entity= new ResponseEntity<ServiceResult>(ServiceResult.OK, HttpStatus.OK);
+		}else {
+			entity = new ResponseEntity<ServiceResult>(ServiceResult.FAILED, HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
+	/**
+	 * 주문한 제품 교환에 대한  실행 컨트롤러
+	 * @param map
+	 * @param ra
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/orderChange.do", method = RequestMethod.POST)
+	public ResponseEntity<ServiceResult> insertOrderChage(
+			OrderIssueVO orderIssueVO, 
+			HttpServletRequest req,
+			RedirectAttributes ra,
+			Model model) {
+		
+		ResponseEntity<ServiceResult> entity = null;
+		
+		log.info("orderIssueVO {} : ", orderIssueVO);
+		
+		ServiceResult result = orderService.insertIssueChange(req, orderIssueVO);
+		
+		if (result.equals(ServiceResult.OK)) {
+			entity = new ResponseEntity<ServiceResult>(ServiceResult.OK, HttpStatus.OK);
+		}else {
+			entity = new ResponseEntity<ServiceResult>(ServiceResult.FAILED, HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+}

@@ -1,0 +1,123 @@
+package kr.or.ddit.controller.entertain;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.service.entertain.IIRService;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.IRFileAttachVO;
+import kr.or.ddit.vo.entertain.IRFileVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * IR자료 조회 컨트롤러
+ * @author 홍진영
+ */
+@Controller
+@Slf4j
+@RequestMapping("/entertain/irFile")
+public class IRFileRetrieveController {
+	
+	@Inject
+	private IIRService IRService;
+	
+	@RequestMapping(value="/list.do")
+	public String irFileList(Model model,
+			@RequestParam(name="page", required = false, defaultValue = "1") int currentPage
+			) {
+		
+		PaginationInfoVO<IRFileVO> pagingVO = new PaginationInfoVO<IRFileVO>();
+		pagingVO.setCurrentPage(currentPage);
+		pagingVO.setUserNo(91); // 하드코딩 된 부분 수정하기
+		int totalRecord = IRService.selectFileCount(pagingVO);
+		pagingVO.setTotalRecord(totalRecord);
+		
+		List<IRFileVO> dataList = IRService.selectIRFileList(pagingVO);
+		pagingVO.setDataList(dataList);
+		
+		for (IRFileVO irFileVO : dataList) {
+			log.info("#### 넘어온 dataList : " + irFileVO);
+		}
+		
+		model.addAttribute("pagingVO", pagingVO);
+		
+		return "entertain/irFileList";
+	}
+	
+	@RequestMapping(value="/admin/IRFileList.do")
+	public String irAdminFileList(Model model,
+			@RequestParam(name="page", required = false, defaultValue = "1") int currentPage) {
+		
+		PaginationInfoVO<IRFileVO> pagingVO = new PaginationInfoVO<IRFileVO>();
+		pagingVO.setCurrentPage(currentPage);
+		int totalRecord = IRService.selectFileCount(pagingVO);
+		pagingVO.setTotalRecord(totalRecord);
+		
+		List<IRFileVO> dataList = IRService.selectIRFileList(pagingVO);
+		pagingVO.setDataList(dataList);
+		
+		model.addAttribute("pagingVO", pagingVO);
+		
+		return "admin/entertain/IRFileList";
+	}
+	
+	@RequestMapping(value="/getAttach.do", method = RequestMethod.GET)
+	public ResponseEntity<List<IRFileAttachVO>> getAttachFile(int bfNo){
+		
+		log.info("@@ bfNo : " + bfNo);
+		List<IRFileAttachVO> attachList = IRService.getAttachFile(bfNo);
+		return new ResponseEntity<List<IRFileAttachVO>>(attachList, HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/downloadFile", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> downloadFile(HttpServletRequest req, String fileName, String savedName){
+		String savePath = "/resources/irFile/";
+		InputStream in = null;
+		ResponseEntity<byte[]> entity = null;
+		
+		HttpHeaders headers = new HttpHeaders();
+		try {
+			in = new FileInputStream(req.getServletContext().getRealPath(savePath + savedName));
+			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+			headers.add("Content-Disposition", "attachment; filename=\""+
+					new String(fileName.getBytes("UTF-8"),"ISO-8859-1")+ "\"");
+			
+			entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in),
+					headers, HttpStatus.CREATED);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
+		} finally {
+			try {
+				if(in != null) {
+					in.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return entity;
+	}
+	
+}

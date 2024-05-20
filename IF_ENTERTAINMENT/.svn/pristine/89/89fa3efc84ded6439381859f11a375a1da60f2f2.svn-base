@@ -1,0 +1,87 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<title>Web Admin panel</title>
+<link rel="icon" type="image/png" href="images/fav.png">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/font-awesome.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/bootstrap.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/animate.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/color.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/responsive.css">
+</head>
+<body>
+<!-- Start Page Loading -->
+    <div id="loader-wrapper">
+      <div id="loader"></div>
+      <div class="loader-section section-left"></div>
+      <div class="loader-section section-right"></div>
+    </div>
+<div class="panel-layout">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="admin-lock vh100"> 
+          <div class="admin-form">
+            <div class="logo"><img src="images/logo2.png" alt=""></div>
+            <h4>Forgot Password </h4>
+            <span>Enter your Registered email </span>
+            <form method="post">
+              <label><i class="fa fa-envelope"></i></label>
+              <input type="text" id="userId" name="userId" placeholder="Email Address">
+              <label><i class="fa fa-envelope"></i></label>
+              <input type="text" id="userName" name="userName" placeholder="Email Address">
+              <label><i class="fa fa-envelope"></i></label>
+              <input type="text" id="memberTelno" name="memberTelno" placeholder="Email Address">
+              <input type="button" id="pwfindBtn" value="비밀번호 찾기">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="${pageContext.request.contextPath }/resources/js1/jquery.js"></script> 
+<script src="${pageContext.request.contextPath }/resources/js1/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath }/resources/js1/custom.js"></script>
+<script type="text/javascript">
+$(function(){
+	var pwfindBtn =$("#pwfindBtn");
+
+$("#pwfindBtn").click(function() {
+    var userId = $("#userId").val();
+    var userName = $("#userName").val();
+    var memberTelno = $("#memberTelno").val();
+
+    $.ajax({
+        type: "POST",
+        url: "/pwfind.do",
+        contentType: "application/json",
+        data: JSON.stringify({
+            userId: userId,
+            userName: userName,
+            memberTelno: memberTelno
+        }),
+        success: function(result) {
+            if (result === "해당하는 사용자를 찾을 수 없습니다.") {
+                alert(result);
+            } else {
+                $("#resultPw").html("임시 비밀번호를 발송하였습니다"); 
+            }
+        },
+        error: function(xhr, status, error) {
+            alert("해당하는 사용자를 찾을 수 없습니다.");
+        }
+    });
+});
+});
+</script>
+
+</body>
+</html>

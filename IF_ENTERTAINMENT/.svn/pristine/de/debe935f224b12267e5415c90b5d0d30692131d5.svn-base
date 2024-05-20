@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.goods.IGoodsPurchaseMapper">
+
+	<select id="cartSelect" resultType="cartVO">
+	select * from cart
+	where user_no = #{userNo}
+	</select>
+	
+	<select id="selectArtist" resultType="cartVO">
+	select goods_artist 
+	from goods
+	where goods_no = ${goodsNo}
+	</select>
+	
+	<select id="addressSelect" resultType="addressVO">
+	select * from member_address
+	where user_no = #{userNo} 
+	order by 
+        case when ma_default = 'Y' then 0 else 1 end ASC
+	</select>
+	
+	<select id="selectUserName" resultType="string">
+		select user_name 
+		from "USER"
+		where user_no = #{userNo}
+	</select>
+	
+	<insert id="addressInsert" parameterType="orderVO">
+	 	insert into member_address(
+	 	MA_NUMBER,MA_POSTCODE ,MA_ADDRESS1, MA_ADDRESS2,MA_RECIEVER , MA_TELNO, MA_DEFAULT ,MA_NATION, MA_PLACE , USER_NO
+	 	)values(
+	 	 SEQ_MEMBER_ADDRESS.NEXTVAL,#{maPostcode},#{maAddress1},#{maAddress2},#{maReciever},#{maTelno},'N',#{maNation},#{maPlace},#{userNo}
+	  	)
+	</insert>
+	
+	<!-- 새로 배송지 추가해서 인서트한 배송지 번호 찾는 쿼리 -->
+	<select id="selectMaNumber" resultType="string">
+		select MAX(ma_number) as ma_number
+		from member_address
+		where user_no = #{userNo}	
+	</select>
+	
+	<select id="selectOrderNo"  resultType="string">
+    SELECT MAX(order_no) AS order_no
+    FROM "ORDER"
+    WHERE order_no LIKE CONCAT(#{todayStr}, '%')
+	</select>
+
+	<insert id="orderInsert" parameterType="orderVO">
+		insert into "ORDER" (
+		order_no, order_totalprice, order_pay, order_date, order_delivery, user_no, ma_number
+		)values(
+		#{orderNo},#{orderTotalprice}, #{orderPay}, sysdate, 'N', #{userNo}, #{maNumber}
+				)
+		
+	</insert>
+	
+	<select id="selectCart" resultType="orderVO">
+		select * from cart
+		where user_no = #{userNo}
+	</select>
+	
+	<insert id="orderDetailInsert" parameterType="orderVO">
+		insert into order_detail (
+		od_no, od_quantity, od_price, order_no, goods_no, od_status
+		)values(
+		SEQ_ORDER_DETAIL.NEXTVAL, #{cartQuantity}, #{cartPrice}, #{orderNo}, #{goodsNo},'0'
+		)
+	</insert>
+	<insert id="orderDetailInsert2" parameterType="orderVO">
+		insert into order_detail (
+		od_no, od_quantity, od_price, order_no, goods_no, od_status
+		)values(
+		SEQ_ORDER_DETAIL.NEXTVAL, #{goodsQuantity}, #{goodsPrice}, #{orderNo}, #{goodsNo},'0'
+		)
+	</insert>
+	
+	<delete id="cartDelete" parameterType="orderVO">
+	delete from cart
+	where user_no = #{userNo}
+		
+	</delete>
+	
+	<update id="quantityDecrease" parameterType="orderVO">
+	update goods
+	set goods_quantity = goods_quantity - #{cartQuantity}
+	where goods_no = #{goodsNo}
+	</update>
+	
+	
+	<update id="quantityDecrease2" parameterType="orderVO">
+	update goods
+	set goods_quantity = goods_quantity - #{goodsQuantity}
+	where goods_no = #{goodsNo}
+	</update>
+	
+	<select id="selectMemberShip"  resultType="string">
+	select goods_membership
+	from goods
+	where goods_no = #{goodsNo}
+	</select>
+	
+	<select id="selectCjNo" resultType="string">
+	select 
+	    cj_no 
+	from 
+	    community
+	where 
+	    user_no = #{userNo}
+	and ag_id = (select goods_artist from goods where goods_no = #{goodsNo})
+	</select>
+	
+	<insert id="insertCjNo" parameterType="string">
+		INSERT INTO membership (
+		    cj_no, membership_startday, membership_endday
+		) VALUES (
+		    #{cjNo}, sysdate, ADD_MONTHS(sysdate, 12)
+		)
+	</insert>
+	
+	<select id="selectConfirmCjNo" resultType="string">
+		select cj_no 
+		from membership 
+		where cj_no = #{cjNo}
+	</select>
+	
+	<update id="updateCjNo">
+		 UPDATE membership
+		    SET membership_endday = ADD_MONTHS(membership_endday, 12)
+		    WHERE cj_no = #{cjNo}
+		
+	</update>
+	
+	
+</mapper>

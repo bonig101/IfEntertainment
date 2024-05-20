@@ -1,0 +1,140 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+/* 기본 아이템 스타일 */
+.gray-bg {
+	float: left;
+	width: 100%;
+	background: none;
+}
+.central-meta {
+	border: none;
+	 width: 100%;
+}
+
+@media (min-width: 1200px) {
+    .container, .container-lg, .container-md, .container-sm, .container-xl {
+        max-width: 100%; /* 넓이를 100%로 설정 */
+    }
+}
+
+.owl-item {
+	transition: transform 0.5s;
+}
+.owl-item.active.center {
+	transform: scale(1.5);
+}
+/* 어진 커스텀 시작부분 */
+.scroll-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top:"100px";
+}
+.btn-auz {
+  background: rgb(96,9,240) !important;
+  background: linear-gradient(0deg, rgba(96,9,240,1) 0%, rgba(129,5,240,1) 100%) !important;
+  border: none !important;
+}
+
+.btn-auz:before {
+  height: 0%;
+  width: 2px;
+}
+.btn-auz:hover {
+  box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+              -4px -4px 6px 0 rgba(116, 125, 136, .5),
+    inset -4px -4px 6px 0 rgba(255,255,255,.2),
+    inset 4px 4px 6px 0 rgba(0, 0, 0, .4);
+}
+button {
+    margin: 5px;
+}
+.custom-btn {
+    width: 200px;
+    height: 45px;
+    color: #fff;
+    border-radius: 5px;
+    padding: 0;
+    font-family: 'GmarketSansMedium', sans-serif;
+    font-weight: 500;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+    box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5), 7px 7px 20px 0px rgba(0, 0, 0, .1), 4px 4px 5px 0px rgba(0, 0, 0, .1);
+    outline: none;
+    margin-bottom: 30px;
+    margin-top: 10px;
+}
+
+.owl-prev::before, .owl-next::before {
+    color: #9551fc;
+}
+.custom-btn .tablinks {
+    font-size: 20px; /* 원하는 글씨 크기로 조정 */
+}
+
+
+</style>
+</head>
+<body>
+
+ <div class="scroll-container">
+    <div class="scroll">
+        <button class="custom-btn btn-auz">
+            <a href="/entertain/artist/profile/list.do?agId=${agId}" class="tablinks active" onclick="openTab(event, 'Profile')">Profile</a>
+        </button>
+        <button class="custom-btn btn-auz">
+            <a href="#2" class="tablinks" onclick="openTab(event, 'Album')">Artist Album</a>        </button>
+    </div>
+</div>
+		
+		<div class="tab">
+		
+<div class="central-meta" style="position: ">
+    <div class="user-post">
+        <ul class="suggested-caro2 myUniqueCarousel" style="text-align: center;">
+            <c:forEach var="item" items="${list}">
+                <li>
+                    <div style="width: 300px; display: inline-block;" onclick="location.href='/entertain/artist/album/detail.do?alNo=${item.alNo}'">
+                        <img src="${item.alPhoto}" alt="">
+                    </div>
+                    <span>${item.alName}</span>
+                    <fmt:parseDate value="${item.alDate}" var="alDate" pattern="yyyy-MM-dd" />
+                    <ins><fmt:formatDate value="${alDate}" pattern="yyyy-MM-dd"/></ins>
+                  <a href="#" title="" data-ripple="">
+					    <i class="icofont-star"></i>
+					    <span style="vertical-align: sub;">${item.agId}</span>
+					</a>
+
+                </li>
+            </c:forEach>
+        </ul>
+    </div>
+</div>
+
+			</div>
+</body>
+<script>
+function openTab(evt, tabName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+</script>
+</html>

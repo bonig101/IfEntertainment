@@ -1,0 +1,9 @@
+package kr.or.ddit.service.common;
+
+public interface IMailSendService {
+
+	public String joinEmail(String email);
+
+	public String findPassword(String email);
+	
+}

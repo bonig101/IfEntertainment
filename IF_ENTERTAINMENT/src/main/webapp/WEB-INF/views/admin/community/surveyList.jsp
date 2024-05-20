@@ -1,0 +1,381 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="${pageContext.request.contextPath }/resources/js1/chart.min.js"></script> 
+<script src="${pageContext.request.contextPath }/resources/js1/echart.min.js"></script> 
+<style>
+	.modal-dialog {
+	    max-width: 800px;
+	    margin: 6.75rem auto;
+	}
+	#modalBtn {
+		border-radius: 25px;
+	}
+	.modal-body{
+		min-height: 500px;
+		max-height: 700px;
+		overflow-y: auto;
+	}
+	.modal-backdrop {
+		display: none;
+	}
+	.modal-content {
+		top: -62px;
+	}
+	table td span, th {
+	    font-size: 15px;
+	}
+	table tr th:first-child, table tr td:first-child {
+    	padding: 24px 5px;
+	}
+	table tbody tr td:last-child {
+ 	    padding: 24px 5px;
+	}
+</style>
+
+<div class="gap inner-bg">
+  <div class="table-styles">
+  
+  <div class="little-heading">
+  	<h2 style="margin-bottom: 30px; font-family: 'GmarketSansMedium';">🧾 설문 목록</h2>
+  </div>
+  
+  	<div class="gap listbar-container">
+    <div class="discount-copon list-bar">
+      <div class="row">
+        <div class="col-md-4">
+          <form method="post" id="searchForm">
+	        <input type="hidden" name="page" id="page"/>
+          	<div class="searchform-box" style="display: flex">
+	            <input type="text" name="searchWord" value="${searchWord }" placeholder="제목으로 검색">
+		        <button type="submit">검색</button>
+	          </div>
+	          <sec:csrfInput/>
+          </form>
+        </div>
+        <div class="col-md-2" style="display: flex; justify-content: center;">
+        	<form style="width: 150px;">
+        		<button type="button" id="RegisterBtn"><i class="fa-solid fa-plus"></i>등록하기</button>
+        		<sec:csrfInput/>
+        	</form>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="widget">
+      <table class="prj-tbl striped table-responsive">
+        <thead class="color">
+           <tr class="prodTitle">
+             <th><em>번호</em></th>
+             <th><em>썸네일</em></th>
+             <th><em>제목</em></th>
+             <th><em>설문기간</em></th>
+             <th><em>게시여부</em></th>
+             <th><em>비고</em></th>
+           </tr>
+        </thead>
+        <tbody>
+        <c:set value="${pagingVO.dataList }" var="surveyFormList"/>
+        <c:choose>
+        	<c:when test="${empty  surveyFormList}">
+        		<tr>
+        			<td colspan="7">설문 리스트가 존재하지 않습니다.</td>
+        		</tr>
+        	</c:when>
+        	<c:otherwise>
+        		<c:forEach items="${surveyFormList }" var="survey" varStatus="vs">
+        			<c:set var="bigo" value="결과보기"/>
+        			<tr class="prodList" >
+			            <td style="text-align: center;"><span>${survey.sfNo }</span></td>
+			            <td><img alt="" src="${survey.sfPhoto }" style="width:40px;"></td>
+			            <td style="text-align: left;">
+			            	<a class="survey_detail" data-sfno="${survey.sfNo }"><span>${survey.sfTitle }</span></a>
+			            </td>
+			            <td>
+			            	<span>
+			            		<fmt:formatDate value="${survey.sfRegdate }" pattern="yyyy-MM-dd" /> ~ 
+			            		<fmt:formatDate value="${survey.sfEnddate }" pattern="yyyy-MM-dd" />
+			            	</span>
+			            </td>
+			            		
+			            <td class="sfDisplay">
+			            	<span class="sfDisplaySpan">
+			            		<c:choose>
+			            			<c:when test="${survey.sfDisplay  eq 'Y'}">
+			            				<font class="badge badge-danger" style="font-size: 16px;">진행중</font>
+			            			</c:when>
+			            			<c:otherwise>
+			            				<font class="badge badge-secondary" style="font-size: 16px;">마감</font>
+			            			</c:otherwise>
+			            		</c:choose>
+			            		
+			            	</span>
+			            </td>
+			            <td style="text-align: center;">
+			            	<button class="btn btn-success finishSurveyBtn" data-idx="${vs.index }" data-sfno="${survey.sfNo }">
+			            		<c:if test="${survey.sfDisplay eq 'Y' }">
+			            			<c:set var="bigo" value="설문마감"/>
+			            		</c:if>
+			            		${bigo }
+			            	</button>
+			            </td>
+			          </tr>
+        		</c:forEach>
+        	</c:otherwise>
+        </c:choose>
+        </tbody> 
+      </table>
+<!--       <form action="/goods/delete.do" method="post" id="delFrm"> -->
+<!--       	<input type="hidden" name="goodsNo" id="gNo"/> -->
+<!--       </form> -->
+    </div>
+    <div class="card-footer prod-footer clearfix" id="pagingArea">
+		${pagingVO.pagingHTML }
+	</div>
+  </div>
+</div>
+
+<!-- 설문 통계 모달 시작  -->
+<div class="modal fade" id="myModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<!-- 모달 헤더 -->
+			<div class="modal-header">
+				<h4 class="modal-title">설문제목!</h4>
+				<button type="button" class="close" data-dismiss="modal">×</button>
+			</div>
+			<!-- 모달 바디 -->
+			<div class="modal-body">
+				<!-- 항목별 반복구간 -->
+				
+			</div>
+			<!-- 모달 푸터 -->
+			<div class="modal-footer">
+				<button type="button" id="modalBtn" class="btn btn-danger" data-dismiss="modal">닫기</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 설문 통계 모달 끝  -->
+<!-- chart.js cnd추가  -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+<script>
+$(function(){
+	var RegisterBtn = $("#RegisterBtn");		// 새로운 설문지 등록버튼
+	var searchForm = $("#searchForm");			// 검색창 폼
+	var pagingArea = $("#pagingArea");			// 페이징 영역
+	var survey_detail = $(".survey_detail");	// 제목을 클릭했을 때 이동할 디테일 링크들
+	
+	// 페이지 번호 클릭 이벤트 핸들러
+	pagingArea.on("click", "a", function(event){
+		event.preventDefault();
+		var pageNo = $(this).data("page");
+		searchForm.find("#page").val(pageNo);
+		searchForm.submit();
+	});
+	
+	// 등록버튼 클릭 이벤트 핸들러
+	RegisterBtn.on("click", function(){
+		location.href = "/community/survey/register.do";
+	});
+	
+	// 디테일버튼 클릭 에빈트 핸들러
+	survey_detail.on("click", function(event){
+		event.preventDefault();
+		var sfNo = $(this).data("sfno");
+		location.href = "/community/survey/detail.do?sfNo=" + sfNo;
+	});
+	
+	// 즉시마감일 경우에는 버튼색상을 다르게 한다.
+	$(".finishSurveyBtn").each(function(idx, item) {
+	    if ($(item).text().indexOf("설문마감") > -1) {
+	        $(item).toggleClass("btn-success btn-primary");
+	    }
+	});
+	
+	// 비고 버튼 클릭 이벤트 핸들러
+	$(".finishSurveyBtn").on("click", function(){
+		var sfNo = $(this).data("sfno");
+		
+// 		// 모달을 열기 전 내용 초기화
+// 		$(".modal-body").html('');
+		
+		if($(this).text().indexOf("설문마감") > -1){ // 즉시마감 버튼을 클릭했을 경우
+// 	        // 이전에 생성된 차트가 있으면 삭제
+// 	        $('#myModal').find('.myChart').remove();
+			
+			var idx = $(this).data("idx");
+			
+		    Swal.fire({
+		        title: '설문을 마감 하시겠습니까?', 
+		        text: "", 
+		        icon: 'warning', 
+		        showCancelButton: true, // 취소 버튼 보이도록 설정
+		        confirmButtonColor: '#3085d6', // 삭제 버튼 색상 설정
+		        cancelButtonColor: '#d33', // 취소 버튼 색상 설정
+		        confirmButtonText: '마감', // 삭제 버튼 텍스트 설정
+		        cancelButtonText: '취소' // 취소 버튼 텍스트 설정
+		    }).then((result) => {
+		        if (result.isConfirmed) { 
+		        	$.ajax({
+		    			url : "/community/survey/close.do?sfNo=" + sfNo,
+		    			type : "get",
+		    			success: function(data){
+		    				console.log(data);
+		    				if(data == "SUCCESS"){
+		    					$(".sfDisplaySpan").eq(idx).text("마감");
+		    					$(".finishSurveyBtn").eq(idx).text("결과보기");
+		    					$(".finishSurveyBtn").eq(idx).removeClass("btn-primary");
+		    					$(".finishSurveyBtn").eq(idx).addClass("btn-success");
+		    					Swal.fire({
+		    						icon : "success",
+		    						title : "설문이 마감되었습니다!",
+		    						showConfirmButton : false,
+		    						timer : 1000
+		    					});		
+		    				}
+		    			}
+		    		});
+		        }
+		    });
+			
+		} else { // 결과보기 일경우
+// 	        // 이전에 생성된 차트가 있으면 삭제
+// 	        $('#myModal').find('.myChart').remove();
+			
+			// 해당 설문의 결과를 가져온다.
+			$.ajax({
+				url: "/community/survey/getResult?sfNo=" + sfNo,
+				type: "get",
+				beforeSend: function(xhr){
+					xhr.setRequestHeader(header, token);
+				},
+				success: function(data){
+// 					console.log("data => ", data);
+					
+					var html = '';
+						
+					for(var i = 0; i < data[0].surveyQuestionList.length; i++){
+						var sqTitle = data[0].surveyQuestionList[i].sqTitle;
+						var sqType = '';
+						if(data[0].surveyQuestionList[i].sqType == 'checkbox'){
+							var sqType = '(중복선택허용)';
+						}
+						html += '					<div class="col-sm-12">';
+						html += '						<div class="widget" style="padding-bottom: 40px;">';
+						html += '							<div class="widget-title">';
+						html += '								<h4>' + sqTitle + '</h4>';
+						html += '								<em>' + sqType + '</em>';
+						html += '							</div>';
+						html += '							<div class="mst-brw">';
+						html += '								<div class="most-browsers">';
+						html += '									<div class="charts">';
+						html += '										<canvas class="myChart"></canvas>';
+						html += '									</div>';
+						html += '									<ul class="pieID legend">';
+						
+						for(var j = 0; j < data[0].surveyQuestionList[i].optionList.length; j++){
+							var soContent = data[0].surveyQuestionList[i].optionList[j].soContent;
+							var cnt = data[0].surveyQuestionList[i].optionList[j].cnt;
+							html += '									<li><em>' + soContent + '</em> <span>' + cnt + '</span></li>';
+						}
+						html += '									</ul>';
+						html += '								</div>';
+						html += '							</div>';
+						html += '						</div>';
+						html += '					</div>';
+					}
+					$(".modal-body").html(html);
+					
+					$("#myModal").one("shown.bs.modal", function () {
+						setTimeout(() => {
+			                createChart($(this), data); // 차트 생성 함수 호출
+						}, 10);
+		            });
+					
+					$("#myModal").modal();
+					
+				}
+			});
+		}
+	});
+	
+	// 차트 색상 배열
+	var bgColorArray = [
+		'rgb(242, 155, 155)',
+		'rgb(247, 154, 114)',
+		'rgb(250, 208, 102)',
+		'rgb(143, 245, 127)',
+		'rgb(127, 204, 245)',
+		'rgb(81, 102, 237)',
+		'rgb(139, 77, 247)',
+		'rgb(180, 33, 209)',
+		'rgb(108, 212, 181)',
+		'rgb(122, 173, 114)'	
+	];
+	
+	// 차트 생성 함수
+	function createChart(parent, charData) {
+		// data 배열이 비어 있는지 확인
+// 		console.log("cc안의 ", charData);
+		
+	    parent.find('.myChart').each(function(index) { // 각 모달 내의 .myChart 요소를 선택하여 반복문 실행
+			
+	    	console.log("### 각각의 myChart", $(this));
+	    	
+	    	// eqch반복문을 돌며 각각의 배열에 data에서 꺼낸 cntList와 optionList를 담고 아래 차트에 세팅해준다.
+	    	var ctx = $(this);
+	    	var cnts = [];
+	    	var options = [];
+	    
+	    	for(var i = 0; i < charData[0].surveyQuestionList.length; i++){
+		    	var cntList = charData[0].surveyQuestionList[i].cntList;
+		    	cnts.push(cntList);
+	    	}
+	    	
+	    	for(var j = 0; j < charData[0].surveyQuestionList.length; j++){
+		    	var optionList = charData[0].surveyQuestionList[j].optionList;
+		    	var optionArr = [];
+		    	for(var k = 0; k < optionList.length; k++){
+// 			    	console.log("plz ", optionList[k].soContent);
+		    		optionArr.push(optionList[k].soContent);
+		    	}
+		    	options.push(optionArr);
+	    	}
+	    	
+	        
+	        // data = 보기내용
+	        var data = {
+	            labels: options[index],
+	            // datasets = 선택인원
+	            datasets: [{
+	                label: 'My First Dataset',
+	                data: cnts[index],
+	                backgroundColor: [
+	                    bgColorArray[0],
+	                    bgColorArray[1],
+	                    bgColorArray[2],
+	                    bgColorArray[3],
+	                    bgColorArray[4],
+	                    bgColorArray[5],
+	                    bgColorArray[6],
+	                    bgColorArray[7],
+	                    bgColorArray[8],
+	                    bgColorArray[9]
+	                ],
+	                hoverOffset: 4
+	            }]
+	        };
+
+	        new Chart(ctx, {
+	            type: 'pie',
+	            data: data
+	        });
+	    });
+	}
+});
+</script>

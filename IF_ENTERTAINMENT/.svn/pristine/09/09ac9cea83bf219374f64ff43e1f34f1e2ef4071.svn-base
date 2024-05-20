@@ -1,0 +1,49 @@
+package kr.or.ddit.service.community;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.community.MainArtistGroupVO;
+import kr.or.ddit.vo.community.MainArtistVO;
+import kr.or.ddit.vo.community.CommunityVO;
+import kr.or.ddit.vo.community.FeedCommentVO;
+import kr.or.ddit.vo.community.FeedVO;
+
+public interface IFeedService {
+
+	public int selectFeedListCount(PaginationInfoVO<FeedVO> pagingVO);
+
+	public List<FeedVO> selectFeedList(PaginationInfoVO<FeedVO> pagingVO);
+
+	public void deleteFeed(FeedVO feedVO);
+
+	public FeedVO feedListDetail(int feedNo);
+
+	public ServiceResult insertFeed(HttpServletRequest req, FeedVO feedVO);
+
+	public int selectCommentListCount(PaginationInfoVO<FeedCommentVO> pagingVO);
+
+	public List<FeedCommentVO> selectCommentList(PaginationInfoVO<FeedCommentVO> pagingVO);
+
+	public FeedCommentVO feedCommentListDetail(int fcNo);
+
+	public void deleteComment(FeedCommentVO commentVO);
+
+	public void updateComment(FeedCommentVO commentVO);
+
+	public List<MainArtistGroupVO> selectArtist();
+
+	public ServiceResult updateFeed(HttpServletRequest req, FeedVO feedVO);
+
+	public List<MainArtistGroupVO> getArtistById(String agId);
+
+
+
+	public CommunityVO selectUser(CommunityVO communityVO);
+
+
+
+}

@@ -1,0 +1,78 @@
+package kr.or.ddit.controller.common;
+
+import javax.inject.Inject;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import kr.or.ddit.service.common.IMailSendService;
+import kr.or.ddit.service.common.ISignService;
+import kr.or.ddit.vo.common.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * @author 임민혁
+ */
+@Controller
+@Slf4j
+public class FindIdPassController {
+	
+	// 아이디 찾기 : 이름과 이메일 입력하여 알러트로 띄워주기
+	
+	// 비밀번호 찾기 : 이름, 이메일, 아이디 입력시 이메일로 임시 비밀번호 전송
+	// 1. 비밀번호 랜덤난수로 뽑은 후 업데이트 쿼리 (PasswordEncoder) 방식으로 암호화 하여 난수 업데이트
+	// 2. 비밀번호 전송
+	// 3. 사용자가 입력 받은 패스워드로 로그인 
+	// 4. 비밀번호 변경하면 변경된 비밀번호를 다시 암호화 하여 업데이트할 수 있도록
+	
+	@Inject
+	private ISignService signService;
+	@Inject
+	private IMailSendService mailService;
+	
+	@RequestMapping(value="/idfind.do", method = RequestMethod.GET)
+	public String loginForgetId(Model model) {
+		model.addAttribute("bodyText", "login-page");
+		return "commons/findId";
+	}
+	
+	@RequestMapping(value="/idfind.do" , method = RequestMethod.POST)
+	public ResponseEntity<String> id(@RequestBody UserVO userVO){
+		UserVO user = signService.findId(userVO);
+		String hidden = user.getUserId();
+		String userId = hidden.substring(0, 3) + "***" + hidden.substring(6);
+		if(userId !=null) {
+			return new ResponseEntity<String>(userId,HttpStatus.OK);
+			
+		}else {
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@RequestMapping(value="/pwfind.do", method = RequestMethod.GET)
+	public String loginForgetPw(Model model) {
+		model.addAttribute("bodyText", "login-page");
+		return "commons/findPw";
+	}
+	
+	
+	@RequestMapping(value="/pwfind.do" , method = RequestMethod.POST)
+	public ResponseEntity<String> findPassword(@RequestBody UserVO userVO) {
+	    String email = signService.findPw(userVO);
+	    	
+	    if (email != null) {
+	        String result = mailService.findPassword(email);
+	        userVO.setUserPw(result);
+	        signService.changePw(userVO);
+	        System.out.println("resultresultresultresultresult"+result);
+	        return new ResponseEntity<String>(result,HttpStatus.OK);
+	    } else {
+	        return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+	    }
+	}
+}

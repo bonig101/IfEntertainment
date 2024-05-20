@@ -1,0 +1,24 @@
+@@ jsp 절대경로 적을 때
+${pageContext.request.contextPath }
+
+@@ 금액 포맷팅
+<fmt:formatNumber value="${myOrderDetail.odPrice }" pattern="#,###"/>
+
+@@ 제이쿼리 CDN
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+@@ -- (VO자동완성)컬럼명 -> 카멜케이스 변환
+SELECT
+    ' private '||
+    DECODE( DATA_TYPE , 'NUMBER', 'int ', 'String ' ) ||
+    CASE
+        WHEN INSTR(column_name, '_') > 0 THEN
+            REPLACE(LOWER(SUBSTR(column_name, 1, INSTR(column_name, '_') - 1)), '_', '') ||
+            INITCAP(SUBSTR(column_name, INSTR(column_name, '_') + 1))
+        ELSE
+            LOWER(column_name)
+    END
+    ||';'
+FROM COLS
+WHERE TABLE_NAME = '테이블명'
+ORDER BY COLUMN_ID;

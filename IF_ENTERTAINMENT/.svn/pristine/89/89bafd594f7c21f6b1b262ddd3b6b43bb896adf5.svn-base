@@ -1,0 +1,134 @@
+package kr.or.ddit.socket;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
+
+import org.springframework.stereotype.Component;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import kr.or.ddit.cofig.ServerEndpointConfigurator;
+import kr.or.ddit.service.common.IWebSocketSevice;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.NotificationVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 웹소켓 알림 관련 핸들러
+ * 
+ * @author 성이수
+ */
+@Component
+@ServerEndpoint(value = "/notiserver", configurator = ServerEndpointConfigurator.class)
+@Slf4j
+public class WebSocketNotificationHandler {
+	// 웹 실시간 알림을 처리하기 위한 핸들러
+	// 실시간 알림이 필요한 각 분야에서 해당 핸들러 호출하여 실시간 알림 보낼 수 있도록
+	// 클라이언트가 서버에 연결할때 호출되는 메서드
+
+//	public WebSocketNotificationHandler() {
+//		System.out.println("WebSocketNotificationHandler 생성자 호출됨...");
+//	}
+
+	@Inject
+	private IWebSocketSevice websocketService;
+
+	private static List<Session> list = new ArrayList<Session>();
+
+	private void print(String msg) {
+		System.out.printf("[%tT] %s\n", Calendar.getInstance(), msg);
+	}
+
+	@OnOpen
+	public void handleOpen(Session session) {
+		print("클라이언트 연결");
+		//(특정사용자에게 알림을 보내야하는경우에는 로그인했을때의 아이디를 클라이언트에서 받아와서 비교해준다.)
+		list.add(session); // 접속자 관리
+		
+	}
+
+	@OnMessage
+	public void handleMessage(String msg, Session session) {
+
+		log.info("소켓 들어옴!!!!!!!" + msg);
+
+		JsonParser jp = new JsonParser();
+		JsonObject eleObj = jp.parse(msg).getAsJsonObject(); // 전체 json 데이터
+		String type = eleObj.get("type").getAsString(); // 기준이 되는 타입을 꺼냄
+
+		// 타입 검열 (각자의 메소드로 이동)
+		if (type.equals("goodsInquiry")) {
+			inquiry(eleObj, session);
+		}
+
+	}
+
+	private void inquiry(JsonObject eleObj, Session session) {
+
+		String type = eleObj.get("type").getAsString();
+		String userId = eleObj.get("userId").getAsString();
+		String status = eleObj.get("status").getAsString();
+		String giNo = eleObj.get("giNo").getAsString();
+		String admin = "admin001";
+
+		NotificationVO notificationVO = new NotificationVO();
+		notificationVO.setNotiSender(admin);
+		notificationVO.setNotiReciever(userId);
+		notificationVO.setNotiType(type);
+		notificationVO.setNotiUrl("/goods/inquiry/detail.do?giNo=" + giNo);
+		if (status.equals("등록")) {
+			notificationVO.setNotiContent("1:1문의 답변이 등록되었습니다.");
+		} else {
+			notificationVO.setNotiContent("1:1문의 답변이 수정되었습니다.");
+		}
+		notificationVO.setNotiType(type);
+
+		log.info("!!!!notificationVO : " + notificationVO);
+		ServiceResult result = null;
+		try {
+			result = websocketService.insertInquiry(notificationVO);
+
+			if (result.equals(ServiceResult.OK)) {
+				for (Session s : list) {
+					if (s != session) { // 현재 접속자가 아닌 나머지 사람 (알람을 보낼 사람을 구분하는 부분)
+						try {
+							s.getBasicRemote().sendText("알림");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			} else {
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@OnClose
+	public void handleClose() {
+
+	}
+
+	@OnError
+	public void handleError(Throwable t) {
+
+	}
+
+
+
+}

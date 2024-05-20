@@ -1,0 +1,747 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<title>IF_ENTERTAINMENT</title>
+	<link rel="icon" href="images/fav.png" type="image/png" sizes="16x16">
+
+	<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/main.min.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/style.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/color.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/responsive.css">
+
+	<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/company.css">
+
+	<!-- JQuery CDN 연결 -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+	<!-- Javascript 연결 -->
+	<script src="${pageContext.request.contextPath }/resources/js/company_main.js"></script>
+	<script src="${pageContext.request.contextPath }/resources/js/loder.js"></script>
+
+	<!-- Swiper CDN 연결 -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+	<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<style type="text/css">
+
+/* 호버 동그라미 */
+.top-area > ul > li > a::before, .top-area .main-menu:before {
+   background: rgba(100, 100, 100, 0.15) none repeat scroll 0 0;
+   border-radius: 100%;
+   content: "";
+   height: 40px;
+   left: 50%;
+   position: absolute;
+   top: 50%;
+   transition: all 0.2s linear 0s;
+   width: 40px;
+   z-index: -1;
+}
+
+@font-face {
+	font-family: 'LOTTERIACHAB';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/LOTTERIACHAB.woff2')
+		format('woff2');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'GmarketSansMedium';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
+		format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+body {
+	font-family: 'GmarketSansMedium', sans-serif;
+}
+
+.top_headerbar {
+	position: relative;
+	height: 90px;
+	background-color: #fff;
+}
+
+* {
+	cursor: url(https://cur.cursors-4u.net/symbols/sym-7/sym646.ani),
+		url(https://cur.cursors-4u.net/symbols/sym-7/sym646.gif), auto
+		!important;
+}
+
+.nav_menu_bar .nav_menu span {
+	color: #b9b9b9;
+	width: 100%;
+	font-size: 21px;
+	transition: color 0.3s;
+}
+
+.nav_menu_bar .nav_menu span:hover, .nav_menu_bar .nav_menu span:focus {
+	color: black;
+}
+
+.swiper-button-next, .swiper-button-prev {
+
+  color: #fff;
+}
+
+.bottombar {
+    position: fixed; /* 화면에 고정된 위치로 설정 */
+    bottom: 0; /* 화면의 하단에 고정 */
+    width: 100%; /* 가로 너비를 화면 전체로 설정 */
+    padding: 10px 0; /* 위아래 여백 설정 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    z-index: 1000; /* 아이프레임 위로 위치시키기 위한 z-index 값 설정 */
+}
+
+.bottombar .golink a {
+    color: #fff;
+    opacity: 0.5;
+    transition: opacity 0.3s ease; /* 호버 효과를 위한 투명도 전환 효과 */
+}
+
+.bottombar .golink a:hover {
+    opacity: 1;
+}
+
+.golinkCommunity {
+    border-right: 3px rgba(255, 255, 255, 0.5) solid;
+    padding-right: 20px;
+    transition: background-color 0.3s ease, opacity 0.3s ease; /* 호버 효과를 위한 전환 효과 */
+}
+
+.golinkCommunity:hover {
+    opacity: 1; /* 투명도 변경 */
+}
+
+.topbar {
+    box-shadow: none;
+}
+
+
+
+/* 선 실패
+.theme-layout.main_layout.main_box::before {
+    position: absolute;
+    display: block;
+    content: "";
+    top: 80px;
+    left: 30px;
+    width: 2px;
+    height: calc(100vh - 160px);
+    background-color: #fff;
+    z-index: 10;
+}
+
+.theme-layout.main_layout.main_box::after {
+    position: absolute;
+    display: block;
+    content: "";
+    top: 80px;
+    right: 30px;
+    width: 2px;
+    height: calc(100vh - 160px);
+    background-color: #fff;
+    z-index: 10;
+}
+ */
+ 
+</style>
+</head>
+
+<body>
+
+	<div class="wavy-wraper">
+		<div class="wavy" style="font-family: 'GmarketSansMedium'; font-size:20px;">
+			<span style="--i:1;">i</span>
+			<span style="--i:2;">f</span>
+			<span style="--i:2;"><br /></span>
+			<span style="--i:2;"><br /></span>
+			<span style="--i:3;">e</span>
+			<span style="--i:4;">n</span>
+			<span style="--i:5;">t</span>
+			<span style="--i:6;">e</span>
+			<span style="--i:7;">r</span>
+			<span style="--i:8;">t</span>
+			<span style="--i:9;">a</span>
+			<span style="--i:5;">i</span>
+			<span style="--i:6;">n</span>
+			<span style="--i:7;">m</span>
+			<span style="--i:8;">e</span>
+			<span style="--i:9;">n</span>
+			<span style="--i:6;">t</span>
+			<span style="--i:7;">.</span>
+			<span style="--i:8;">.</span>
+			<span style="--i:9;">.</span>
+		</div>
+	</div>
+
+	<div class="theme-layout main_layout main_box">
+		<!-- topbar 시작 -->
+		<div class="topbar stick top_headerbar">
+<!-- 			<div class="logo top_logo">
+				<a title="" href="/"><img src="images/main/폰트동일 로고.png" alt="logo"></a>
+			</div> -->
+			<div class="top-area" style="width:100%;">
+				<ul class="setting-area float-left nav_menu_bar" style="width:100%; margin-left: 210px;">
+					
+				<a title="" href="/">
+				<span style="font-family: 'GmarketSansMedium'; color: black; font-size: 30px; font-weight: bold; letter-spacing: 1.5px;">
+				If entertainment
+				</span>
+				</a>
+					
+					<li style="margin-left: 80px;">
+						<a href="/entertain/company/info.do" title="Home" data-ripple="" class="nav_menu">
+							<span>COMPANY</span>
+						</a>
+						<div class="dropdowns nav_2depth">
+							<ul class="drops-menu nav_2depth_menu">
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/company/info.do" title="">기업소개</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/company/history.do" title="">연혁</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/company/news/userlist.do" title="">기업소식</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/company/visit.do" title="">찾아오는 길</a></h6>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li style="margin-left: 40px;">
+						<a href="" title="INVESTORS" data-ripple="" class="nav_menu">
+							<span>INVESTORS</span>
+						</a>
+						<div class="dropdowns nav_2depth">
+							<ul class="drops-menu nav_2depth_menu">
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/irFile/list.do" title="">IR 자료실</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/ir/userlist.do" title="">IR 행사일정</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/stock/info.do" title="">주가 정보</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/finance/finance.do" title="">재무정보</a></h6>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li style="margin-left: 40px;">
+						<a href="#" data-ripple="" class="nav_menu">
+							<span onclick="javascript:location.href='/entertain/artist/profile/artistList.do'">ARTISTS</span>
+						</a>
+					</li>
+					<li style="margin-left: 40px;">
+						<a href="#" title="NOTICE" data-ripple="" class="nav_menu">
+							<span onclick="javascript:location.href='/entertain/company/notice/userlist.do'">NOTICE</span>
+						</a>
+					</li>
+					<li style="margin-left: 40px;">
+						<a href="#" title="AUDITION" data-ripple="" class="nav_menu">
+							<span>AUDITION</span>
+						</a>
+						<div class="dropdowns nav_2depth">
+							<ul class="drops-menu nav_2depth_menu">
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/audition/scheduleList.do" title="">오디션일정확인</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/audition/auditionSupportGuide.do" title="">지원하기</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="/entertain/audition/auditionSupportCheckForm.do" title="">지원내역확인</a></h6>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+				<ul class="setting-area float-left nav_menu_bar nav_language">
+					<li class="">
+						<a href="#" title="LANGUAGE" data-ripple="" class="nav_menu nav_menu_language">
+							<span>KOR</span>
+						</a>
+						<div class="dropdowns nav_2depth">
+							<ul class="drops-menu nav_2depth_menu">
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">ENG</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">CHN</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">JPN</a></h6>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- topbar 끝 -->
+
+		<!-- main content 시작 -->
+		<section>
+			<!-- Swiper 시작-->
+			<div class="swiperArea">
+				<div class="swiper mySwiper">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide main_img00 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="0" data-video-type="Youtube">
+
+							<%-- <div class="video_img"
+								style="background-image: url(${pageContext.request.contextPath }/resources/artImg/블래ㅑㄱ핑크.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div> --%>
+							
+							<div class="video_img"
+								style="background-image: url(http://img.youtube.com/vi/ft70sAYrFyY/maxresdefault.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/07EzMbVH3QE?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen>
+							</iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img01 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="2" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(http://img.youtube.com/vi/dYRITmpFbJ4/maxresdefault.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/dYRITmpFbJ4?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+						<div class="swiper-slide main_img02 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="3" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(http://img.youtube.com/vi/mFbILexYSQg/maxresdefault.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/mFbILexYSQg?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img03 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="4" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(https://hybecorp.com/archive/YPRDonERLebRde8DPXMTVPGGg6tQMrEzAP4L6eUqxdZd4sskIoXaSLtUnunrbtoT9maiI9NjNyICGK3beRpzGKobRIXITnmPbPE1B7zQVhw1lqQQgNvzOhveoUvucv0j.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/ZtYJMjx3dGw?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img04 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="5" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(https://hybecorp.com/archive/eFqXINeeWF6HyRbMR3zSUguzPJLCcfsFpHp6KzjVxzY9DkbLuPH6Raokd7JLXuVw3qKr5gWgYZwADMdZlO5QOivTjO4Ir5ssdQNJtfPIROn2qq0x7zRddlcu7fXp7zsM.png);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/hVAc1Vf2ITU?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img05 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="6" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(https://hybecorp.com/archive/7FE3fPmTP1s0VEdemzPRdsCu33MqpDJt6MzOmGs9XPq5IfX0MGckHvk3TweETQL71Ra8BEgiCmn5w4MZIHP9Bq70vl91pdeEubi70gZS3lwVtTS2BzCEhuptOtevvyaq.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/zzKV_T9ybe8?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img06 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="7" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(http://img.youtube.com/vi/baaNwRAhHBo/maxresdefault.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/baaNwRAhHBo?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img07 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="8" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(http://img.youtube.com/vi/bagFQCTHXy8/maxresdefault.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/bagFQCTHXy8?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img08 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="9" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(https://hybecorp.com/archive/ia9lurqmkMVlurEypr3bOypAcefEJO1PrcBww4l6IyG4dSt4qZlREUKhwXuXUb25hrOUXOd5Rx9i4oXZ6PeDoyXyc1yzeaGJC8OxwTBUKiOKcRQ6d0sDXZpIt1vD6E5J.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/zSQ48zyWZrY?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img09 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="10" data-video-type="Youtube">
+
+							<div class="video_img" style="background-image: url(http://img.youtube.com/vi/bNKXxwOQYB8/maxresdefault.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/bNKXxwOQYB8?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								title="선미 (SUNMI) - &#39;열이올라요 (Heart Burn)&#39; Music Video" frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+								referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+						</div>
+					</div>
+					<!-- swiper button 부분 시작 -->
+					<div class="swiper-button-next"></div>
+					<div class="swiper-button-prev"></div>
+					<div class="swiper-pagination"></div>
+					<div class="autoplay-progress">
+						<svg viewBox="0 0 48 48">
+							<circle cx="24" cy="24" r="20"></circle>
+						</svg>
+						<span></span>
+					</div>
+					<!-- swiper button 부분 끝 -->
+				</div>
+			</div>
+			<!-- Swiper 끝-->
+		</section>
+		<!-- main content 끝 -->
+
+		<!-- bottom bar 시작-->
+		<div class="bottombar footerbar">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<span class="copyright meCopyright" style="margin-left: -250px;">© WELL SEE CODING 2024. All rights reserved.</span>
+					</div>
+					<div class="col-md-12 golink" style="font-size: 21px; margin-right: -90px; margin-top: -15px; ">
+						<span class="golinkCommunity">
+							<a href="/community/main.do">커뮤니티바로가기</a>
+						</span>
+						<span class="golinkGoods">
+							<a href="/goods/main.do">굿즈샵바로가기</a>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- bottom bar 끝-->
+	</div>
+
+	<script src="${pageContext.request.contextPath }/resources/js/main.min.js"></script>
+	<script src="${pageContext.request.contextPath }/resources/js/script.js"></script>
+
+</body>
+<script type="text/javascript">
+
+//<![CDATA[
+var colour="random"; // in addition to "random" can be set to any valid colour eg "#f0f" or "red"
+var sparkles=50;
+
+/****************************
+*  Tinkerbell Magic Sparkle *
+*(c)2005-13 mf2fm web-design*
+*  http://www.mf2fm.com/rv  *
+* DON'T EDIT BELOW THIS BOX *
+****************************/
+var x=ox=400;
+var y=oy=300;
+var swide=800;
+var shigh=600;
+var sleft=sdown=0;
+var tiny=new Array();
+var star=new Array();
+var starv=new Array();
+var starx=new Array();
+var stary=new Array();
+var tinyx=new Array();
+var tinyy=new Array();
+var tinyv=new Array();
+
+window.onload=function() { if (document.getElementById) {
+  var i, rats, rlef, rdow;
+  for (var i=0; i<sparkles; i++) {
+    var rats=createDiv(3, 3);
+    rats.style.visibility="hidden";
+    rats.style.zIndex="999";
+    document.body.appendChild(tiny[i]=rats);
+    starv[i]=0;
+    tinyv[i]=0;
+    var rats=createDiv(5, 5);
+    rats.style.backgroundColor="transparent";
+    rats.style.visibility="hidden";
+    rats.style.zIndex="999";
+    var rlef=createDiv(1, 5);
+    var rdow=createDiv(5, 1);
+    rats.appendChild(rlef);
+    rats.appendChild(rdow);
+    rlef.style.top="2px";
+    rlef.style.left="0px";
+    rdow.style.top="0px";
+    rdow.style.left="2px";
+    document.body.appendChild(star[i]=rats);
+  }
+  set_width();
+  sparkle();
+}}
+
+function sparkle() {
+  var c;
+  if (Math.abs(x-ox)>1 || Math.abs(y-oy)>1) {
+    ox=x;
+    oy=y;
+    for (c=0; c<sparkles; c++) if (!starv[c]) {
+      star[c].style.left=(starx[c]=x)+"px";
+      star[c].style.top=(stary[c]=y+1)+"px";
+      star[c].style.clip="rect(0px, 5px, 5px, 0px)";
+      star[c].childNodes[0].style.backgroundColor=star[c].childNodes[1].style.backgroundColor=(colour=="random")?newColour():colour;
+      star[c].style.visibility="visible";
+      starv[c]=50;
+      break;
+    }
+  }
+  for (c=0; c<sparkles; c++) {
+    if (starv[c]) update_star(c);
+    if (tinyv[c]) update_tiny(c);
+  }
+  setTimeout("sparkle()", 40);
+}
+
+function update_star(i) {
+  if (--starv[i]==25) star[i].style.clip="rect(1px, 4px, 4px, 1px)";
+  if (starv[i]) {
+    stary[i]+=1+Math.random()*3;
+    starx[i]+=(i%5-2)/5;
+    if (stary[i]<shigh+sdown) {
+      star[i].style.top=stary[i]+"px";
+      star[i].style.left=starx[i]+"px";
+    }
+    else {
+      star[i].style.visibility="hidden";
+      starv[i]=0;
+      return;
+    }
+  }
+  else {
+    tinyv[i]=50;
+    tiny[i].style.top=(tinyy[i]=stary[i])+"px";
+    tiny[i].style.left=(tinyx[i]=starx[i])+"px";
+    tiny[i].style.width="2px";
+    tiny[i].style.height="2px";
+    tiny[i].style.backgroundColor=star[i].childNodes[0].style.backgroundColor;
+    star[i].style.visibility="hidden";
+    tiny[i].style.visibility="visible"
+  }
+}
+
+function update_tiny(i) {
+  if (--tinyv[i]==25) {
+    tiny[i].style.width="1px";
+    tiny[i].style.height="1px";
+  }
+  if (tinyv[i]) {
+    tinyy[i]+=1+Math.random()*3;
+    tinyx[i]+=(i%5-2)/5;
+    if (tinyy[i]<shigh+sdown) {
+      tiny[i].style.top=tinyy[i]+"px";
+      tiny[i].style.left=tinyx[i]+"px";
+    }
+    else {
+      tiny[i].style.visibility="hidden";
+      tinyv[i]=0;
+      return;
+    }
+  }
+  else tiny[i].style.visibility="hidden";
+}
+
+document.onmousemove=mouse;
+function mouse(e) {
+  if (e) {
+    y=e.pageY;
+    x=e.pageX;
+  }
+  else {
+    set_scroll();
+    y=event.y+sdown;
+    x=event.x+sleft;
+  }
+}
+
+window.onscroll=set_scroll;
+function set_scroll() {
+  if (typeof(self.pageYOffset)=='number') {
+    sdown=self.pageYOffset;
+    sleft=self.pageXOffset;
+  }
+  else if (document.body && (document.body.scrollTop || document.body.scrollLeft)) {
+    sdown=document.body.scrollTop;
+    sleft=document.body.scrollLeft;
+  }
+  else if (document.documentElement && (document.documentElement.scrollTop || document.documentElement.scrollLeft)) {
+    sleft=document.documentElement.scrollLeft;
+    sdown=document.documentElement.scrollTop;
+  }
+  else {
+    sdown=0;
+    sleft=0;
+  }
+}
+
+window.onresize=set_width;
+function set_width() {
+  var sw_min=999999;
+  var sh_min=999999;
+  if (document.documentElement && document.documentElement.clientWidth) {
+    if (document.documentElement.clientWidth>0) sw_min=document.documentElement.clientWidth;
+    if (document.documentElement.clientHeight>0) sh_min=document.documentElement.clientHeight;
+  }
+  if (typeof(self.innerWidth)=='number' && self.innerWidth) {
+    if (self.innerWidth>0 && self.innerWidth<sw_min) sw_min=self.innerWidth;
+    if (self.innerHeight>0 && self.innerHeight<sh_min) sh_min=self.innerHeight;
+  }
+  if (document.body.clientWidth) {
+    if (document.body.clientWidth>0 && document.body.clientWidth<sw_min) sw_min=document.body.clientWidth;
+    if (document.body.clientHeight>0 && document.body.clientHeight<sh_min) sh_min=document.body.clientHeight;
+  }
+  if (sw_min==999999 || sh_min==999999) {
+    sw_min=800;
+    sh_min=600;
+  }
+  swide=sw_min;
+  shigh=sh_min;
+}
+
+function createDiv(height, width) {
+  var div=document.createElement("div");
+  div.style.position="absolute";
+  div.style.height=height+"px";
+  div.style.width=width+"px";
+  div.style.overflow="hidden";
+  return (div);
+}
+
+function newColour() {
+  var c=new Array();
+  c[0]=255;
+  c[1]=Math.floor(Math.random()*256);
+  c[2]=Math.floor(Math.random()*(256-c[1]/2));
+  c.sort(function(){return (0.5 - Math.random());});
+  return ("rgb("+c[0]+", "+c[1]+", "+c[2]+")");
+}
+// ]]>
+
+
+</script>
+</html>

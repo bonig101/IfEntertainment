@@ -1,0 +1,9 @@
+@@ jsp 절대경로 적을 때
+${pageContext.request.contextPath }
+
+@@ 금액 포맷팅
+<fmt:formatNumber value="${myOrderDetail.odPrice }" pattern="#,###"/>
+
+@@ 제이쿼리 CDN
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+

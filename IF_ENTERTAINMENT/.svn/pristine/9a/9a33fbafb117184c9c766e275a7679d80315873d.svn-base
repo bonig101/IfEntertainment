@@ -1,0 +1,23 @@
+package kr.or.ddit.controller.entertain;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.entertain.IIRService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * IR자료 수정 컨트롤러
+ * @author 홍진영
+ */
+@Controller
+@Slf4j
+@RequestMapping("/entertain/irFile")
+public class IRFileModifyController {
+
+	@Inject
+	private IIRService IRService;
+	
+}

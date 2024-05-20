@@ -1,0 +1,231 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<section>
+		<div class="gap2 no-bottom">
+			<div class="container">
+				<div class="row">	
+					<div class="col-lg-12">
+						<div class="prod-detail">
+							<div class="row">
+								<div class="col-lg-6">
+									<div class="central-meta">
+										<div class="prod-avatar">
+											<ul class="slider-for-gold">
+												<li><img src="https://blog.kakaocdn.net/dn/bQjOT1/btrA0XHXepP/7VmKLq7zkTjgvZBrnhb41k/img.gif" alt="" style="width: 655px; height: 605px;"></li>
+												 <li><img src="sadfimages/resources/product2.jpgfasdasdasd" alt=""></li>
+												 <li><img src="images/resources/product3.jpg" alt=""></li>
+												 <li><img src="images/resources/product4.jpg" alt=""></li>
+											</ul>
+											<ul class="slider-nav-gold">
+												 <li><img src="images/resources/product1.jpg" alt=""></li>
+												 <li><img src="images/resources/product2.jpg" alt=""></li>
+												 <li><img src="images/resources/product3.jpg" alt=""></li>
+												 <li><img src="images/resources/product4.jpg" alt=""></li> 
+											</ul>
+										</div>	
+									</div>	
+								</div>
+								<div class="col-lg-6">
+    								<div class="central-meta">
+										<div class="full-postmeta">
+											<ol class="pit-rate">
+												<li class="rated"><i class="fa fa-star"></i></li>
+												<li class="rated"><i class="fa fa-star"></i></li>
+												<li class="rated"><i class="fa fa-star"></i></li>
+												<li class="rated"><i class="fa fa-star"></i></li>
+												<li class=""><i class="fa fa-star"></i></li>
+												<li><span>4.7/5</span></li>
+											</ol>
+											<div class="share">
+												<span>share</span>
+												<a class="facebook-color" href="#" title=""><i class="fa-brands fa-facebook"></i></a>
+												<a class="twitter-color" href="#" title=""><i class="fa-brands fa-twitter"></i></a>
+												<a class="insta-color" href="#" title=""><i class="fa-brands fa-instagram"></i></a>
+											</div>
+											
+											<i>LIVING UNIQUE</i>
+											
+											<h4>Moon Blue DVD <span>Big Bang</span> Movie</h4>
+											<p>
+												Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor 
+											</p>
+											
+											<form class="qty-select">
+												<input class="qty" type="text" name="value" value="1">
+											</form>
+											<span class="prices style4">
+												<ins>
+													<span class="woocommerce-Price-amount amount">
+														<span class="woocommerce-Price-currencySymbol">$</span>18.00
+													</span>
+												</ins>
+												<del>
+													<span class="woocommerce-Price-amount amount">
+														<span class="woocommerce-Price-currencySymbol">$</span>23.00
+													</span>
+												</del>                                             
+											</span>
+											<a class="shopnow" title="" href="#">Add to Cart</a>
+											<div class="post-as">
+												<div class="prod categories">
+													<span class="cat-heading">Categories:
+														<a title="" href="#">Movie Ticket</a>
+														<a title="" href="#">Web Themes</a>
+													</span>
+												</div>
+												<div class="prod tags">
+													<span class="cat-heading">Tags:
+														<a title="" href="#">Movies</a>
+														<a title="" href="#">Digital Product</a>
+														<a title="" href="#">Hosting</a>
+													</span>
+												</div>
+											</div>
+											<div class="extras">
+												<a href="https://www.youtube.com/watch?v=XNeFJzO8v9c" title="" data-strip-group="mygroup" class="strip play-btn"><i class="fa fa-play-circle"></i> play video</a>
+												<a title="" data-group="set2" class="html5lightbox btn2" href="">
+												</a>
+											</div>
+										</div>
+									</div>
+    							</div>
+							</div>
+							<div class="gap2 no-bottom">
+								<div class="more-about">
+									<div class="central-meta">
+									
+									</div>
+								</div>
+							</div>
+							<div class="central-meta">
+								<span class="title2">Related Products</span>
+								<div class="row">
+									<div class="col-lg-3 col-md-6">
+										<div class="dig-pro">
+											<figure>
+												<img src="images/resources/dig-product1.jpg" alt="">
+												<div class="user-avatr">
+													<img alt="" src="images/resources/admin.jpg">
+													<div>
+														<span>Posted by</span>
+														<ins>Jack Carter</ins>
+													</div>	
+												</div>
+											</figure>
+											<div class="digi-meta">
+												
+												<p>Full E-Marketing for your digital product with cheap budget. </p>
+												<div class="rate">
+													<ol class="pit-rate">
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class=""><i class="fa fa-star"></i></li>
+													</ol>
+													<span class="qeemat"><del>60</del>$40</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-3 col-md-6">
+										<div class="dig-pro">
+											<figure>
+												<img src="images/resources/dig-product2.jpg" alt="">
+												<div class="user-avatr">
+													<img alt="" src="images/resources/user25.jpg">
+													<div>
+														<span>Posted by</span>
+														<ins>Amy Watson</ins>
+													</div>
+												</div>
+											</figure>
+											<div class="digi-meta">
+												<h4><a href="product-detail.html" title="">Android studio app</a></h4>
+												<p>Make your own android app absolutely free by click here. </p>
+												<div class="rate">
+													<ol class="pit-rate">
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class=""><i class="fa fa-star"></i></li>
+													</ol>
+													<span class="qeemat"><del>40</del>$20</span>
+												</div>
+											</div>												
+										</div>
+									</div>
+									<div class="col-lg-3 col-md-6">
+										<div class="dig-pro">
+											<figure>
+												<img src="images/resources/dig-product4.jpg" alt="">
+												<div class="user-avatr">
+													<img alt="" src="images/resources/user15.jpg">
+													<div>
+														<span>Posted by</span>
+														<ins>Bob Frank</ins>
+													</div>
+												</div>
+											</figure>
+											<div class="digi-meta">
+												<h4><a href="product-detail.html" title="">Android studio app</a></h4>
+												<p>Make your own android app absolutely free by click here. </p>
+												<div class="rate">
+													<ol class="pit-rate">
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class=""><i class="fa fa-star"></i></li>
+													</ol>
+													<span class="qeemat"><del>90</del>$70</span>
+												</div>
+											</div>												
+										</div>
+									</div>
+									<div class="col-lg-3 col-md-6">
+										<div class="dig-pro">
+											<figure>
+												<img src="images/resources/dig-product6.jpg" alt="">
+												<div class="user-avatr">
+													<img alt="" src="images/resources/user14.jpg">
+													<div>
+														<span>Posted by</span>
+														<ins>Kiley Red</ins>
+													</div>
+												</div>
+											</figure>
+											<div class="digi-meta">
+												<h4><a href="product-detail.html" title="">Android studio app</a></h4>
+												<p>Make your own android app absolutely free by click here. </p>
+												<div class="rate">
+													<ol class="pit-rate">
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class="rated"><i class="fa fa-star"></i></li>
+														<li class=""><i class="fa fa-star"></i></li>
+													</ol>
+													<span class="qeemat"><del>90</del>$70</span>
+												</div>
+											</div>												
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>	
+                </div>
+			</div>
+		</div>	
+	</section><!-- picture area -->
+</body>
+</html>

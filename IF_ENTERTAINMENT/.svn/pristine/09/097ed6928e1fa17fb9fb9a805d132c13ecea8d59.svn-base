@@ -1,0 +1,180 @@
+package kr.or.ddit.service.impl.common;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.or.ddit.mapper.common.ISignMapper;
+import kr.or.ddit.service.common.ISignService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.MemberVO;
+import kr.or.ddit.vo.common.Noti_SettingVO;
+import kr.or.ddit.vo.common.Noti_TypeVO;
+import kr.or.ddit.vo.common.UserAuthVO;
+import kr.or.ddit.vo.common.UserVO;
+
+@Service
+public class SignServiceImpl implements ISignService {
+ 
+	@Inject
+	private ISignMapper signMapper;
+
+	@Override
+	public ServiceResult idCheck(String userId) {
+		ServiceResult result=null;
+		UserVO member=signMapper.idCheck(userId);
+		if(member==null) {
+			result=ServiceResult.NOTEXIST;
+		}else {
+			result=ServiceResult.EXIST;
+		}
+		
+		return result;
+	}
+
+	@Override
+	public ServiceResult signup(HttpServletRequest req, UserVO userVO) throws Exception {
+		ServiceResult result=null;
+		String uploadPath = req.getServletContext().getRealPath("/resources/profile");
+		File file = new File(uploadPath);
+		if(!file.exists()) {
+			file.mkdirs();
+		}
+		
+		String proFileImg = ""; // 회원정보에 추가될 프로필 이미지 경로
+		
+		// 넘겨받은 회원정보에서 파일 데이터 가져오기
+		MultipartFile proFileImgFile = userVO.getImgFile();
+		
+		// 넘겨받은 파일 데이터가 존재할 때
+		if(proFileImgFile != null && proFileImgFile.getOriginalFilename() != null &&
+				!proFileImgFile.getOriginalFilename().equals("")) {
+			String fileName = UUID.randomUUID().toString();	
+			fileName += "_" + proFileImgFile.getOriginalFilename();
+			uploadPath += "/" + fileName;
+			try {
+				// 해당 위치에 파일 복사
+				proFileImgFile.transferTo(new File(uploadPath));
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 	
+			
+			// 파일 복사가 일어난 파일의 위치로 접근하기 위한 URI 설정
+			proFileImg = "/resources/profile/" + fileName;
+		}
+		
+		userVO.setUserProfile(proFileImg);
+		
+//		암호화 설정
+//		userVO.setMemPw(pe.encode(userVO.getMemPw()));
+		
+		signMapper.signupUser(userVO);
+		UserAuthVO userAuth = new UserAuthVO();
+		userAuth.setUserNo(userVO.getUserNo());
+		userAuth.setAuth("ROLE_USER");
+		if(true) {
+			throw new IOException();
+		}
+		signMapper.createAuth(userAuth);
+		
+		
+		MemberVO member = new MemberVO();
+		
+		member.setMemberTelno(userVO.getMemberTelno());
+		member.setMemberEmail(userVO.getMemberEmail());
+		member.setMemberBirth(userVO.getMemberBirth());
+		member.setMemberGender(userVO.getMemberGender());
+		member.setMemberPostcode(userVO.getMemberPostcode());
+		member.setMemberAddress1(userVO.getMemberAddress1());
+		member.setMemberAddress2(userVO.getMemberAddress2());
+		member.setMemberNotification(userVO.getMemberNotification());
+		member.setMemberLgnpath("1");
+		if(true) {
+			throw new IOException();
+		}
+		signMapper.createMember(member);
+		
+		
+		String[] notiTypeArray = userVO.getNotiType();
+		String[] notiSettingArray = userVO.getNotiSetting();
+
+		String ntSms = "N";
+		String ntEmail = "N";
+		String ntWeb = "N";
+
+		String nsGoods = "N";
+		String nsArtist = "N";
+		String nsCompany = "N";
+
+		// notiType 배열 확인하고 값 설정
+		for (String type : notiTypeArray) {
+		    if (type.equals("sms")) {
+		        ntSms = "Y";
+		    } else if (type.equals("email")) {
+		        ntEmail = "Y";
+		    } else if (type.equals("web")) {
+		        ntWeb = "Y";
+		    }
+		}
+
+		// notiSetting 배열 확인하고 값 설정
+		for (String setting : notiSettingArray) {
+		    if (setting.equals("goods")) {
+		        nsGoods = "Y";
+		    } else if (setting.equals("artist")) {
+		        nsArtist = "Y";
+		    } else if (setting.equals("company")) {
+		        nsCompany = "Y";
+		    }
+		}
+
+		
+		
+
+		Noti_TypeVO notiTypeVO = new Noti_TypeVO();
+		
+		notiTypeVO.setNtSms(ntSms);
+		notiTypeVO.setNtEmail(ntEmail);
+		notiTypeVO.setNtWeb(ntWeb);
+		if(true) {
+			throw new IOException();
+		}
+		signMapper.createNotiType(notiTypeVO);
+		
+		
+		Noti_SettingVO notiSettingVO = new Noti_SettingVO();
+		
+		
+		notiSettingVO.setNsGoods(nsGoods);
+		notiSettingVO.setNsArtist(nsArtist);
+		notiSettingVO.setNsCompany(nsCompany);
+		
+		System.out.println("ntSmsntSmsntSms"+ntSms);
+		System.out.println("ntEmailntEmail"+ntEmail);
+		System.out.println("ntWebntWeb"+ntWeb);
+		System.out.println("nsGoodsnsGoods"+nsGoods);
+		System.out.println("nsArtistnsArtist"+nsArtist);
+		System.out.println("nsCompanynsCompany"+nsCompany);
+		
+		if(true) {
+			throw new IOException();
+		}
+		int status=signMapper.createNotiSetting(notiSettingVO);
+		
+		if(status > 0) {
+			//권한 등록(스프링 시큐리티 적용 시)
+//			mapper.signupAuth(userVO.getMemNo());
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+	
+}

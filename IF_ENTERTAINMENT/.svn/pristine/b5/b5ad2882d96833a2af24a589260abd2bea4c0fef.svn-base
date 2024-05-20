@@ -1,0 +1,17 @@
+package kr.or.ddit.mapper.community;
+
+import java.util.List;
+
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.community.FeedVO;
+
+public interface IFeedMapper {
+
+	public int selectFeedListCount(PaginationInfoVO<FeedVO> pagingVO);
+
+	public List<FeedVO> selectFeedList(PaginationInfoVO<FeedVO> pagingVO);
+
+	public void deleteFeed(FeedVO feedVO);
+
+
+}

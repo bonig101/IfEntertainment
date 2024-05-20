@@ -1,0 +1,14 @@
+package kr.or.ddit.vo.goods;
+
+import lombok.Data;
+
+@Data
+public class OrderVO {
+	 private String orderNo;
+	 private int orderTotalprice;
+	 private String orderPay;
+	 private String orderDate;
+	 private String orderDelivery;
+	 private String orderStatus;
+	 private int userNo;
+}

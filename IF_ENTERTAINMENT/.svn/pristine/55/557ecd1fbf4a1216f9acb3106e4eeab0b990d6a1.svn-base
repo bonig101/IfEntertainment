@@ -1,0 +1,81 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<div class="gap no-gap">
+	<div class="inner-bg">
+		<div class="element-title">
+			<h4>기업 공지</h4>
+			<div class="col-md-12">
+				<div class="buttonz">
+					<div class="route-map">
+						<form action="#"
+							id="routeForm">
+
+							<input type="text" name="searchWord" value="${searchWord }" placeholder="제목입력">	
+							<button type="button">검색하기</button>
+							<button type="button" id="newBtn">글 작성</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<table class="prj-tbl striped table-responsive">
+			<thead class="color">
+				<tr>
+			<th style="color: white;">게시글 번호</th>
+            <th style="color: white;">제목</th>
+            <th style="color: white;">작성일</th>
+            <th style="color: white;">작성자</th>
+            <th style="color: white;">삭제</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:set value="${pagingVO.dataList }" var="CompanyNoticeList" />
+				<c:choose>
+					<c:when test="${empty CompanyNoticeList }">
+						<tr>
+							<td colspan="5">조회하신 게시글이 존재하지 않습니다.</td>
+						</tr>
+					</c:when>
+					<c:otherwise>
+						<c:forEach items="${CompanyNoticeList }" var="companyNotice">
+							<tr>
+								<td>${companyNotice.bfNo }</td>
+								<td><a href="/entertain/company/notice/detail.do?bfNo=${companyNotice.bfNo }">
+										${companyNotice.bfTitle } </a></td>
+								<td>${companyNotice.bfRegdate }</td>
+								<td><font class="badge badge-danger"
+									style="font-size: 14px;"> ${companyNotice.userNo } </font></td>
+								<td><span><a href="#"><i class="icon-trash"></i></a></span>${companyNotice.bfDelyn }</td>
+							</tr>
+						</c:forEach>
+					</c:otherwise>
+				</c:choose>
+			</tbody>
+		</table>
+		</div>
+	</div>
+<div class="card-footer prod-footer clearfix" id="pagingArea">
+		${pagingVO.pagingHTML }
+	</div>
+
+<script>
+$(function(){
+	var newBtn = $("#newBtn");
+	var searchForm = $("#searchForm");
+	var pagingArea = $("#pagingArea");
+	
+	newBtn.on("click", function(){
+		location.href = "/entertain/company/notice/form.do";
+	});
+	
+	pagingArea.on("click", "a", function(event){
+		event.preventDefault();
+		var pageNo = $(this).data("page");
+		searchForm.find("#page").val(pageNo);
+		searchForm.submit();
+	});
+	
+});
+</script>

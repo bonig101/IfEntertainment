@@ -1,0 +1,662 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<link rel="stylesheet" href="/resources/mng/css/vertical-layout-light/style.css">
+<link rel="stylesheet" href="/resources/mng/vendors/feather/feather.css">
+<style>
+.section input[id*="slide"] {
+	display: none;
+}
+
+.section .slidewrap {
+	max-width: 1200px;
+	margin: 0 auto;
+	margin-top: 2%
+}
+
+.section .slidelist {
+	white-space: nowrap;
+	font-size: 0;
+	overflow: hidden;
+	position: relative;
+	width: 100%;
+}
+
+.section .slidelist>li {
+	display: inline-block;
+	vertical-align: middle;
+	width: 100%;
+	transition: all .5s;
+}
+
+.section .slidelist>li>a {
+	display: block;
+	position: relative;
+}
+
+.section .slidelist>li>a img {
+	width: 98%;
+}
+
+.section .slidelist label {
+	position: absolute;
+	z-index: 1;
+	top: 50%;
+	transform: translateY(-50%);
+	padding: 50px;
+	cursor: pointer;
+}
+
+.section .slidelist .textbox {
+	position: absolute;
+	z-index: 1;
+	top: 54%;
+    left: 74%;
+	transform: translate(-50%, -50%);
+	line-height: 1.6;
+	text-align: center;
+}
+
+.section .slidelist .textbox h3 {
+	font-size: 36px;
+	color: #fff;;
+	transform: translateY(30px);
+	transition: all .5s;
+}
+
+.section .slidelist .textbox p {
+	font-size: 33px;
+	color: #fff;
+	opacity: 0;
+	transform: translateY(30px);
+	transition: all .5s;
+}
+
+/* input에 체크되면 슬라이드 효과 */
+.section input[id="slide01"]:checked ~ .slidewrap .slidelist>li {
+	transform: translateX(0%);
+}
+
+.section input[id="slide02"]:checked ~ .slidewrap .slidelist>li {
+	transform: translateX(-100%);
+}
+
+.section input[id="slide03"]:checked ~ .slidewrap .slidelist>li {
+	transform: translateX(-200%);
+}
+
+/* input에 체크되면 텍스트 효과 */
+.section input[id="slide01"]:checked ~ .slidewrap li:nth-child(1) .textbox h3
+	{
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: .2s;
+	font-size: 33px;
+	color: beige;
+}
+
+.section input[id="slide01"]:checked ~ .slidewrap li:nth-child(1) .textbox p
+	{
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: .4s;
+	font-family: 'Nanum Pen Script';
+	color: beige;
+}
+
+.section input[id="slide02"]:checked ~ .slidewrap li:nth-child(2) .textbox h3
+	{
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: .2s;
+	color: black;
+}
+
+.section input[id="slide02"]:checked ~ .slidewrap li:nth-child(2) .textbox p
+	{
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: .4s;
+	font-size: 33px;
+	font-family: 'Nanum Pen Script';
+	color: black;
+}
+
+.section input[id="slide03"]:checked ~ .slidewrap li:nth-child(3) .textbox h3
+	{
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: .2s;
+	color: #055799;
+}
+
+.section input[id="slide03"]:checked ~ .slidewrap li:nth-child(3) .textbox p
+	{
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: .4s;
+	font-size: 33px;
+	font-family: 'Nanum Pen Script';
+	color: #055799;
+}
+
+/* 좌,우 슬라이드 버튼 */
+.slide-control>div {
+	display: none;
+}
+
+.section .left {
+	left: -15px;
+	background: url('/resources/asset/image/left.png') center center/100%
+		no-repeat;
+}
+
+.section .right {
+	right: -5px;
+	background: url('/resources/asset/image/right.png') center center/100%
+		no-repeat;
+}
+
+.section input[id="slide01"]:checked ~ .slidewrap .slide-control>div:nth-child(1)
+	{
+	display: block;
+}
+
+.section input[id="slide02"]:checked ~ .slidewrap .slide-control>div:nth-child(2)
+	{
+	display: block;
+}
+
+.section input[id="slide03"]:checked ~ .slidewrap .slide-control>div:nth-child(3)
+	{
+	display: block;
+}
+
+/* 페이징 */
+.slide-pagelist {
+	text-align: center;
+	padding: 2px;
+}
+
+.slide-pagelist>li {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.slide-pagelist>li>label {
+	display: block;
+	padding: 8px 30px;
+	border-radius: 30px;
+	background: #ccc;
+	margin: 20px 10px;
+	cursor: pointer;
+}
+
+.section input[id="slide01"]:checked ~ .slidewrap .slide-pagelist>li:nth-child(1)>label
+	{
+	background: #999;
+}
+
+.section input[id="slide02"]:checked ~ .slidewrap .slide-pagelist>li:nth-child(2)>label
+	{
+	background: #999;
+}
+
+.section input[id="slide03"]:checked ~ .slidewrap .slide-pagelist>li:nth-child(3)>label
+	{
+	background: #999;
+}
+
+img.slide {
+	height: 280px;
+	border-radius: 25px;
+}
+
+.content {
+	min-height: 100%;
+	height: 100%;
+	background: #fff;
+	position: relative;
+	z-index: 0;
+}
+.content h1 {
+	padding: 75px 0 30px 0;
+	text-align: center;
+	font-size: 30px;
+	line-height: 30px;
+}
+.content .buttons {
+	max-width: 800px;
+    margin-top: 34px;
+    text-align: center;
+}
+.content .buttons .button {
+	display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    background: #efefef;
+    padding: 20px 25px;
+    margin: 10px;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 20px;
+}
+.content .buttons .button:hover {
+	color: #fff;
+	background: black;
+}
+
+/* modal style */
+html.modal-active,
+body.modal-active {
+	overflow: hidden;
+}
+#modal-container {
+	position: fixed;
+	left: 0;
+	top: 0;
+	display: table;
+	height: 100%;
+	width: 100%;
+	z-index: 1;
+	/* hidden 처리 */
+	transform: scale(0);
+}
+#modal-container .modal-background {
+	display: table-cell;
+	background: rgba(0, 0, 0, .8);
+	text-align: center;
+	vertical-align: middle;
+}
+#modal-container .modal-background .modal {
+	background: #5a5a5a;
+    padding: 45px;
+    display: inline-block;
+    border-radius: 18px;
+    position: relative;
+}
+#modal-container .modal-background .modal h2 {
+	font-size: 25px;
+	line-height: 25px;
+	margin-bottom: 15px;
+	
+}
+#modal-container .modal-background .modal p {
+	font-size: 18px;
+	line-height: 22px;
+}
+div#modal{
+	height: 90%;
+	width: 65%;
+}
+/*
+ * ------------------------------
+ * Unfolding Animation
+ * ------------------------------
+ */
+#modal-container.one {
+	/*transform: scaleX(0) scaleY(1);*/
+	animation: unfoldIn 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.one .modal-background .modal {
+	/* 초기 display: none 처럼 크기를 0 으로 하여 보여주지 않음*/
+	transform: scale(0);
+	/* 0.5 초 동안 애니메이션을 실행, 단 0.8초 지연시켜 0.8초 후에 애니메이션을 실행 */
+	animation: zoomIn .5s .8s  cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.one.out {
+	transform: scale(1);
+	animation: unfoldOut 1s .3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.one.out .modal-background .modal {
+	animation: zoomOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+/* Dimmed showing */
+@keyframes unfoldIn {
+	0% {
+		transform: scaleX(0) scaleY(0.005);
+	}
+	50% {
+		/* 0.5 초간 세로 크기는 작은상태로 가로 너비만 확대  */
+		transform: scaleX(1) scaleY(0.005);
+	}
+	100% {
+		/* 0.5 초간 세로 크기를 확대 */
+		transform: scaleY(1) scaleX(1);
+	}
+}
+/* Show modal content  */
+@keyframes zoomIn {
+	from {
+		transform: scale(0);
+	}
+	to {
+		transform: scale(1);
+	}
+}
+/* Hide modal content */
+@keyframes zoomOut {
+	from {
+		transform: scale(1);
+	}
+	to {
+		transform: scale(0);
+	}
+}
+/* Dimmed hiding */
+@keyframes unfoldOut {
+	0% {
+		transform: scale(1)
+	}
+	50% {
+		transform: scaleX(1) scaleY(0.005);
+	}
+	100% {
+		transform: scaleX(0) scaleY(0.005);
+	}
+}
+div#div-header{
+	display: flex;
+	justify-content: space-between;
+}
+div#searchMeta{
+	margin-bottom: 13px;
+    margin-right: 6.4%;
+}
+div.content-wrapper{
+	background: white;
+}
+.card .card-description {
+	margin-left: 3%;
+}
+h4.card-title{
+	margin-left: 3%;
+}
+div.col-lg-2{
+    flex: 35%;
+    max-width: 35%;
+}
+div.col-lg-10{
+    flex: 65%;
+    max-width: 65%;
+    margin-top: 17px;
+}
+p {
+    font-size: 1.265rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.3rem;
+}
+
+.sidebar {
+    position: fixed;
+    width: 300px;
+    height: 100vh;
+    background: #f8f8f8;
+    padding: 20px;
+    z-index: 2;
+}
+
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<div class="section">
+	<input type="radio" name="slide" id="slide01" checked> <input
+		type="radio" name="slide" id="slide02"> <input type="radio"
+		name="slide" id="slide03">
+	<div class="slidewrap">
+		<ul class="slidelist">
+			<!-- 슬라이드 영역 -->
+			<li class="slideitem"><a>
+					<div class="textbox">
+						<h3>김정운 교수의 '창조적 시선'</h3>
+						<p>인간은 언제부터 '창조적'이었는가?</p>
+					</div> <img src="https://contents.kyobobook.co.kr/display/i_1624_450_4eb6172077004e13836a84cc034252ed.jpg" class="slide">
+			</a></li>
+			<li class="slideitem"><a>
+					<div class="textbox">
+						<h3>김경일 교수가 말하는</h3>
+						<p>내 삶의 기준이 되는 8가지 심리학</p>
+					</div> <img src="https://contents.kyobobook.co.kr/display/i_1624_450_d958b22f27c34b048c9da4d3ce990d91.jpg" class="slide">
+			</a></li>
+			<li class="slideitem"><a>
+					<div class="textbox">
+						<h3>리터러시 권위자 조병영</h3>
+						<p>리터러시란 무엇인가</p>
+					</div> <img src="https://contents.kyobobook.co.kr/display/i_1624_450_01_049af44e0b394e5ebe5a461b715f48b5.jpg" class="slide">
+			</a></li class="slideitem">
+
+			<!-- 좌,우 슬라이드 버튼 -->
+			<div class="slide-control">
+				<div>
+					<label for="slide03" class="left"></label> <label for="slide02"
+						class="right"></label>
+				</div>
+				<div>
+					<label for="slide01" class="left"></label> <label for="slide03"
+						class="right"></label>
+				</div>
+				<div>
+					<label for="slide02" class="left"></label> <label for="slide01"
+						class="right"></label>
+				</div>
+			</div>
+
+		</ul>
+		<!-- 페이징 -->
+		<ul class="slide-pagelist">
+			<li><label for="slide01"></label></li>
+			<li><label for="slide02"></label></li>
+			<li><label for="slide03"></label></li>
+		</ul>
+	</div>
+</div>
+
+  <!-- 모달 창을 위한 컨테이너 -->
+  <div id="modal-container">
+    <div class="modal-background">
+      <div class="modal" id="modal">
+        <!-- <h2>406호와의 만남</h2> -->
+        <div id='ifr' style="width: 100%; height: 102%;">
+			<iframe src='https://www.vchatcloud.com/chat-demo/iframe/iframe_pc/v4/index.html?channelKey=ZhmisYmAeU-BaCqe318eC-20220225183959&youtubeId=xjcUV4EZaaA' frameborder='no' scrolling='no' marginwidth='0' marginheight='0' width='1216' height='691'></iframe>
+		</div>
+        <!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis, similique!</p> -->
+      </div>
+    </div>
+  </div>
+
+<div class="content-wrapper" style="padding : 10px;">
+	<div class="row" style=" padding : 10px;">
+		<div class="col-lg-12 grid-margin stretch-card" >
+			<div class="card">
+			    <div class="card-body">
+			        <div class="card-title-wrapper" style="margin-left:32px">
+			        
+					    <h4 class="card-title" style="font-size:1.25rem; font-family: 'orbit', sans-serif;">이벤트 목록</h4>
+					    <div id="div-header">
+						    <div class="card-description">전체4건</div>
+	               			<div id="searchMeta" >
+		                    	<div class="row dropdown" style="float:right;">
+                                    <select style="width: 100px; border: 1px solid #CED4DA;">
+                                        <option value="year">년</option>
+                                        <option value="month">월</option>
+                                        <option value="title">이름</option>
+                                    </select>
+		                        	<ul class="navbar-nav mr-lg-2">
+							          <li class="nav-item nav-search d-none d-lg-block">
+							            <div class="input-group">
+							              <input type="text" class="form-control" id="navbar-search-input" placeholder="검색" aria-label="search" aria-describedby="search">
+							              <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
+							                <span class="input-group-text" id="search">
+							                  <i class="icon-search"></i>
+							                </span>
+							              </div>
+							            </div>
+							          </li>
+							        </ul>
+		                      	</div>
+		                    </div>	
+					    </div>
+				    </div>
+				    <div class="table-responsive">
+                        <table class="table table-bordered" style="width : 1035px; margin : auto;">
+                               <tr>
+                                   <th style="padding : 5px;">
+                                   	<div id="div-head">
+	                                   	<div>
+	                                    	<ul class="nav nav-tabs">
+	                                    		<li class="nav-item ">
+											    	<a class="nav-link ing active" href="#" onclick="fprgevt()">진행중인 이벤트</a>
+											 	</li>
+											  	<li class="nav-item">
+											   		<a class="nav-link end" href="#" onclick="fendevt()">종료된 이벤트</a>
+											  	</li>
+											</ul> 
+	                                   	</div>
+                                   	</div>
+                                   </th>
+                               </tr>
+                               <tr id="prgevt">
+                                   <td>
+                                       <div style="display : flex;">
+                                           <div class="col-lg-2">
+                                               <img src="https://cdn.mediatoday.co.kr/news/photo/202311/313885_438531_4716.jpg" alt="이미지" style="width:100%; height:100%; border-radius: 0%;"/>
+                                           </div>
+                                           <div class="col-lg-10">
+                                               <p>403호와 함께하는 랜선 만남</p>
+                                               <p>아티스트 : 뉴진스</p>
+                                               <p>일시 : 2024-04-16 09:00 ~ 2024-04-17 18:00</p>
+                                               <p>참여인원 : 28명</p>
+                                               <p>버니즈 모여라!</p>
+                                           </div>
+                                           <%-- 메타버스 호출 --%>
+											<div class="content">
+											    <div class="buttons">
+											      <span id="one" class="button">입 장</span>
+											    </div>
+											</div>
+											<%-- 메타버스 호출  --%>
+                                       </div>
+                                   </td>
+                               </tr>
+                               <tr class="endevt" style="display : none;">
+                                   <td>
+                                       <div style="display : flex;">
+                                           <div class="col-lg-2">
+                                               <img src="https://i.namu.wiki/i/UIigOQVjNtD76N9GmEdI3CCjfgBOvXXwJxYlIYQ64ibrMm0m2b3UtnvUmOf0i15j8-Fn7xMd9cPaDHIt95gbug.webp" alt="이미지" style="width:100%; height:100%; border-radius: 0%;"/>
+                                           </div>
+                                           <div class="col-lg-10">
+                                               <p>르세라핌 함께하는 랜선 팬사인회</p>
+                                               <p>아티스트 : 르세라핌</p>
+                                               <p>일시 : 2024-07-07 19:00 ~ 20:00</p>
+                                               <p>참여인원 : 30명</p>
+                                               <p>르세라핌 랜선 팬사인회</p>
+                                           </div>
+                                       </div>
+                                   </td>
+                               </tr>
+                               <tr class="endevt" style="display : none;">
+                                   <td>
+                                       <div style="display : flex;">
+                                           <div class="col-lg-2">
+                                               <img src="https://file2.nocutnews.co.kr/newsroom/image/2023/10/09/202310090151273044_0.jpg" alt="이미지" style="width:100%; height:100%; border-radius: 0%;"/>
+                                           </div>
+                                           <div class="col-lg-10">
+                                               <p>아이브와 함께하는 랜선 팬사인회</p>
+                                               <p>아티스트 : 아이브</p>
+                                               <p>일시 : 2024-07-13 12:00 ~ 15:00</p>
+                                               <p>참여인원 : 30명</p>
+                                               <p>러브다이브 라이브 랜선 팬사인회</p>
+                                           </div>
+                                       </div>
+                                   </td>
+                               </tr>
+                               <tr class="endevt" style="display : none;">
+                                   <td>
+                                       <div style="display : flex;">
+                                           <div class="col-lg-2">
+                                               <img src="https://i.ytimg.com/vi/NehbrPJof-Q/maxresdefault.jpg" alt="이미지" style="width:100%; height:100%; border-radius: 0%;"/>
+                                           </div>
+                                           <div class="col-lg-10">
+                                               <p>권은비와 함께하는 얼빡직캠 랜선방송</p>
+                                               <p>아티스트 : 권은비</p>
+                                               <p>일시 : 2024-07-20 13:00 ~ 17:00</p>
+                                               <p>참여인원 : 30명</p>
+                                               <p>직캠여신 권은비와 함께하는 랜선 팬사인회</p>
+                                           </div>
+                                       </div>
+                                   </td>
+                               </tr>
+                        </table>
+                    </div>
+	            </div>
+		    </div>
+	    </div>
+    </div>
+</div>
+<script type="text/javascript">
+	const prgevt = document.querySelector("#prgevt");         // 진행중인 이벤트
+	const searchMeta = document.querySelector("#searchMeta"); // 검색창   
+	const endevt = document.querySelectorAll(".endevt");         // 종료된 이벤트
+	const endevts = document.querySelectorAll(".endevt");         // 종료된 이벤트
+	const aTag = document.querySelectorAll(".nav-link");	// 이벤트 탭
+	const metaBtn = document.querySelector("#metaBtn");     // metaBtn
+	const ing = document.querySelector(".ing");
+	const end = document.querySelector(".end");
+	
+	function fprgevt(){
+	    event.preventDefault();
+	    ing.classList.add("active");
+		end.classList.remove("active");
+	    
+	    /* searchMeta.style.display = 'none'; */
+	    for (const endevt of endevts){
+	        endevt.style.display = 'none';
+	    }
+	    prgevt.style.display = 'block';
+	}
+	
+	function fendevt(){
+	    event.preventDefault();
+	    end.classList.add("active");
+	    ing.classList.remove("active");
+	    /* searchMeta.style.display = 'block'; */
+	    for (const endevt of endevts){
+	        endevt.style.display = 'block';
+	    }
+	    prgevt.style.display = 'none';
+	}
+	
+$(document).ready(function () {
+	$("#ifr").css('display', 'none');
+});
+	// JavaScript 스크립트
+	// 해당 부분은 모달과 버튼들 간의 상호작용을 구현하는 스크립트입니다.
+	var $button = $('.button'); // 버튼들을 jQuery 선택자로 가져옴
+	var $modalContainer = $('#modal-container'); // 모달 컨테이너를 jQuery 선택자로 가져옴
+	var $body = $('body'); // body 요소를 jQuery 선택자로 가져옴
+	var $content = $('.content'); // 컨텐츠를 jQuery 선택자로 가져옴
+	var btnId;
+ 	
+	// 버튼 클릭 이벤트 핸들러
+	$button.on('click', function() {
+		$("#ifr").css('display', 'block');
+		btnId = $(this).attr('id'); // 클릭된 버튼의 id를 가져옴
+		$modalContainer.removeAttr('class').addClass(btnId);
+		; // 모달 컨테이너의 클래스를 버튼의 id로 변경하여 해당 애니메이션을 적용
+		$content.removeAttr('class').addClass('content'); // 컨텐츠의 클래스를 초기화
+
+		$body.addClass('modal-active'); // body에 'modal-active' 클래스 추가하여 모달이 나타남
+
+	});
+
+	// 모달 및 모달 배경 클릭 이벤트 핸들러
+	$modalContainer.on('click', function() {
+		$(this).addClass('out'); // 모달 컨테이너에 'out' 클래스 추가하여 모달을 사라지게 함
+		$body.removeClass('modal-active'); // body에서 'modal-active' 클래스 제거하여 모달이 사라짐
+		if ($(this).hasClass(btnId)) {
+			$content.addClass('out'); // 컨텐츠에 'out' 클래스 추가하여 애니메이션 효과 적용
+		}
+		$("#ifr").css('display', 'none');
+	});
+</script>

@@ -1,0 +1,153 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div class="create-post detail_title_box">
+		<div>지원하기 </div>
+	</div>
+	
+	<div class="checkout-meta">
+		<form action="/entertain/audition/auditionSupportFrom.do" 
+		method="post" class="c-form" id="registerForm" enctype="multipart/form-data">
+			<div class="row">
+				<div class="col-lg-12 col-sm-12">
+					<label>제목</label>
+					<input type="text" id="arTitle" name="arTitle" placeholder="제목">
+				</div>
+				<div class="col-lg-6 col-sm-12">
+					<label>지원분야</label>
+					<select class="mb-2" id="arCategory" name="arCategory">
+						<option>선택</option>
+						<option>랩</option>
+						<option>보컬</option>
+						<option>댄스</option>
+						<option>작곡</option>
+					</select>
+				</div>
+				<div class="col-lg-6 col-sm-12">
+					<label>국적</label>
+					<select class="mb-2" id="nationName" name="arNation">
+						<option>선택</option>
+						<c:forEach items="${nationList }" var="nation">
+							<option value="${nation.nationName }"></option>
+						</c:forEach>
+					</select>
+				</div>
+				<div class="col-lg-6 col-sm-12">
+					<label>비밀번호</label>
+					<input type="text" id="arPw" name="arPw" placeholder="비밀번호">
+				</div>
+				<div class="col-lg-6 col-sm-12">
+					<label>비밀번호 확인</label>
+					<input type="text" id="arPw1" name="arPw1" placeholder="비밀번호 확인">
+				</div>
+				<div class="col-lg-6 col-sm-12">
+					<label>이름</label>
+					<input type="text" id="arName" name="arName" placeholder="이름">
+				</div>
+				<div class="col-lg-6 col-sm-12">
+					<label>성별</label>
+					<div class="gender_box">
+						<div class="gender_male">
+							<span>남자</span>
+							<input type="radio" id="arGenderMale" name="arGender">
+						</div>
+						<div class="gender_female">
+							<span>여자</span>
+							<input type="radio" id="arGenderFemale" name="arGender">
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6 col-sm-12">
+					<label>생년월일</label>
+					<input type="date" id="arBirth" name="arBirth">
+				</div>
+				<div class="col-lg-2 col-sm-12 cm_kg_box">
+					<label>신장/체중</label>
+					<div class="cm_box">
+						<input type="text" id="arHeight" name="arHeight" placeholder="신장">
+						<span>cm</span>
+					</div>
+				</div>
+				<div class="col-lg-2 col-sm-12">
+					<div class="kg_box">
+						<input type="text" id="arWeight" name="arWeight" placeholder="체중">
+						<span>kg</span>
+					</div>
+				</div>
+				<div class="col-lg-6 col-sm-12">
+					<label>연락처</label>
+					<input type="text" id="arTelno" name="arTelno" placeholder="연락처">
+				</div>
+				<div class="col-lg-6 col-sm-12">
+					<label>이메일</label>
+					<input type="text" id="arEmail" name="arEmail" placeholder="이메일">
+				</div>
+				<div class="col-lg-6 col-sm-12">
+					<label>학력(선택)</label>
+					<input type="text" id="arEducation" name="arEducation" placeholder="학력">
+				</div>
+				<div class="col-lg-6 col-sm-12">
+					<label>경력(선택)</label>
+					<input type="text" id="arCareer" name="arCareer" placeholder="경력">
+				</div>
+				<div class="col-lg-12 col-sm-12">
+					<label>특기(선택)</label>
+<!-- 					<input type="text" id="arSpecialty" name="arSpecialty" placeholder="특기"> -->
+						<textarea rows="5px" cols="0px" id="arSpecialty" name="arSpecialty" placeholder="특기"></textarea>
+				</div>
+				<div class="col-lg-12 col-sm-12">
+					<label>증명사진</label>
+					<input type="file" id="arPhoto" name="arPhoto">
+				</div>
+				<div class="col-lg-12 col-sm-12">
+					<label>자료영상</label>
+					<input type="file" id="arVideo" name="arVideo">
+				</div>
+				<div class="agree">
+					<span class="agree_title">개인정보 수집 및 이용에 대한 안내</span>
+					<div class="agree_box">
+						<span class="agree_content">
+							IF_ENTERTAINMENT(이하 ‘회사’)는 지원자의 개인정보를 중요시하며, “정보통신망 이용촉진 및 정보보호”에 관한 법률을 준수하고 있습니다. <br>
+							회사는 개인정보취급방침을 통하여 지원자께서 제공하시는 개인정보가 어떠한 용도와 방식으로 이용되고 있으며, <br>
+							개인정보보호를 위해 어떠한 조치가 취해지고 있는지 알려드입니다. <br>
+							회사는 개인정보취급방침을 개정하는 경우 웹사이트 공지사항(또는 개별공지)을 통하여 공지할 것입니다. <br>
+							<br>
+							[수집하는 개인정보 항목] <br>
+							회사는 원활한 지원자 상담서비스 제공을 위해 아래와 같은 개인정보를 수집하고 있습니다. <br>
+							수집항목 : 이름, 성별, 생년월일, 휴대폰번호, 이메일 
+						</span>
+					</div>
+				</div>
+				<div class="col-lg-12 col-sm-12">
+					<div class="checkbox">
+					<label>
+						<input type="checkbox" checked="checked" id="check"><i class="check-box"></i>
+						<span>개인정보 수집 및 이용에 동의합니다.</span>
+					</label>
+					<span>※ 만 14세 미만 청소년의 경우 온라인 오디션 지원이 불가하므로 현장 공개 오디션을 통해 지원바랍니다. </span>
+					</div>
+					<div class="support_button">
+						<button type="submit" class="main-btn support register">등록</button>
+						<button class="main-btn">
+							<a href="/entertain/audition/auditionSupportGuide.do">취소</a>
+						</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>	
+</body>
+<script type="text/javascript">
+$(function() {
+	document.getElementById(".check-box").checked=false;
+});
+</script>
+</html>

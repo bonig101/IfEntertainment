@@ -1,0 +1,216 @@
+package kr.or.ddit.controller.entertain;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import kr.or.ddit.service.entertain.IFinanceService;
+import kr.or.ddit.vo.entertain.FinanceExcelVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 재무정보 조회 및 다운로드
+ * @author 조재훈
+ */
+@Controller
+@Slf4j
+@RequestMapping("/entertain/finance")
+public class FinancialRetrieveController {
+	// 회원은 관리자가 올려놓은 재무재표를 조회한다.
+	// 테이블 위에 다운로드 버튼이 있어서 누르면 엑셀로 재무재표 내용을 뽑아볼 수 있다.
+	@Inject
+	private IFinanceService financeService;
+    
+	@RequestMapping(value = "/home1.do", method = RequestMethod.GET)
+    public String home() {
+        return "entertain/excel";
+    }
+	
+	@GetMapping("/home.do")
+    public void excelDown(HttpServletResponse response) throws IOException {
+        List<FinanceExcelVO> list = financeService.excelDown();
+        log.info("리스트 데이터: " + list);
+        if (list == null || list.isEmpty()) {
+            log.info("리스트가 비어 있거나 null입니다.");
+            return;
+        }
+
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=\"excelDownload.xlsx\"");
+
+        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+            XSSFSheet sheet = workbook.createSheet("결과");
+
+            // 연도
+            XSSFRow fiYearRow = sheet.createRow(0);
+            XSSFCell fiYearHeaderCell = fiYearRow.createCell(0);
+            fiYearHeaderCell.setCellValue("연도");
+
+            // 자산총계
+            XSSFRow fiAssetRow = sheet.createRow(1);
+            XSSFCell fiAssetHeaderCell = fiAssetRow.createCell(0);
+            fiAssetHeaderCell.setCellValue("자산총계");
+
+            // 유동자산
+            XSSFRow fiCassetRow = sheet.createRow(2);
+            XSSFCell fiCassetHeaderCell = fiCassetRow.createCell(0);
+            fiCassetHeaderCell.setCellValue("유동자산");
+
+            // 비유동자산
+            XSSFRow fiNassetRow = sheet.createRow(3);
+            XSSFCell fiNassetHeaderCell = fiNassetRow.createCell(0);
+            fiNassetHeaderCell.setCellValue("비유동자산");
+
+            // 부채총계
+            XSSFRow fiLiabilitiesRow = sheet.createRow(4);
+            XSSFCell fiLiabilitiesHeaderCell = fiLiabilitiesRow.createCell(0);
+            fiLiabilitiesHeaderCell.setCellValue("부채총계");
+
+            // 유동부채
+            XSSFRow fiCliabilitiesRow = sheet.createRow(5);
+            XSSFCell fiCliabilitiesHeaderCell = fiCliabilitiesRow.createCell(0);
+            fiCliabilitiesHeaderCell.setCellValue("유동부채");
+
+            // 비유동부채
+            XSSFRow fiNliailitiesRow = sheet.createRow(6);
+            XSSFCell fiNliailitiesHeaderCell = fiNliailitiesRow.createCell(0);
+            fiNliailitiesHeaderCell.setCellValue("비유동부채");
+
+            // 자본총계
+            XSSFRow fiTotalcapitalRow = sheet.createRow(7);
+            XSSFCell fiTotalcapitalHeaderCell = fiTotalcapitalRow.createCell(0);
+            fiTotalcapitalHeaderCell.setCellValue("자본총계");
+
+            // 지배기업주주지분
+            XSSFRow fiPcseRow = sheet.createRow(8);
+            XSSFCell fiPcseHeaderCell = fiPcseRow.createCell(0);
+            fiPcseHeaderCell.setCellValue("지배기업주주지분");
+
+            // 자본금
+            XSSFRow fiCapitalRow = sheet.createRow(9);
+            XSSFCell fiCapitalHeaderCell = fiCapitalRow.createCell(0);
+            fiCapitalHeaderCell.setCellValue("자본금");
+
+            // 주식발행초과금
+            XSSFRow fiSisRow = sheet.createRow(10);
+            XSSFCell fiSisHeaderCell = fiSisRow.createCell(0);
+            fiSisHeaderCell.setCellValue("주식발행초과금");
+
+            // 기타자본
+            XSSFRow fiOhtercapitalRow = sheet.createRow(11);
+            XSSFCell fiOhtercapitalHeaderCell = fiOhtercapitalRow.createCell(0);
+            fiOhtercapitalHeaderCell.setCellValue("기타자본");
+
+            // 기타포괄손익누계액
+            XSSFRow fiAociRow = sheet.createRow(12);
+            XSSFCell fiAociHeaderCell = fiAociRow.createCell(0);
+            fiAociHeaderCell.setCellValue("기타포괄손익누계액");
+            
+            // 이익잉여금
+            XSSFRow fiReRow = sheet.createRow(13);
+            XSSFCell fiReHeaderCell = fiReRow.createCell(0);
+            fiReHeaderCell.setCellValue("이익잉여금");
+
+            // 비지배지분
+            XSSFRow fiNciRow = sheet.createRow(14);
+            XSSFCell fiNciHeaderCell = fiNciRow.createCell(0);
+            fiNciHeaderCell.setCellValue("비지배지분");
+
+
+            int cellIndex = 1; // 헤더 이후의 데이터를 채우기 시작할 셀 인덱스
+
+            for (FinanceExcelVO vo : list) {
+                // 연도
+                XSSFCell fiYearCell = fiYearRow.createCell(cellIndex);
+                fiYearCell.setCellValue(vo.getFiYear());
+
+                // 자산총계
+                XSSFCell fiAssetCell = fiAssetRow.createCell(cellIndex);
+                fiAssetCell.setCellValue(vo.getFiAsset());
+
+                // 유동자산
+                XSSFCell fiCassetCell = fiCassetRow.createCell(cellIndex);
+                fiCassetCell.setCellValue(vo.getFiCasset());
+
+                // 비유동자산
+                XSSFCell fiNassetCell = fiNassetRow.createCell(cellIndex);
+                fiNassetCell.setCellValue(vo.getFiNasset());
+
+                // 부채총계
+                XSSFCell fiLiabilitiesCell = fiLiabilitiesRow.createCell(cellIndex);
+                fiLiabilitiesCell.setCellValue(vo.getFiLiabilities());
+
+                // 유동부채
+                XSSFCell fiCliabilitiesCell = fiCliabilitiesRow.createCell(cellIndex);
+                fiCliabilitiesCell.setCellValue(vo.getFiCliabilities());
+
+                // 비유동부채
+                XSSFCell fiNliailitiesCell = fiNliailitiesRow.createCell(cellIndex);
+                fiNliailitiesCell.setCellValue(vo.getFiNliabilities());
+
+                // 자본총계
+                XSSFCell fiTotalcapitalCell = fiTotalcapitalRow.createCell(cellIndex);
+                fiTotalcapitalCell.setCellValue(vo.getFiTotalcapital());
+
+                // 지배기업주주지분
+                XSSFCell fiPcseCell = fiPcseRow.createCell(cellIndex);
+                fiPcseCell.setCellValue(vo.getFiPcse());
+
+                // 자본금
+                XSSFCell fiCapitalCell = fiCapitalRow.createCell(cellIndex);
+                fiCapitalCell.setCellValue(vo.getFiCapital());
+
+                // 주식발행초과금
+                XSSFCell fiSisCell = fiSisRow.createCell(cellIndex);
+                fiSisCell.setCellValue(vo.getFiSis());
+
+                // 기타자본
+                XSSFCell fiOhtercapitalCell = fiOhtercapitalRow.createCell(cellIndex);
+                fiOhtercapitalCell.setCellValue(vo.getFiOthercapital());
+
+                // 기타포괄손익누계액
+                XSSFCell fiAociCell = fiAociRow.createCell(cellIndex);
+                fiAociCell.setCellValue(vo.getFiAoci());
+
+                // 이익잉여금
+                XSSFCell fiReCell = fiReRow.createCell(cellIndex);
+                fiReCell.setCellValue(vo.getFiRe());
+
+                // 비지배지분
+                XSSFCell fiNciCell = fiNciRow.createCell(cellIndex);
+                fiNciCell.setCellValue(vo.getFiNci());
+
+                cellIndex++; // 다음 열로 이동
+            }
+            workbook.write(response.getOutputStream()); // 클라이언트에게 파일 전송
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 에러 처리 로직으로 대체 가능
+        }
+    }
+	
+	@RequestMapping(value = "finance.do", method = RequestMethod.GET)
+	public String financeList(Model model) {
+		List<FinanceExcelVO> list = financeService.excelDown();
+		
+		
+		model.addAttribute("list", list);
+		
+		return "entertain/finance";
+	}
+	
+	
+	
+}

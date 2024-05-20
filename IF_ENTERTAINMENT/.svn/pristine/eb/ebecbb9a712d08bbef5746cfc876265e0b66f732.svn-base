@@ -1,0 +1,494 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+
+.gray-bg {
+    float: left;
+    width: 100%;
+      background: none; 
+}
+
+.central-meta {
+    background: none; /* 백그라운드 컬러 없애기 */
+    border: none; /* 보더 없애기 */
+    padding:50px;
+}
+
+.profile-intro {
+    text-align: center;
+    width: 40%;
+    margin: 0 auto;
+    /* 넘치는 내용 숨김으로부터 변경 */
+    overflow-wrap: break-word; /* 단어 단위로 줄바꿈 */
+    white-space: normal; /* 내용을 필요에 따라 줄바꿈 */
+    /* text-overflow: ellipsis; 이 속성은 제거 */
+    /* 추가적인 스타일링 */
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+@keyframes pulsate {
+  50% {
+    box-shadow:
+      0 0 10px rgba(255, 255, 255, 0),
+      10px 0 40px #f0f,
+      -10px 0 40px #0ff,
+      inset 0 0 25px #fff,
+      inset -25px 0 40px #f0f,
+      inset 25px 0 40px #0ff,
+      inset -25px 0 150px #f0f,
+      inset 25px 0 150px #0ff;
+  }
+}
+
+
+.auz {
+  width: 500px;
+  height: 200px;
+  
+  animation: pulsate 6s linear infinite;
+  margin-left: 20px;
+  z-index: 99999; 
+}
+
+.intro {
+margin-top: 20px;
+  text-align: center; /* 텍스트를 가운데 정렬 */
+  top: 50%; /* 부모 요소의 상단 기준으로 50% */
+  overflow-wrap: break-word; /* 단어 단위로 줄바꿈 */
+  white-space: normal; /* 내용을 필요에 따라 줄바꿈 */
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+.image-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.image-wrapper img {
+    margin-right: 20px; /* 이미지와 다른 요소 사이의 간격을 조절할 수 있습니다. */
+}
+
+:root {
+  --size-cube: 210px;
+  --faces-interval: calc((var(--size-cube) / 2) / 5);
+  --size-dot: 2px;
+  --delay-anim: .3s;
+}
+
+body {
+  -webkit-text-size-adjust: none;
+  -webkit-font-smoothing: antialiased!important;
+  text-rendering: optimizeLegibility!important;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.mod {
+
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  perspective: 330px;
+  
+}
+
+.mod .project-name {
+  position: absolute;
+  width: calc(var(--size-cube) * 2);
+  top: 50%;
+  left: 70%;
+  transform: translate(-50%, -50%);
+  color: black;
+  text-transform: uppercase;
+  letter-spacing: 0.5em;
+  text-align: center;
+  line-height: 1.5em;
+  font-weight: 300;
+}
+
+.mod .cube {
+  position: absolute;
+  top: 50%;
+  left: 70%;
+  margin-top: calc(-1 * var(--size-cube) / 2);
+  margin-left: calc(-1 * var(--size-cube) / 2);
+  width: var(--size-cube);
+  height: var(--size-cube);
+  transform-style: preserve-3d;
+  transform-origin: calc(var(--size-cube) / 2) calc(var(--size-cube) / 2);
+  animation: spinCube 9000ms linear infinite;
+}
+
+.mod .cube .faces {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: var(--size-cube);
+  height: var(--size-cube);
+}
+
+.mod .cube .faces .dot {
+  position: absolute;
+  background: #ff00ff; /* 원하는 색상 */
+  width: var(--size-dot);
+  height: var(--size-dot);
+  border-radius: 50%;
+}
+
+
+.mod .cube .faces .p1 {
+  top: calc(-1 * var(--size-dot) / 2);
+  margin-left: calc(-1 * var(--size-dot) / 2);
+}
+
+.mod .cube .faces .p2 {
+  top: calc(-1 * var(--size-dot) / 2);
+  left: 50%;
+  margin-left: calc(-1 * var(--size-dot) / 2);
+}
+
+.mod .cube .faces .p3 {
+  top: calc(-1 * var(--size-dot) / 2);
+  left: 100%;
+  margin-left: calc(-1 * var(--size-dot) / 2);
+}
+
+.mod .cube .faces .p4 {
+  top: 50%;
+  left: calc(-1 * var(--size-dot) / 2);
+  margin-top: calc(-1 * var(--size-dot) / 2);
+}
+
+.mod .cube .faces .p5 {
+  top: 50%;
+  left: 50%;
+  margin-top: calc(-1 * var(--size-dot) / 2);
+  margin-left: calc(-1 * var(--size-dot) / 2);
+}
+
+.mod .cube .faces .p6 {
+  top: 50%;
+  left: 100%;
+  margin-top: calc(-1 * var(--size-dot) / 2);
+  margin-left: calc(-1 * var(--size-dot) / 2);
+}
+
+.mod .cube .faces .p7 {
+  top: 100%;
+  left: 0%;
+  margin-top: calc(-1 * var(--size-dot) / 2);
+  margin-left: calc(-1 * var(--size-dot) / 2);
+}
+
+.mod .cube .faces .p8 {
+  top: 100%;
+  left: 50%;
+  margin-top: calc(-1 * var(--size-dot) / 2);
+  margin-left: calc(-1 * var(--size-dot) / 2);
+}
+
+.mod .cube .faces .p9 {
+  top: 100%;
+  left: 100%;
+  margin-top: calc(-1 * var(--size-dot) / 2);
+  margin-left: calc(-1 * var(--size-dot) / 2);
+}
+
+.mod .cube .faces .p10 {
+  top: 25%;
+  left: 25%;
+  margin-top: calc(-1 * var(--size-dot) / 2);
+  margin-left: calc(-1 * var(--size-dot) / 2);
+}
+
+.mod .cube .faces .p11 {
+  top: 25%;
+  left: 75%;
+  margin-top: calc(-1 * var(--size-dot) / 2);
+  margin-left: calc(-1 * var(--size-dot) / 2);
+}
+
+.mod .cube .faces .p12 {
+  top: 75%;
+  left: 25%;
+  margin-top: calc(-1 * var(--size-dot) / 2);
+  margin-left: calc(-1 * var(--size-dot) / 2);
+}
+
+.mod .cube .faces .p13 {
+  top: 75%;
+  left: 75%;
+  margin-top: calc(-1 * var(--size-dot) / 2);
+  margin-left: calc(-1 * var(--size-dot) / 2);
+}
+
+.mod .cube .f1 {
+  transform: translateZ(calc(-1 * var(--faces-interval) * 5));
+  animation-delay: var(--delay-anim);
+}
+
+.mod .cube .f2 {
+  transform: translateZ(calc(-1 * var(--faces-interval) * 4));
+  animation-delay: calc(var(--delay-anim) * 2);
+}
+
+.mod .cube .f3 {
+  transform: translateZ(calc(-1 * var(--faces-interval) * 3));
+  animation-delay: calc(var(--delay-anim) * 3);
+}
+
+.mod .cube .f4 {
+  transform: translateZ(calc(-1 * var(--faces-interval) * 2));
+  animation-delay: calc(var(--delay-anim) * 4);
+}
+
+.mod .cube .f5 {
+  transform: translateZ(calc(-1 * var(--faces-interval) * 1));
+  animation-delay: calc(var(--delay-anim) * 5);
+}
+
+.mod .cube .f6 {
+  transform: translateZ(0px);
+  animation-delay: calc(var(--delay-anim) * 6);
+}
+
+.mod .cube .f7 {
+  transform: translateZ(calc(var(--faces-interval) * 1));
+  animation-delay: calc(var(--delay-anim) * 7);
+}
+
+.mod .cube .f8 {
+  transform: translateZ(calc(var(--faces-interval) * 2));
+  animation-delay: calc(var(--delay-anim) * 8);
+}
+
+.mod .cube .f9 {
+  transform: translateZ(calc(var(--faces-interval) * 3));
+  animation-delay: calc(var(--delay-anim) * 9);
+}
+
+.mod .cube .f10 {
+  transform: translateZ(calc(var(--faces-interval) * 4));
+  animation-delay: calc(var(--delay-anim) * 10);
+}
+
+.mod .cube .f11 {
+  transform: translateZ(calc(var(--faces-interval) * 5));
+  animation-delay: calc(var(--delay-anim) * 11);
+}
+
+@keyframes spinCube {
+  0% {
+    transform: rotateY(0deg) rotateX(-45deg) rotate(0deg);
+  }
+  50% {
+    transform: rotateY(180deg) rotateX(135deg) rotate(180deg);
+  }
+  100% {
+    transform: rotateY(360deg) rotateX(315deg) rotate(360deg);
+  }
+}
+
+
+
+</style>
+</head>
+<body>
+		<div class="artname">
+			<h2 style="line-height: 2.2;">🎤 ${profile.agName }</h2>
+		</div>
+
+<div class="image-wrapper">
+    <img src="${pageContext.request.contextPath }/resources/artImg/${profile.agProfile}" alt="" style="width: 760px; height: 520px; object-fit: cover; border-radius: 7px;">
+<!--     <div class="auz"> -->
+</div>
+
+
+
+<div class="mod">
+  <div class="cube">
+    
+    <div class="faces f1">
+      
+      <div class="dot p1"></div>
+      <div class="dot p2"></div>
+      <div class="dot p3"></div>
+      
+      <div class="dot p4"></div>
+      <div class="dot p5"></div>
+      <div class="dot p6"></div>
+      
+      <div class="dot p7"></div>
+      <div class="dot p8"></div>
+      <div class="dot p9"></div>
+  
+    </div>
+    
+    <div class="faces f2">
+      
+      <div class="dot p10"></div>
+      <div class="dot p11"></div>
+      <div class="dot p12"></div>
+      <div class="dot p13"></div>
+  
+    </div>
+    
+    <div class="faces f3">
+      
+      <div class="dot p1"></div>
+      <div class="dot p2"></div>
+      <div class="dot p3"></div>
+      
+      <div class="dot p4"></div>
+      <div class="dot p5"></div>
+      <div class="dot p6"></div>
+      
+      <div class="dot p7"></div>
+      <div class="dot p8"></div>
+      <div class="dot p9"></div>
+  
+    </div>
+  
+    <div class="faces f4">
+      
+      <div class="dot p10"></div>
+      <div class="dot p11"></div>
+      <div class="dot p12"></div>
+      <div class="dot p13"></div>
+  
+    </div>
+  
+    <div class="faces f5">
+      
+      <div class="dot p1"></div>
+      <div class="dot p2"></div>
+      <div class="dot p3"></div>
+      
+      <div class="dot p4"></div>
+      <div class="dot p5"></div>
+      <div class="dot p6"></div>
+      
+      <div class="dot p7"></div>
+      <div class="dot p8"></div>
+      <div class="dot p9"></div>
+  
+    </div>
+  
+    <div class="faces f6">
+      
+      <div class="dot p10"></div>
+      <div class="dot p11"></div>
+      <div class="dot p12"></div>
+      <div class="dot p13"></div>
+  
+    </div>
+  
+    <div class="faces f7">
+      
+      <div class="dot p1"></div>
+      <div class="dot p2"></div>
+      <div class="dot p3"></div>
+      
+      <div class="dot p4"></div>
+      <div class="dot p5"></div>
+      <div class="dot p6"></div>
+      
+      <div class="dot p7"></div>
+      <div class="dot p8"></div>
+      <div class="dot p9"></div>
+  
+    </div>
+  
+    <div class="faces f8">
+      
+      <div class="dot p10"></div>
+      <div class="dot p11"></div>
+      <div class="dot p12"></div>
+      <div class="dot p13"></div>
+  
+    </div>
+  
+    <div class="faces f9">
+      
+      <div class="dot p1"></div>
+      <div class="dot p2"></div>
+      <div class="dot p3"></div>
+      
+      <div class="dot p4"></div>
+      <div class="dot p5"></div>
+      <div class="dot p6"></div>
+      
+      <div class="dot p7"></div>
+      <div class="dot p8"></div>
+      <div class="dot p9"></div>
+  
+    </div>
+  
+    <div class="faces f10">
+      
+      <div class="dot p10"></div>
+      <div class="dot p11"></div>
+      <div class="dot p12"></div>
+      <div class="dot p13"></div>
+  
+    </div>
+  
+    <div class="faces f11">
+      
+      <div class="dot p1"></div>
+      <div class="dot p2"></div>
+      <div class="dot p3"></div>
+      
+      <div class="dot p4"></div>
+      <div class="dot p5"></div>
+      <div class="dot p6"></div>
+      
+      <div class="dot p7"></div>
+      <div class="dot p8"></div>
+      <div class="dot p9"></div>
+  
+    </div>
+    
+  </div>
+  
+  <div class="project-name">
+    <div class="l1">${profile.agIntro }</div>
+    <div class="l2"></div>
+  </div>
+  
+</div>
+
+
+
+	<div class="central-meta">
+		<span class="create-post">🌈 Member</span>
+		<ul class="suggested-frnd-caro invite">
+			<c:forEach var="artist" items="${artistList }">
+				<li><img src="${artist.userProfile }" alt="">
+					<div class="sugtd-frnd-meta">
+						<p>${artist.artistFakename}</p>
+						<span>${artist.artistBirth }</span>
+					</div>
+			</li>
+			</c:forEach>
+		</ul>
+	</div>
+	<!-- Invite friends -->
+</body>
+
+<script type="text/javascript">
+
+</script>
+
+</html>

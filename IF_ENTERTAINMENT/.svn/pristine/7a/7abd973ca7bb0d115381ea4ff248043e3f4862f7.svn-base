@@ -1,0 +1,47 @@
+package kr.or.ddit.service.impl.community;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.community.IMemberManageMapper;
+import kr.or.ddit.service.community.IMemberManageService;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.common.UserVO;
+import kr.or.ddit.vo.community.FeedReportVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class MemberManageServiceImpl implements IMemberManageService {
+	
+	@Inject
+	private IMemberManageMapper memberManageMapper;
+
+	@Override
+	public int selectMemberCount(PaginationInfoVO<UserVO> pagingVO) {
+		return memberManageMapper.selectMemberCount(pagingVO);
+	}
+
+	@Override
+	public List<UserVO> memberList(PaginationInfoVO<UserVO> pagingVO) {
+		return memberManageMapper.memberList(pagingVO);
+	}
+
+	@Override
+	public int selectFeedReportCount(PaginationInfoVO<FeedReportVO> pagingVO) {
+		return memberManageMapper.selectFeedReportCount(pagingVO);
+	}
+
+	@Override
+	public List<FeedReportVO> feedReportList(PaginationInfoVO<FeedReportVO> pagingVO) {
+		
+//		log.info("pagingVO.getStartRow() {}", pagingVO.getStartRow());
+//		log.info("pagingVO.getEndRow() {}", pagingVO.getEndRow());
+		
+		return memberManageMapper.feedReportList(pagingVO);
+	}
+
+}

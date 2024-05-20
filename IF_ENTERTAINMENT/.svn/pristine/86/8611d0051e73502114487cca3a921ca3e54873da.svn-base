@@ -1,0 +1,17 @@
+package kr.or.ddit.service.entertain;
+
+import java.util.List;
+
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.AuditionBoardVO;
+
+public interface IAuditionService {
+
+	public int selectNoticeCount(PaginationInfoVO<AuditionBoardVO> pagingVO);
+
+	public List<AuditionBoardVO> auditionScheduleList(PaginationInfoVO<AuditionBoardVO> pagingVO);
+
+	public AuditionBoardVO auditionScheduleDetail(int bfNo);
+
+
+}

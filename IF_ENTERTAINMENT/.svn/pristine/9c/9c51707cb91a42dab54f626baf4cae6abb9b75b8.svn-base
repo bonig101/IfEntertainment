@@ -1,0 +1,94 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<div class="gap no-gap">
+    <div class="inner-bg">
+        <div class="element-title">
+            <h2>IR 자료 등록</h2>
+        </div>
+        <div class="add-prod-from">
+            <form action="/entertain/irFile/insert.do" method="post" id="irForm" enctype="multipart/form-data">
+                <div class="row row-addproduct">
+                    <div class="col-md-8">
+                        <div class="addproduct-title">
+                            <span>제목</span>
+                        </div>
+                        <input type="text" id="bfTitle" name="bfTitle">
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="addproduct-title">
+                            <span>IR PPT</span>
+                        </div>
+                        <label class="fileContainer"> 
+                        	<span><i class="fa-solid fa-plus"></i></span>
+                            <input type="file" id="irPPT" name="irPPT" />
+                        </label>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="addproduct-title">
+                            <span>IR FACT Sheet</span>
+                        </div>
+                        <label class="fileContainer"> 
+                        	<span><i class="fa-solid fa-plus"></i></span>
+                            <input type="file" id="irPDF" name="irPDF" />
+                        </label>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="buttonz">
+                            <button type="button" id="addBtn">등록하기</button>
+                            <button type="button" id="listBtn">목록</button>
+                            <button type="button" id="cancelBtn">등록취소</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(function () {
+	
+	var irForm = $("#irForm");
+	var listBtn = $("#listBtn");
+	var addBtn = $("#addBtn");
+	var cancelBtn = $("#cancelBtn");
+	
+	addBtn.on("click", function () {
+		var bfTitle = $("#bfTitle").val();
+		var irPPT = $("#irPPT")[0].files[0];
+		var irPDF = $("#irPDF")[0].files[0];
+		
+		if(bfTitle == null || bfTitle == ""){
+			Swal.fire(
+					  '제목이 입력되지 않았습니다.',
+					  '',
+					  'warning'
+			)
+			$("#bfTitle").focus();
+			return false;
+		}
+
+		if (irPPT == null || irPDF == null) {
+		    alert('파일을 선택해주세요.');
+		    return false;
+		}
+		
+		
+		irForm.submit();
+		
+	});
+	
+	listBtn.on("click", function () {
+	
+	});
+	
+	cancelBtn.on("click", function () {
+		
+	});
+	
+});
+</script>

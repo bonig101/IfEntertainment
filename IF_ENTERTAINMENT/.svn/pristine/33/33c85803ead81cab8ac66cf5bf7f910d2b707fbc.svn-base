@@ -1,0 +1,21 @@
+package kr.or.ddit.service.entertain;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.CompanyNoticeVO;
+
+public interface ICompanyNoticeService {
+
+	ServiceResult insertCompanyNotice(HttpServletRequest req, CompanyNoticeVO companyNoticetVO);
+
+	int selectCompanyNoticeCount(PaginationInfoVO<CompanyNoticeVO> pagingVO);
+
+	List<CompanyNoticeVO> selectCompanyNoticeList(PaginationInfoVO<CompanyNoticeVO> pagingVO);
+
+	CompanyNoticeVO selectCompanyNotice(int bfNo);
+	
+}

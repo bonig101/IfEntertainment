@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.community.IFeedMapper">
+		<resultMap type="feedVO" id="feedMap">
+			<id property="feedNo" column="feed_no" />
+			<result property="feedType" column="feed_type" />
+			<result property="feedRegdate" column="feed_regdate" />
+			<result property="feedContent" column="feed_content" />
+			<result property="feedMembership" column="feed_membership" />
+			<result property="feedDelyn" column="feed_delyn" />
+			<result property="userNo" column="user_no" />
+			<result property="agId" column="ag_id" />
+			<result property="faSavepath" column="fa_savepath" />
+			<result property="faSavedname" column="fa_savedname" />
+			<result property="faName" column="fa_name" />
+			<result property="mnNickName" column="mn_nickname" />
+			<result property="faMime" column="fa_mime" />
+		</resultMap>
+
+
+		<sql id="feedSearch">
+			<if test="searchType != null and searchType == 'content'">
+				and(feed_content like '%'||#{searchWord}||'%')
+			</if>
+	
+		</sql>
+
+	
+		<select id="selectFeedListCount"  parameterType="pagingVO" resultType="int" >
+			select count(feed_no)
+				from feed 
+				where 1=1
+				and feed_delyn = 'N'
+				<include refid="feedSearch"></include>
+		</select>
+	
+
+		<select id="selectFeedList" resultType="feedVO" resultMap="feedMap">
+		    select
+		        b.*, mn.mn_nickname
+		    from (
+		        select
+		            a.*, row_number() over(order by feed_no desc) rnum
+		        from (
+		            select
+		                f.feed_no, f.feed_type, f.feed_content, f.feed_regdate, 
+		                f.feed_membership, f.feed_delyn, f.user_no, f.ag_id
+		            from feed f
+		            left outer join "USER" u on f.user_no = u.user_no
+		            left outer join feed_attachfile fa on f.feed_no = fa.feed_no
+		            where 1=1
+		            <include refid="feedSearch" />
+		            and f.feed_delyn = 'N'
+		            order by f.feed_no desc
+		        ) a
+		    ) b
+		    left outer join member_nickname mn on b.user_no = mn.user_no
+		    <![CDATA[
+		    where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		    ]]>
+		</select>
+	<!-- 		<select id="selectFeedList" resultType="feedVO" resultMap="feedMap"> -->
+<!-- 			select -->
+<!-- 				    b.* -->
+<!-- 				from ( -->
+<!-- 				    select -->
+<!-- 				        a.*, row_number() over(order by feed_no desc) rnum -->
+<!-- 				    from ( -->
+<!-- 				        select -->
+<!-- 				            f.feed_no, f.feed_type, f.feed_content, f.feed_regdate,  -->
+<!-- 				            f.feed_membership, f.feed_delyn, f.user_no, f.ag_id -->
+<!-- 				        from feed f -->
+<!-- 				        left outer join "USER" u on f.feed_no = u.user_no -->
+<!-- 				        left outer join feed_attachfile fa on f.feed_no = fa.feed_no -->
+<!-- 				        where 1=1 -->
+<!-- 				        <include refid="feedSearch" /> -->
+<!-- 				        and f.feed_delyn = 'N' -->
+<!-- 				        order by f.feed_no desc -->
+<!-- 				    ) a -->
+<!-- 				) b -->
+<!-- 				<![CDATA[ -->
+<!-- 				where b.rnum >= #{startRow} and b.rnum <= #{endRow} -->
+<!-- 				]]> -->
+	
+<!-- 		</select> -->	
+		
+		
+		
+		
+	
+	
+		<update id="deleteFeed">
+			update feed
+			set feed_delyn='Y'
+			where feed_no=#{feedNo}
+		</update>
+	
+		<select id="feedListDetail" resultType="feedVO">
+		    SELECT f.*, fa.FA_SAVEDNAME, mn.MN_NICKNAME,fa.FA_MIME
+		    FROM feed f
+		    LEFT JOIN feed_attachfile fa ON f.feed_no = fa.feed_no
+		    LEFT JOIN member_nickname mn ON f.user_no = mn.user_no
+		    LEFT JOIN "USER" u ON f.user_no = u.user_no
+		    WHERE f.feed_no = #{feedNo}
+		</select>
+
+	
+		<insert id="insertFeed" parameterType="feedVO" useGeneratedKeys="true">
+		    <selectKey keyProperty="feedNo" resultType="int" order="BEFORE">		
+		        select seq_feed.nextval from dual
+		    </selectKey>
+			    insert into feed(
+			        feed_no,
+			        feed_type, 
+			        feed_regdate,
+			        feed_content,
+			        feed_membership,
+			        feed_delyn,    
+			        user_no, 
+			        ag_Id
+			    ) values(
+			        #{feedNo},
+			        #{feedType},
+			        sysdate, 
+			        #{feedContent},
+			        #{feedMembership},
+			        #{feedDelyn},
+			        #{userNo},
+			        #{agId}    
+			    )
+			</insert>
+
+		<insert id="insertFeedFile" parameterType="feedAttachFileVO">
+		
+			insert into feed_attachfile(
+			    fa_no,
+			    fa_name,
+			    fa_savepath,
+			    fa_savedname,
+			    fa_mime,
+			    fa_fancysize,
+			    feed_no
+			) values (
+			    seq_feed_attachfile.nextval,
+			    #{faName},
+			    #{faSavepath},
+			    #{faSavedname},
+			    #{faMime},
+			    #{faFancysize},
+			    #{feedNo}
+			)
+		</insert>
+	
+		<update id="updateFeed" parameterType="feedVO">
+			update feed
+			set
+				feed_content = #{feedContent},
+				feed_regdate = sysdate
+			where feed_no = #{feedNo}
+		</update>
+	
+	
+		<select id="selectFeedFile" parameterType="int" resultType="feedAttachFileVO">
+			select
+				fa_savepath
+			from feed_AttachFile
+			where feed_no = #{feedNo}
+		</select>
+	
+		<delete id="deleteFeedFile" parameterType="int">
+			delete from feed_AttachFile
+			where feed_no = #{feedNo}
+		</delete>
+	
+		<select id="mainFeedList" resultType="feedVO" resultMap="feedMap">
+			SELECT f.*, fa.FA_SAVEDNAME, mn.MN_NICKNAME, fa.FA_MIME
+			    FROM feed f
+			    LEFT JOIN feed_attachfile fa ON f.feed_no = fa.feed_no
+			    LEFT JOIN member_nickname mn ON f.user_no = mn.user_no
+			    LEFT JOIN "USER" u ON f.user_no = u.user_no
+		    WHERE f.ag_Id = #{agId}
+            
+		</select>
+
+
+	
+	
+	
+</mapper>

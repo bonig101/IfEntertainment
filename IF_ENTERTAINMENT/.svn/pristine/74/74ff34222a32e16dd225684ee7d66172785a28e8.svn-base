@@ -1,0 +1,391 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+    <title>Artist Group Information</title>
+    <!-- CSS 스타일링 -->
+    <style>
+		    .post_button {
+		    width: 800px;
+		    height: 60px;
+		    border: 1px solid #eaeaea;
+		    border-radius: 50px;
+		    display: flex;
+		    justify-content: center;
+		    background-color: #fff;
+		    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+		}
+		.post_left {
+		    width: 85%;
+		    height: auto;
+		    display: flex;
+		    justify-content: left;
+		    align-items: center;
+		    padding-left: 20px;
+		    cursor: pointer;
+		}
+		.post_left img {
+		    width: 50px;
+		    height: 50px;
+		    margin-right: 15px;
+		}
+		.file_btn {
+		    position: relative;
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		}
+		.file_btn .post_image {
+		    cursor: pointer;
+		}
+		.file_btn .post_video {
+		    cursor: pointer;
+		}
+		.file_btn .file_image .fil_video[type="file"] {
+		    position: absolute;
+		    width: 1px;
+		    height: 1px;
+		    padding: 0;
+		    margin: -1px;
+		    overflow: hidden;
+		    clip: rect(0, 0, 0, 0);
+		    border: 0;
+		}
+		.file_btn i {
+		    font-size: 25px;
+		}
+		.file_btn i:nth-child(1) {
+		    margin-right: 10px;
+		}
+		.file_image {
+		    display: none;
+		}
+		.fil_video {
+		    display: none;
+		}
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+	<div class="post_button">
+        <div class="post_left">
+            <img src="${pageContext.request.contextPath }/resources/images/profile.png" alt="">
+            <span>포스트를 남겨보세요.</span>
+        </div>
+        <div class="file_btn">
+            <label for="imageInput" class="post_image">
+                <i class="far fa-image"></i>
+            </label>
+            <input type="file" class="file_image" id="imageInput" name="">
+
+            <label for="videoInput" class="post_video">
+                <i class="fa fa-video-camera"></i>
+            </label>
+            <input type="file" class="fil_video" id="videoInput" name="">
+        </div>
+    </div>
+    <div class="loadMore">
+		<c:forEach items="${feedList}" var="feed">
+        <div class="central-meta item" style="width: 400px;">
+            <div class="user-post">
+                <div class="friend-info">
+                    <figure>
+                        <img src="${pageContext.request.contextPath }/resources/images/nearly1.jpg" alt="">
+                    </figure>
+                    <div class="friend-name">
+                        <div class="more">
+                            <div class="more-post-optns">
+                                <i class="ti-more-alt"></i>
+                                <ul>
+                                    <!-- 이부분 옆에 버튼 메뉴 -->
+                                    <li><i class="fa-sharp fa-regular fa-square-pen"></i> Edit Post</li>
+                                    <li><i class="fa-regular fa-trash"></i> Delete Post</li>
+                                    <li class="bad-report"><i class="fa-solid fa-flag-checkered"></i> Report Post</li>
+                                    <li><i class="fa-regular fa-address-card"></i> Boost This Post</li>
+                                    <li><i class="fa-regular fa-alarm-clock"></i> Schedule Post</li>
+                                    <li><i class="fa-regular fa-fire-flame"></i> Select as featured</li>
+                                    <li><i class="fa-sharp fa-regular fa-bell"></i> Turn off Notifications</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <ins>
+                            <a href="time-line.html" title="">${feed.mnNickName}</a>
+                        </ins>
+                        <span><i class="fa fa-globe"></i> <fmt:formatDate value="${feed.feedRegdate}" pattern="yyyy-MM-dd hh:mm"/> </span>
+                    </div>
+                    <div class="post-meta">
+                        <figure>
+                            <div class="img-bunch">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <figure>
+                                       	<div id="mediaContainer" class="about-chnl detail_content_box">
+                                         <div id="editableContent">
+                                            <a href="#" title="" data-toggle="modal" data-target="#img-comt">${feed.feedContent}
+                                            </a>
+		    								</div>
+		    							</div>	
+                                        </figure>
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class="like-dislike">
+                                <li><a class="bg-purple" href="#" title="Save to Pin Post"><i class="ti-pin2"></i></a></li>
+                                <li><a class="bg-blue" href="#" title="Like Post"><i class="ti-thumb-up"></i></a></li>
+                                <li><a class="bg-red" href="#" title="dislike Post"><i class="ti-thumb-down"></i></a></li>
+                            </ul>
+                        </figure>
+                        <div class="we-video-info">
+                            <ul>
+                                <li>
+                                    <div class="likes heart" title="Like/Dislike">
+                                        ❤ <span>좋 <!-- 좋아요 수증가 --></span>
+                                    </div>
+                                </li>
+                                <li><span class="comment" title="Comments"> <i class="fa fa-commenting"></i> <ins>댓 <!-- 댓글갯수 --></ins></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="coment-area" style="display: block;">
+                        <ul class="we-comet">
+                            <li>
+                                <div class="comet-avatar">
+                                    <img src="${pageContext.request.contextPath }/resourcesimages/resources/nearly3.jpg" alt="">
+                                </div>
+                                <div class="we-comment">
+                                    <h5>
+                                        <a href="time-line.html" title="">내 닉네임</a>
+                                    </h5>
+                                    <p> 댓글 내용</p>
+                                    <div class="inline-itms">
+                                        <span>작성 시간</span><a href="#" title=""><i class="fa fa-heart"></i><span>내 댓글 좋아요 갯수</span></a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</c:forEach>
+    </div>
+
+
+	<div class="modal fade" id="img-comt">
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<!-- Modal Header -->
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">×</button>
+				</div>
+
+				<!-- Modal body -->
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-8">
+							<div class="pop-image">
+								<div id="demo" class="carousel slide" data-interval="false"
+									data-ride="carousel" data-pause="hover">
+									<!-- The slideshow -->
+									<div class="pop-item">
+										<div class="carousel-item active">
+											<img
+												src="${pageContext.request.contextPath }/resources/images/resources/blog-detail.jpg"
+												alt="">
+<!-- 												올린사진 슬라이드쇼로 -->
+										</div>
+									</div>
+
+									<!-- Left and right controls -->
+									<a class="carousel-control-prev" href="#demo" data-slide="prev">
+										<span class="carousel-control-prev-icon"></span>
+									</a> <a class="carousel-control-next" href="#demo"
+										data-slide="next"> <span
+										class="carousel-control-next-icon"></span>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-4">
+							<div class="user">
+								<figure>
+									<img
+										src="${pageContext.request.contextPath }/resources/images/resources/user1.jpg"
+										alt="">
+<!-- 										유저 프로필 사진 -->
+								</figure>
+								<div class="user-information">
+									<h4>
+										<a href="#" title="">게시글이름</a>
+									</h4>
+									<span>게시 날짜 시간</span>
+								</div>
+							</div>
+							<div class="we-video-info">
+								<ul>
+									<li>
+										<div title="Approvals/Disapprovals" class="likes heart">
+											❤ <span>
+											좋
+<!-- 											좋아요 갯수 -->
+											</span>
+										</div>
+									</li>
+									<li><span title="Comments" class="comment"> <i
+											class="fa fa-commenting"></i> <ins>
+<!-- 											댓글 개수 -->
+											댓
+											</ins>
+									</span></li>
+
+								</ul>
+								<div class="users-thumb-list">
+									<a href="#" title="" data-toggle="tooltip"
+										data-original-title="Anderw"> <img
+										src="${pageContext.request.contextPath }/resources/images/resources/userlist-1.jpg"
+										alt="">
+									</a> 
+								</div>
+							</div>
+							<div style="display: block;" class="coment-area">
+								<ul class="we-comet">
+									<li>
+										<div class="comet-avatar">
+											<img alt=""
+												src="${pageContext.request.contextPath }/resources/images/resources/nearly3.jpg">
+										</div>
+										<div class="we-comment">
+											<h5>
+												<a title="" href="time-line.html">댓글 작성자</a>
+											</h5>
+											<p>댓글 내용 </p>
+											<div class="inline-itms">
+												<span>1 year ago</span> <a title="Reply" href="#"
+													class="we-reply"><i class="fa-solid fa-circle-check"></i><span>댓글 좋아요</span></a>
+											</div>
+										</div>
+
+									</li>
+									<li>
+										
+										
+										<div class="post-comt-box">
+											<form method="post">
+												<textarea placeholder="Post your comment"></textarea>
+												<div class="add-smiles">
+													<div class="uploadimage">
+														<i class="fa fa-image"></i> <label class="fileContainer">
+															<input type="file">
+														</label>
+													</div>
+													<span title="add icon" class="em em-expressionless"></span>
+													<div class="smiles-bunch">
+														<i class="em em---1"></i> <i class="em em-smiley"></i> <i
+															class="em em-anguished"></i> <i class="em em-laughing"></i>
+														<i class="em em-angry"></i> <i class="em em-astonished"></i>
+														<i class="em em-blush"></i> <i class="em em-disappointed"></i>
+														<i class="em em-worried"></i> <i
+															class="em em-kissing_heart"></i> <i class="em em-rage"></i>
+														<i class="em em-stuck_out_tongue"></i>
+													</div>
+												</div>
+
+												<button type="submit"></button>
+											</form>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<!--     <div class="container"> -->
+<!--         <h2>Artist Group Information</h2> -->
+<!--         <table> -->
+<!--             <tr> -->
+<!--                 <th>Artist Group ID</th> -->
+<!--                 <th>Artist Group Name</th> -->
+<!--                 <th>Artist Group Introduction</th> -->
+<!--                 <th>Artist ID</th> -->
+<!--                 <th>Artist Name</th> -->
+<!--                 <th>Artist Introduction</th> -->
+<!--             </tr> -->
+<%-- 			<c:forEach items="${artistGroup}" var="group"> --%>
+<!-- 			    <tr> -->
+<%-- 			        <td>${group.agId}</td> --%>
+<%-- 			        <td>${group.agName}</td> --%>
+<%-- 			        <td>${group.agIntro}</td> --%>
+<!-- 			    </tr> -->
+<%-- 			    <c:forEach items="${group.artistList}" var="artist"> --%>
+<!-- 			        <tr> -->
+<%-- 			            <td>${artist.agId}</td> --%>
+<%-- 			            <td>${artist.userNo}</td> --%>
+<%-- 			            <td>${artist.artistBirth}</td> --%>
+<%-- 			            <td>${artist.artistFakename}</td> --%>
+<%-- 			            <td>${artist.artistIntro}</td> --%>
+<!-- 			        </tr> -->
+<%-- 			    </c:forEach> --%>
+<%-- 			</c:forEach> --%>
+
+
+<!--         </table> -->
+<!--     </div> -->
+<script type="text/javascript">
+var mediaContainer = document.getElementById("mediaContainer");
+var faMime = "${feed.faMime}";
+
+if (faMime.includes("image")) {
+    // 이미지 파일인 경우
+    var image = document.createElement("img");
+    image.src = "${pageContext.request.contextPath}/resources/feed/" + "${feed.faSavedname}";
+    image.alt = "이미지";
+    image.style.height = "300px"; // 이미지의 높이 조절
+    mediaContainer.insertBefore(image, mediaContainer.firstChild);
+} else if (faMime.includes("video")) {
+    // 비디오 파일인 경우
+    var video = document.createElement("video");
+    video.controls = true; // 비디오 컨트롤러 표시
+    video.style.height = "300px"; // 비디오의 높이 조절
+    var source = document.createElement("source");
+    source.src = "${pageContext.request.contextPath}/resources/feed/" + "${feed.faSavedname}";
+    source.type = faMime; // 비디오 파일의 MIME 타입 설정
+    video.appendChild(source);
+    mediaContainer.insertBefore(video, mediaContainer.firstChild);
+} else {
+    // 이미지나 비디오가 아닌 경우
+    console.error("지원되지 않는 파일 형식입니다.");
+}
+
+
+
+</script>

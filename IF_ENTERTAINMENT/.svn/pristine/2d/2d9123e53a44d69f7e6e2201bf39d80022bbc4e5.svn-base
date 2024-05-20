@@ -1,0 +1,902 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b0e81bb721b9e121366ca32dad175741&libraries=services"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<title>Web Admin panel</title>
+<link rel="icon" type="image/png" href="${pageContext.request.contextPath }/resources/images1/fav.png">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/font-awesome.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/themify-icons.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/line-icons.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/bootstrap.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/animate.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/color.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/responsive.css">
+
+<style type="text/css">
+input {
+	text-transform: none;
+}
+#genderStyle {
+	height: 51px;
+	width: 410px;
+	background-color: white;
+	margin-top: 20px;
+	display: flex;
+	margin-top: 30px;
+}
+
+#genderStyle_{
+	display: flex;
+}
+
+#genderStyle_ input {
+	font-size: 10px;
+}
+
+/* .gender_icon { */
+/* 	display:inline-block; */
+/* 	font-size: 20px; */
+/* 	margin-left: 20px; */
+/* 	margin-top: 10px; */
+/* 	margin-right: 20px; */
+/* } */
+
+.gender_radio {
+	display: flex;
+	margin-bottom: 10px;
+}
+
+.gender_radio .male {
+	margin-right: 150px;
+}
+
+.gender_M, .gender_F {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.gender_M i {
+	font-size: 20px;
+	margin-left: 20px;
+	margin-right: 10px;
+}
+
+.gender_F i {
+	font-size: 20px;
+	margin-right: 10px;
+}
+
+.gender_M span, .gender_F span {
+	margin-left: 10px;
+	margin-top: 10px;
+	margin-right: 10px;
+	
+}
+
+
+#alarmStyle {
+	height: 51px;
+	width: 410px;
+	background-color: white;
+	margin-top: 20px;
+	display: flex;
+	margin-top: 30px;
+}
+
+#alarmStyle_{
+	display: flex;
+}
+
+#alarmStyle_ input {
+	font-size: 10px;
+	margin-left: -30px;
+}
+
+
+.alarm_radio {
+	display: flex;
+	margin-bottom: 10px;
+}
+
+.alarm_radio .male {
+	margin-right: 50px;
+}
+
+.alarm_M, .alarm_F {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.alarm_M i {
+	font-size: 20px;
+	margin-left: 20px;
+	margin-right: 10px;
+}
+
+.alarm_F i {
+	font-size: 20px;
+	margin-right: 10px;
+}
+
+.alarm_M span, .alarm_F span {
+	margin-left: 10px;
+	margin-top: 10px;
+		width: 110px;
+}
+
+.mobile {}
+
+.select-container {
+	display: flex;
+    justify-content: space-between;
+ }
+
+.select-container select {
+  flex: 1; /* 각 select 요소가 동일한 너비를 가지도록 함 */
+
+</style>
+
+</head>
+<body>
+<!-- Start Page Loading -->
+    <div id="loader-wrapper">
+      <div id="loader"></div>
+      <div class="loader-section section-left"></div>
+      <div class="loader-section section-right"></div>
+    </div>
+   
+<div class="panel-layout">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="admin-lock" style="height: 100%; overflow: auto;"> 
+          <div class="admin-form">
+            <div class="logo"><img src="${pageContext.request.contextPath }/resources/images/logo2.png" alt=""></div>
+            <h4>회원가입</h4>
+            <form action="/signup.do" method="post" id="signupForm" enctype="multipart/form-data">
+            
+<!--             <div class="preview" style="    position: relative;top: 14px;" > -->
+<!-- 	    		<div id="imagePreview" style="width: 110px;"> -->
+<%-- 	        	<img id="defaultImage" src="${pageContext.request.contextPath }/resources/images/apple.png" width="110" alt="Default Image"> --%>
+<!-- 	        	</div> -->
+<!-- 					<div class="custom-file" style="    position: absolute;left: 110px;bottom: 1px;"> -->
+<!-- 					    <input type="file" id="imgFile" name=imgFile accept="image/*"  style="visibility: hidden;" > -->
+<!-- 						<label class="custom-file-label"for="imgFile" style="width: 300px;">프로필 이미지를 선택해주세요</label> -->
+<!-- 		    		</div> -->
+	           
+<!--             </div> -->
+
+
+				<div class="preview" style="position: relative; top: 14px; ">
+				    <div id="imagePreview" style="width: 110px; ">
+				     	<img id="defaultImage" src="${pageContext.request.contextPath }/resources/images/user.png" width="110" alt="Default Image">
+				    </div>
+				    <div class="custom-file" style="position: absolute; left: 120px; bottom: 1px;">
+				        <input type="file" id="imgFile" name="imgFile" accept="image/*" style="visibility: hidden;" onchange="previewFile()">
+				        <label class="custom-file-label" for="imgFile" style="width: 250px;">이미지를 선택해주세요</label>
+				    </div>
+				</div>
+				
+				
+				<label><i class="fa fa-id-card-o" aria-hidden="true"></i></label>
+              <div class="input-group mb-3">
+				<input type="text" id="userId" name="userId" placeholder="아이디를 입력 해주세요" style="text-transform: none; position: absolute; width: 361px;">
+				<button type="button" id="idChkBtn" style="margin-bottom: 10px;width: max-content;margin-left: 10px;position: absolute;top: -15px;left: 355px; top: -15px;">중복확인</button><br /> 
+              </div>
+	
+				<label><i class="fa fa-id-card-o" aria-hidden="true"></i></label>
+              <input type="text" placeholder="user Name" id="userName" name="userName" style="text-transform: none;">
+              <label><i class="fa fa-unlock-alt" aria-hidden="true"></i></label>
+<!--               <input type="text" placeholder="Email Address"> -->
+<!--               <label><i class="fa fa-unlock-alt"></i></label> -->
+              <input type="text" placeholder="Password" id="userPw" name="userPw" style="text-transform: none;">
+              <label><i class="fa fa-unlock-alt"></i></label>
+              <input type="text" placeholder="Confirm Password" id="userPw1" name="userPw1" style="text-transform: none;">
+				
+			<div id="message" style="margin-top: 20px;"></div>
+		
+              <label for="email"><i class="fa fa-envelope" aria-hidden="true"></i></label>
+              <div class="input-group">
+			<input type="text" class="form-control" name="memberEmail" id="memberEmail1" 
+			placeholder="email" style="height: 38px; text-transform: none;">
+
+					<select class="form-control" name="memberEmail" id="memberEmail2" >
+					<option>@naver.com</option>
+					<option>@daum.net</option>
+					<option>@gmail.com</option>
+					<option>@hanmail.com</option>
+					<option>@yahoo.co.kr</option>
+				</select> 
+				
+			</div>
+              <button type="button" class="btn btn-primary" id="mail-Check-Btn">이메일 전송</button>
+              <div class="mail-check-box" style="margin-bottom: 35px;">인증번호 <br/>
+	              <input class="form-control mail-check-input" placeholder="인증번호 6자리를 입력해주세요!" disabled="disabled" maxlength="6">
+              </div>
+			<span id="mail-check-warn" style="margin-bottom: 10px;"></span>
+			
+			
+			
+			생년월일 <br/>
+			<div class="select-container">
+			    <select id="yearSelect" name="memberBirth" class="form-control">
+			        <option value="">년</option>
+			    </select>
+			    <select id="monthSelect" name="memberBirth" class="form-control">
+			        <option value="">월</option>
+			    </select>
+			    <select id="daySelect"  name="memberBirth" class="form-control">
+			        <option value="">일</option>
+			    </select>
+			</div>
+
+
+			              
+              <div id="genderStyle">
+              	<div id="genderStyle_">
+					 <div class="gender_radio">
+					 	<div class="gender_M">
+			            <i class="fa fa-male" aria-hidden="true"></i> 
+					      <span> male</span> 
+					      <input type="radio" class="male" id="memGenderM" name="memberGender" value="M" checked="checked">
+					 	</div>
+					 	<div class="gender_F">
+						<i class="fa fa-female" aria-hidden="true"></i>
+					      <span>female</span>  
+					      <input type="radio" id="memGenderF" name="memberGender" value="F">
+					 	</div>
+					 </div>
+			     </div>
+              </div>
+			  <br/>
+
+
+
+			<label for="address" style="margin-top: 10px;"><i class="fa fa-address-book" aria-hidden="true" style="position: absolute; bottom: -7px"></i></label>
+			<div class="input-group mb-3" style="width: 330px;">
+				<input type="text" class="form-control" id="memberPostcode"
+					name="memberPostcode" value=""
+					style="margin-bottom: 20px; height: 51px; margin-top: auto;" placeholder="지번">
+				<button type="button" class="btn btn-secondary btn-flat"
+					onclick="DaumPostcode()" style="margin-bottom: 10px;width: max-content;margin-left: 10px;position: absolute;top: -15px;left: 324px;">우편번호 찾기</button>
+			</div>
+			<label for="address"><i class="fa fa-address-book" aria-hidden="true" style="position: absolute;bottom: 35px;"></i></label>
+			<input type="text" class="form-control" id="memberAddress1"
+				name="memberAddress1" value=""
+				placeholder="주소입력" style="margin-top: -40px; height: 51px;"> 
+			<label for="address"><i class="fa fa-address-book" aria-hidden="true"></i></label>	
+			<input type="text" class="form-control" id="memberAddress2"
+				name="memberAddress2" value=""
+				placeholder="상세주소를 입력해주세요"
+				style="margin-bottom: 10px; height: 51px;">
+
+
+			  <label class="mobile"><i class="fa fa-mobile" aria-hidden="true" style="font-size: 30px; position: absolute; top: -30px; " ></i></label>
+              <input type="text" id="memberTelno" name="memberTelno" placeholder="telNo" style="margin-top: -30px;">
+              
+             <div id="alarmStyle">
+              	<div id="alarmStyle_">
+					 <div class="alarm_radio">
+					 	<div class="alarm_M">
+			            <i class="fa fa-bell-o" aria-hidden="true" style="margin-top: 10px;"></i> 
+					      <span> 동의</span> 
+					      <input type="radio" class="male" id="memberNotification1" name="memberNotification" value="Y" checked="checked">
+					 	</div>
+					 	<div class="alarm_F">
+					      <span>비동의</span>  
+					      <input type="radio" id="memberNotification2" name="memberNotification" value="N">
+					 	</div>
+					 </div>
+			     </div>
+              </div>
+			
+			
+			<div class="checkAlarm" style="background-color: #fff; display: flex; justify-content: space-around; align-items: center; height: 51px; margin-top: 20px;">
+			    <div class="checkBox" style="display: flex;">
+			        <span>sms</span>
+			        <input type="checkbox" id="smsCheckbox" name="notiType" value="sms" style="margin: 0px; margin-left: 20px;">
+			    </div>
+			    
+			    <div class="checkBox" style="display: flex;">
+			        <span>email</span>
+			        <input type="checkbox" id="emailCheckbox" name="notiType" value="email" style="margin: 0px; margin-left: 20px;">
+			    </div>
+			    
+			    <div class="checkBox" style="display: flex;">
+			        <span>웹 실시간</span>
+			        <input type="checkbox" id="webCheckbox" name="notiType" value="web" style="margin: 0px; margin-left: 20px;">
+			    </div>
+			</div>
+			
+		
+			<div class="checkAlarm" style="background-color: #fff; display: flex; justify-content: space-around; align-items: center; height: 51px; margin-top: 20px;" >
+	              <div class="checkBox" style="display: flex;">
+				 		
+			 			<span>커뮤니티</span>
+				 		<input type="checkbox" id="commnotiSetting" name="notiSetting" checked="checked" value="power" style="margin: 0px; margin-left: 20px;">
+	              </div>
+	              
+	              <div class="checkBox" style="display: flex;" >
+					 		<span>굿즈샵</span>
+						 	<input type="checkbox" id="goodsnotiSetting" name="notiSetting" checked="checked" value="book" style="margin: 0px; margin-left: 20px;"/>
+	              </div>
+	              
+	              <div class="checkBox" style="display: flex;" >
+				 			<span>이벤트</span>
+					 		<input type="checkbox"  id="evennotiSetting" name="notiSetting" checked="checked" value="movie" style="margin: 0px; margin-left: 20px;"/>
+	              </div>
+			</div>
+			
+
+
+
+			<div class="form-group" style="margin-left: -16px;">
+			    <label for="recaptcha" class="control-label col-sm-2"><span class="rq"></span></label>
+			    <div class="col-sm-6">
+			        <div class="g-recaptcha" data-sitekey="6LcKxUgpAAAAAAN-TGBKRTy8hzXUodck7LrXEUoA"></div>
+			        <span id="recaptchaError" class="rq"></span>
+			    </div>
+			</div>
+								
+		
+
+			<input type="checkbox" id="checkbox" style="margin-top: 5px;">
+              <label for="checkbox" style="margin-top: 0px;">I accept the <a href="#" title="">terms & Conditions</a></label>
+              <input type="submit" id="signUpBtn" value="회원가입" disabled  style="margin-bottom: 0px;">
+            </form>
+            <span>Already a member? <a href="#" title="">Sign in</a></span> </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+// 동의/비동의 라디오 버튼 선택 시 처리
+document.querySelectorAll('input[type="radio"][name="memberNotification"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+        if (this.value === 'Y') {
+            document.querySelectorAll('input[type="checkbox"][name="notiSetting"]').forEach(function(checkbox) {
+                checkbox.disabled = false;
+            });
+        } else {
+            document.querySelectorAll('input[type="checkbox"][name="notiSetting"]').forEach(function(checkbox) {
+                checkbox.disabled = true;
+                checkbox.checked = false;
+            });
+        }
+    });
+});
+document.querySelectorAll('input[type="radio"][name="memberNotification"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+        if (this.value === 'Y') {
+            document.querySelectorAll('input[type="checkbox"][name="notiType"]').forEach(function(checkbox) {
+                checkbox.disabled = false;
+            });
+        } else {
+            document.querySelectorAll('input[type="checkbox"][name="notiType"]').forEach(function(checkbox) {
+                checkbox.disabled = true;
+                checkbox.checked = false;
+            });
+        }
+    });
+});
+
+																									
+
+document.querySelectorAll('input[type="radio"][name="memberNotification"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+        if (this.value === 'Y') {
+            document.querySelectorAll('input[type="checkbox"][name="notiType"]').forEach(function(checkbox) {
+                checkbox.disabled = false;
+            	document.getElementById('commnotiSetting').checked = true;
+                document.getElementById('goodsnotiSetting').checked = true;
+                document.getElementById('evennotiSetting').checked = true;
+            	document.getElementById('smsCheckbox').checked = true;
+                document.getElementById('emailCheckbox').checked = true;
+                document.getElementById('webCheckbox').checked = true;
+            });
+        } else {
+            document.querySelectorAll('input[type="checkbox"][name="notiType"]').forEach(function(checkbox) {
+                checkbox.disabled = true;
+                checkbox.checked = false;
+            });
+        }
+    });
+});
+
+
+
+//기본이미지 숨기기
+function previewFile() {
+        var fileInput = document.getElementById('imgFile');
+        var previewImage = document.getElementById('defaultImage');
+        var label = document.querySelector('.custom-file-label');
+
+        var file = fileInput.files[0];
+        var reader = new FileReader();
+
+        reader.onloadend = function () {
+            previewImage.src = reader.result;
+            label.textContent = file.name;
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            previewImage.src = "${pageContext.request.contextPath }/resources/images/user.png"; 
+        }
+    }
+
+
+
+
+$(document).ready(function(){
+    $("#imgFile").change(function() {
+        readURL(this);
+    });
+});
+
+//미리보기
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        
+        reader.onload = function(e) {
+            $('#imagePreview').html('<img src="' + e.target.result + '" alt="이미지 미리보기">');
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+$(function(){
+	
+var idCheckFlag = false;
+var idChkBtn=$("#idChkBtn");
+var signUpBtn=$("#signUpBtn");
+var signupForm = $("#signupForm");	
+var imgFile=$("#imgFile");
+
+
+
+
+
+        signUpBtn.on("click", function(event) {
+            event.preventDefault(); 
+
+            
+            var userId = $("#userId").val();
+            var userPw = $("#userPw").val();
+            var userName = $("#userName").val();
+            var memberTelno = $("#memberTelno").val();
+            var memberEmail1 = $("#memberEmail1").val();
+            var memberEmail2 = $("#memberEmail2").val();
+            var memberPostcode = $("#memberPostcode").val();
+            var memberAddress1 = $("#memberAddress1").val();
+            var memberNotification = $("input[name='memberNotification']:checked").val(); 
+            var notiType = [];
+            var notiSetting = [];
+
+            $("input[name='notiType']:checked").each(function() {
+                notiType.push($(this).val());
+            });
+
+            $("input[name='notiSetting']:checked").each(function() {
+                notiSetting.push($(this).val());
+            });
+            if (userId === null || userId === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "아이디를 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#userId").focus(); // 아이디 입력란에 포커스 맞춤
+                return;  
+            } else if (!/^[a-zA-Z0-9]{8,12}$/.test(userId)) {
+                Swal.fire({
+                    icon: "error",
+                    title: "아이디는 영문 대소문자와 숫자로 8~12자 이내로 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#userId").focus(); 
+                return;  
+            }
+
+            if (userPw === null || userPw === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "비밀번호를 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#userPw").focus(); 
+                return;  
+            } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(userPw)) {
+                Swal.fire({
+                    icon: "error",
+                    title: "비밀번호는 영문 대소문자, 숫자를 포함하여 8자 이상이어야 합니다",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#userPw").focus(); 
+                return;  
+            }
+            if (userName === null || userName === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "이름을 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#userName").focus(); 
+                return;  
+            } else if (!/^[a-zA-Z가-힣]{2,10}$/.test(userName)) {
+                Swal.fire({
+                    icon: "error",
+                    title: "이름은 한글 또는 영문 대소문자로 2~10자 이내로 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+                $("#userName").focus();
+                return;  
+            }
+
+         
+            if (memberTelno === null || memberTelno === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "전화번호를 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#memberTelno").focus(); 
+                return;  
+            } else if (!/^\d{3}-\d{3,4}-\d{4}$/.test(memberTelno)) {
+                Swal.fire({
+                    icon: "error",
+                    title: "전화번호의 형식이 올바르지 않습니다 (예: 010-1234-5678)",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#memberTelno").focus(); 
+                return;  
+            }
+
+            if (memberEmail1 === null || memberEmail1 === "" || memberEmail2 === null || memberEmail2 === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "이메일을 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#memberEmail1").focus(); 
+                return;  
+            }
+
+            // 우편번호 유효성 검사
+            if (memberPostcode === null || memberPostcode === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "우편번호를 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#memberPostcode").focus(); 
+                return;  
+            }
+
+            // 주소 유효성 검사
+            if (memberAddress1 === null || memberAddress1 === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "주소를 입력해주세요",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $("#memberAddress1").focus(); 
+                return;  
+            }
+
+       
+            signupForm.submit();
+        });
+
+    
+idChkBtn.on("click", function(){
+	var userId=$("#userId").val();
+
+	if(userId == null || userId == ""){
+		Swal.fire({
+			  icon: "warning",
+			  title: "아이디를 입력해주세요",
+			  showConfirmButton: false,
+			  timer: 1500
+			});
+		$("#userId").focus();
+		return false;
+	}	
+    if (!/^[a-zA-Z0-9]{8,12}$/.test(userId)) {
+        Swal.fire({
+            icon: "error",
+            title: "아이디는 영문 대소문자와 숫자로 8~12자 이내로 입력해주세요",
+            showConfirmButton: false,
+            timer: 1500
+        });
+        return false;
+    }
+	
+	$.ajax({
+		url : "/idChk",
+		type : "POST",
+		data : JSON.stringify({
+			userId : userId
+		}),
+		contentType : "application/json;charset=utf-8",
+		success : function(res){
+			console.log(res);
+			if(res == "NOTEXIST"){	
+				Swal.fire({
+					  icon: "success",
+					  title: "사용가능한 아이디 입니다",
+					  showConfirmButton: false,
+					  timer: 1500
+					});
+				idCheckFlag = true;
+				signUpBtn.prop('disabled', false);
+			}else {		
+				Swal.fire({
+					  icon: "error",
+					  title: "사용중인 아이디입니다.",
+					  showConfirmButton: false,
+					  timer: 1500
+				});
+				signUpBtn.prop('disabled', true);
+			}
+		}
+	});
+});
+
+imgFile.on("change", function(event){
+    var file = event.target.files[0];
+    
+    if(isImageFile(file)){  // 이미지 파일인 경우
+        var reader = new FileReader();
+        reader.onload = function(e){
+            $("#profileImg").attr("src", e.target.result);
+        }
+        reader.readAsDataURL(file);
+    }else {
+        alert("이미지 파일을 선택해주세요!");
+    }
+});
+
+
+
+});
+
+function isImageFile(file){
+	var ext = file.name.split(".").pop().toLowerCase();	
+	return ($.inArray(ext, ["jpg", "jpeg", "png", "gif"]) === -1) ? false : true;
+}
+
+
+
+//비밀번호
+window.onload = function() {
+    var pwInput = document.getElementById('userPw');
+    var confirmpwInput = document.getElementById('userPw1');
+    var message = document.getElementById('message');
+
+    pwInput.addEventListener('input', validate);
+    confirmpwInput.addEventListener('input', validate);
+
+    function validate() {
+        var password = pwInput.value;
+        var confirmPassword = confirmpwInput.value;
+
+        if (confirmpwInput.value !== '') {
+            if (password === confirmPassword) {
+                message.innerHTML = '비밀번호가 일치합니다.';
+                message.style.color = 'green';
+            } else {
+                message.innerHTML = '비밀번호가 일치하지 않습니다.';
+                message.style.color = 'red';
+            }
+        }
+    }
+};
+
+
+
+$('#mail-Check-Btn').click(function() {
+	const memberEmail1 = $('#memberEmail1').val(); 
+	const memberEmail2 = $('#memberEmail2').val(); 
+	const email1=memberEmail1; 
+	const email2=memberEmail2; 
+	const email=email1+email2; 
+	
+	
+	if (!memberEmail1) {
+		Swal.fire({
+			  icon: "error",
+			  title: "이메일을 입력해주세요",
+			  showConfirmButton: false,
+			  timer: 1500
+			});
+		return;
+	}
+	
+	console.log('완성된 이메일 : ' + email);
+	const checkInput = $('.mail-check-input') 
+	
+	$.ajax({
+		type : 'get',
+		url : "/mailCheck?email="+email, 
+		success : function (data) {
+			console.log("data : " +  data);
+			checkInput.attr('disabled',false);
+			code =data;
+			Swal.fire({
+
+				  icon: "success",
+				  title: "전송 되었습니다.",
+				  showConfirmButton: false,
+				  timer: 1500
+				});
+		}			
+	}); 
+}); 
+
+// 인증번호 비교 
+// blur -> focus가 벗어나는 경우 발생
+$('.mail-check-input').blur(function () {
+	const inputCode = $(this).val();
+	const $resultMsg = $('#mail-check-warn');
+	
+	if(inputCode === code){
+		$resultMsg.html('인증번호가 일치합니다.');
+		$resultMsg.css('color','green');
+		$('#mail-Check-Btn').attr('disabled',true);
+		$('#memberEmail1').attr('readonly',true);
+		$('#memberEmail2').attr('readonly',true);
+		$('#memberEmail2').attr('onFocus', 'this.initialSelect = this.selectedIndex');
+         $('#memberEmail2').attr('onChange', 'this.selectedIndex = this.initialSelect');
+	}else{
+		$resultMsg.html('인증번호가 불일치 합니다. 다시 확인해주세요!.');
+		$resultMsg.css('color','red');
+	}
+});
+
+function DaumPostcode() {
+    new daum.Postcode({
+        oncomplete: function(data) {
+            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+            // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+            var addr = ''; // 주소 변수
+            var extraAddr = ''; // 참고항목 변수
+
+            //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                addr = data.roadAddress;
+            } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                addr = data.jibunAddress;
+            }
+
+            // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+            if(data.userSelectedType === 'R'){
+                // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                    extraAddr += data.bname;
+                }
+                // 건물명이 있고, 공동주택일 경우 추가한다.
+                if(data.buildingName !== '' && data.apartment === 'Y'){
+                    extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+            }
+
+            // 우편번호와 주소 정보를 해당 필드에 넣는다.
+            document.getElementById('memberPostcode').value = data.zonecode;
+            document.getElementById("memberAddress1").value = addr;
+            // 커서를 상세주소 필드로 이동한다.
+            document.getElementById("memberAddress2").focus();
+        }
+    }).open();
+}
+	
+	//년, 월, 일에 대한 옵션을 추가할 수 있는 함수 정의
+	function addOptions(selectElement, start, end) {
+	    for (let i = start; i <= end; i++) {
+	        let option = document.createElement('option');
+	        option.value = i;
+	        option.text = i;
+	        selectElement.appendChild(option);
+	    }
+	}
+	
+	// 년도 옵션 추가
+	let yearSelect = document.getElementById('yearSelect');
+	let currentYear = new Date().getFullYear();
+	addOptions(yearSelect, currentYear - 100, currentYear);
+	
+	// 월 옵션 추가
+	let monthSelect = document.getElementById('monthSelect');
+	for (let i = 1; i <= 12; i++) {
+	    let option = document.createElement('option');
+	    option.value = i;
+	    option.text = i;
+	    monthSelect.appendChild(option);
+	}
+	
+	// 일 옵션 추가
+	let daySelect = document.getElementById('daySelect');
+	for (let i = 1; i <= 31; i++) {
+	    let option = document.createElement('option');
+	    option.value = i;
+	    option.text = i;
+	    daySelect.appendChild(option);
+	}
+	
+	document.getElementById('commnotiSetting').checked = true;
+    document.getElementById('goodsnotiSetting').checked = true;
+    document.getElementById('evennotiSetting').checked = true;
+
+    
+    
+//     // 체크박스 체크
+//     document.getElementById('commnotiSetting').addEventListener('change', function() {
+//         console.log("commnotiSetting: " + this.checked);
+//     });
+
+//     document.getElementById('emailCheckbox').addEventListener('change', function() {
+//         console.log("goodsnotiSetting: " + this.checked);
+//     });
+
+//     document.getElementById('webCheckbox').addEventListener('change', function() {
+//         console.log("evennotiSetting: " + this.checked);
+//     });
+    
+    
+	document.getElementById('smsCheckbox').checked = true;
+    document.getElementById('emailCheckbox').checked = true;
+    document.getElementById('webCheckbox').checked = true;
+
+    
+    
+//     // 체크박스 체크
+//     document.getElementById('smsCheckbox').addEventListener('change', function() {
+//         console.log("sms: " + this.checked);
+//     });
+
+//     document.getElementById('emailCheckbox').addEventListener('change', function() {
+//         console.log("email: " + this.checked);
+//     });
+
+//     document.getElementById('webCheckbox').addEventListener('change', function() {
+//         console.log("web: " + this.checked);
+//     });
+		
+</script>
+
+<script src="${pageContext.request.contextPath }/resources/js1/jquery.js"></script> 
+<script src="${pageContext.request.contextPath }/resources/js1/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath }/resources/js1/custom.js"></script>
+</body>
+</html>

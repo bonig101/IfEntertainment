@@ -1,0 +1,26 @@
+package kr.or.ddit.controller.community;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.community.IFeedService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 피드 등록 컨트롤러
+ * @author 임민혁
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/feed")
+public class FeedInsertController {
+	
+	@Inject
+	private IFeedService feedService;
+	
+	// 아티스트는 피드를 등록할 때 멤버십 전용만 보이게 할지 여부를 체크할 수 있다.
+	
+	// 아티스트가 피드를 등록할 경우 해당 커뮤니티에 가입된 사용자 들에게 실시간 알림을 전송한다.(성이수) 
+}

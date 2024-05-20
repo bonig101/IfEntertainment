@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.community.IJoinMapper">
+
+	<select id="selectmycommunityList" parameterType="int" resultType="artistGroupVO">
+		SELECT 
+		    AG.AG_ID,
+		    AG.AG_PROFILE
+		FROM 
+		    COMMUNITY CJ
+		LEFT OUTER JOIN 
+		    ARTIST_GROUP AG ON CJ.AG_ID = AG.AG_ID
+		LEFT OUTER JOIN 
+		    "USER" U ON CJ.USER_NO = U.USER_NO
+		WHERE 
+		    CJ.USER_NO = #{userNo}
+	</select>
+	
+	
+	<select id="selectmyMembershipList" parameterType="int" resultType="MembershipVO">
+		SELECT 
+		    AG.AG_PROFILE, AG.AG_ID, MS.MEMBERSHIP_STARTDAY, MS.MEMBERSHIP_ENDDAY
+		FROM
+		    COMMUNITY CM, MEMBERSHIP MS, ARTIST_GROUP AG, MEMBER M
+		WHERE
+		    MS.CJ_NO = CM.CJ_NO
+		    AND CM.AG_ID = AG.AG_ID
+		    AND M.USER_NO = CM.USER_NO
+		    AND M.USER_NO = #{userNo}
+	</select>
+	
+	<select id="goodsShopMainArtist" resultType="artistGroupVO">
+	select * from artist_group
+	
+	</select>
+
+
+</mapper>

@@ -1,0 +1,38 @@
+package kr.or.ddit.vo.community;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
+
+import lombok.Data;
+
+/**
+ * 관리자가 생성하는 설문지 VO
+ * @author 홍진영
+ */
+@Data
+public class SurveyFormVO {
+
+	private int sfNo;				// 설문번호
+	private String sfTitle;			// 설문제목
+	@DateTimeFormat(pattern = "yy-MM-dd")
+	private Date sfRegdate;			// 설문시작일
+	@DateTimeFormat(pattern = "yy-MM-dd")
+	private Date sfEnddate;			// 설문마감일
+	private String sfPhoto;			// 설문지 썸네일 경로
+	private String sfDisplay;		// 메인페이지 팝업 등록여부
+	private String sfClos; 			// 설문마감여부 
+	
+	private MultipartFile sfFile;	// 썸네일 파일정보
+	
+	// 질문리스트
+	private List<SurveyQuestionVO> surveyQuestionList;
+	
+	public void setSfDisplay(String sfDisplay) {
+		this.sfDisplay = sfDisplay.equals("on") || sfDisplay.equals("Y")  ? "Y" : "N"; 
+	}
+	
+	
+}

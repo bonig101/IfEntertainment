@@ -1,0 +1,643 @@
+/* z-index 수정 */
+#topcontrol {
+    border-radius: 100%;
+    color: #fff;
+    display: inline-block;
+    font-size: 18px;
+    line-height: 40px;
+    text-align: center;
+    transform: rotate(-15deg);
+    transition: all 0.2s linear 0s;
+    width: 40px;
+    z-index: 1000;
+}
+/* 
+border-bottom 주석함 => 수정
+.drops-menu>li>a,
+.drops-menu>li>div {
+    border-bottom: 1px solid #e1e8ed;
+    display: inline-block;
+    padding: 10px;
+    width: 100%;
+}
+
+컬러 => 수정 
+.drops-menu>li:nth-child(2n)>a,
+.drops-menu>li:nth-child(2n)>div {
+    background: #fff none repeat scroll 0 0;
+}
+
+ */
+ 
+.drops-menu>li>a,
+.drops-menu>li>div {
+    
+    display: inline-block;
+    padding: 10px;
+    width: 100%;
+    background-color: transparent !important; /* 배경을 투명하게 설정 */
+}
+
+.drops-menu>li:nth-child(2n)>a,
+.drops-menu>li:nth-child(2n)>div {
+    background: none !important; /* 배경색 제거 */
+}
+ 
+ 
+/* 주석 => 수정 */
+.sidebar .widget {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    /* margin-bottom: 20px; */
+    background: #fff;
+    /* border: 1px solid #ede9e9; */
+    border-radius: 6px;
+}
+
+/* //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+/* swiper 설정 시작 */
+.swiperArea {
+    width: 100%;
+    height: 100vh;
+    padding: 0;
+}
+
+.swiper {
+    width: 100%;
+    height: 100%;
+
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 50px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* .swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+} */
+
+.video_img {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+}
+
+.play_btn {
+    display: block;
+    width: 100px;
+    height: 100px;
+    box-sizing: border-box;
+    border-radius: 100px;
+    border: 2px solid #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 100;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 98px 98px;
+    background-image: url("../images/main/play_btn.png");
+    transform: translate(-50%, -50%);
+}
+
+.pc_video {
+    /* display: none; */
+    /* position: absolute; */
+    width: 100%;
+    height: 100%;
+    padding: 80px 0;
+    background-color: #000;
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+.swiper {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.autoplay-progress {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    z-index: 10;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--swiper-theme-color);
+}
+
+.autoplay-progress svg {
+    --progress: 0;
+    position: absolute;
+    left: 0;
+    top: 0px;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    stroke-width: 4px;
+    stroke: var(--swiper-theme-color);
+    fill: none;
+    stroke-dashoffset: calc(125.6 * (1 - var(--progress)));
+    stroke-dasharray: 125.6;
+    transform: rotate(-90deg);
+}
+
+/* swiper 설정 끝 */
+
+/* header 설정 시작 */
+.main_layout {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.top_headerbar {
+    position: relative;
+    height: 90px;
+    background-color: #9551fc;
+}
+
+.top_logo {
+    margin-top: 20px;
+    margin-left: 5%;
+    background-color: white;
+}
+
+.nav_menu_bar {
+    position: absolute;
+    top: 20%;
+    left: 20%;
+    transform: translateX(-50%);
+}
+
+.nav_menu_bar .nav_menu {
+    width: 100%;
+    margin: 0 20px;
+}
+
+.nav_language {
+    position: absolute;
+    left: 90%;
+}
+
+.nav_menu_bar .nav_menu span {
+    /* color: #fff; */
+    width: 100%;
+    font-size: 21px;
+}
+
+.nav_2depth {
+    width: 100%;
+    right: -22px;
+}
+
+.dropdowns .nav_2depth_menu .mesg-meta h6 {
+    font-size: 16px;
+}
+
+.mesg_meta_box {
+    background-color: #fff;
+    border: none;
+}
+
+.nav_menu::after {
+    display: none;
+}
+
+.nav_2depth {
+    background-color: #fff;
+}
+/* header 설정 끝 */
+
+/* content 설정 시작 */
+.content_box {
+    min-height: calc(100vh - 190px);
+}
+/* content 설정 끝 */
+
+/* footer 설정 시작 */
+.footerbar {
+    position: relative;
+    background-color: transparent;
+    bottom: 0;
+    z-index: 100;
+    color: #fff;
+}
+
+.meCopyright {
+    left: 20px;
+}
+
+.golink {
+    width: 35%;
+    position: absolute;
+    right: 0%;
+    font-weight: bold;
+    text-align: center;
+    font-size: 20px;
+}
+
+.golinkCommunity {
+    border-right: 3px #fff solid;
+    padding-right: 20px;
+}
+
+.detail_golinkCommunity {
+    border-right: 3px #000 solid;
+    padding-right: 40px;
+}
+
+.golinkGoods {
+    margin-left: 5%;
+}
+
+.golinkCommunity:hover {
+    color: #fff;
+}
+
+.golinkGoods:hover {
+    color: #fff;
+}
+
+
+/* Compnay detail footer 시작 */
+.detailFooterbar {
+    height: 100px;
+    color: #000;
+    background-color: #EDF2F6;
+}
+
+.golink {
+    display: block;
+}
+/* Compnay detail footer 끝 */
+
+/* footer 설정 끝 */
+
+
+/*--- page loader 시작 ---*/
+.wavy-wraper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+/*     background:  url('https://i.pinimg.com/originals/3e/7d/09/3e7d09a4cf0253bafc40a9634827e81b.png') center/cover; */
+/*     background:  url('https://i.pinimg.com/originals/f2/ad/3e/f2ad3e2c234ba2bd0e5a88d6bd0c8582.jpg') center/cover; */
+    background:  url('https://www.chromethemer.com/download/hd-wallpapers/blackpink-2560x1440.jpg') center/cover;
+    width: 100%;
+    position: fixed;
+    z-index: 9999999;
+    top: 0;
+    left: 0;
+}
+
+.wavy-wraper.hidden {
+    display: none;
+}
+
+.wavy {
+    position: relative;
+    -webkit-box-reflect: below -12px linear-gradient(transparent, rgba(0, 0, 0, 0.2));
+}
+
+.wavy>span {
+    position: relative;
+    display: inline-block;
+    color: #fff;
+    font-size: 2em;
+    text-transform: uppercase;
+    animation: animate 1.5s ease-in-out infinite;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation-delay: calc(.10s * var(--i))
+}
+
+@keyframes animate {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    20% {
+        transform: translateY(-20px);
+    }
+
+    40% {
+        transform: translateY(0px);
+    }
+}
+/*--- page loader 끝 ---*/
+
+/* 미디어쿼리 설정 시작*/
+@media screen and (max-width: 767px) {
+    .golink {
+        width: 50%;
+        font-size: 12px ;
+        position: absolute;
+        right: 3%;
+        font-weight: bold;
+    }
+
+    .detail_golinkCommunity {
+        border-right: 1px #000 solid;
+        padding-right: 15px;
+    }    
+}
+/* 미디어쿼리 설정 끝*/
+
+/* 기업 연혁(history.jsp) 설정 시작 */
+.history {
+    /* background-color: papayawhip; */
+}
+
+.history_title {
+    font-weight: bold;
+}
+
+.history_box {
+    /* background-color: silver; */
+}
+
+.history_detailBox {
+    /* background-color: skyblue; */
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.history_detailBox:nth-child(1) {
+    margin-top: 20px;
+}
+
+.history_year {
+    /* background-color: thistle; */
+    font-weight: bold;
+    margin-right: 50px;
+}
+
+.history_detailBox li {
+    list-style: none;
+    display: flex;
+}
+
+.history_detailBox li span {
+    margin-right: 30px;
+}
+/* 기업 연혁(history.jsp) 설정 끝 */
+
+/* 기업 찾아오는길(visit.jsp) 설정 시작 */
+.entertainment_visit_detail {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.entertainment_visit_detail span {
+    margin-left: 5px;
+}
+/* 기업 찾아오는길(visit.jsp) 설정 끝 */
+
+/* 기업 오디션 일정 조회(auditionSchedule.jsp) 시작 */
+.search_box {
+    margin-left: 73%;
+    margin-bottom: 20px;
+}
+/* 기업 오디션 일정 조회(auditionSchedule.jsp) 끝 */
+
+/* 기업 오디션 일정 조회 디테일(auditionScheduleDetail.jsp) 시작 */
+.detail_area {
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.detail_date {
+    font-size: 13px;
+    margin-top: 7px;
+}
+
+.detail_content_box {
+    margin-bottom: 80px;
+}
+
+.detail_content {
+    margin-bottom: 50px;
+    margin-top: 50px;
+    line-height: 2;
+    font-size: 18px;
+}
+
+.detail_bottom_line {
+    position: absolute;
+    bottom: 20px;
+    width: 96%;
+}
+
+.bottom_box .detail_bottom_line .detail_button {
+    border-top: 1px solid #e6ecf5;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detail_bottom_line .detail_button .detail_left_btn .btn_pre {
+    margin-right: 10px;
+}
+
+.detail_bottom_line .detail_right_btn .support {
+    margin-left: 10px;
+
+}
+/* 기업 오디션 일정 조회 디테일(auditionScheduleDetail.jsp) 끝 */
+
+/* 기업 오디션 지원하기가이드(auditionSupportGuide.jsp) 시작 */
+.audition_support_img {
+    position: relative;
+}
+.audition_support_link {
+    width: 250px;
+    height: 50px;
+    background-color: #444;
+    color: #fff;
+    font-size: 25px;
+    font-weight: bold;
+    /* position: absolute;
+    left: 50%;
+    bottom: 0; 
+    transform: translateX(-50%);*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    margin-top: 40px;
+    margin-bottom: 20px;
+    border-radius: 30px;
+}
+
+.audition_support_link:hover {
+    color: #fff;
+    background-color: #000;
+}
+/* 기업 오디션 지원하기가이드(auditionSupportGuide.jsp) 끝 */
+
+/* 기업 오디션 지원하기폼(auditionSupportForm.jsp) 시작 */
+.gender_box {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    background: #edf2f6 none repeat scroll 0 0;
+    border-radius: 4px;
+    font-size: 13px;
+    padding: 14px 15px;
+    width: 100%;
+    color: #535165;
+    border: 1px solid #e4e4e4;
+}
+
+.gender_box span {
+    width: 50%;
+}
+
+.gender_box input {
+    display: inline-block;
+}
+
+.gender_male {
+    width: 18%;
+    display: flex;
+}
+
+.gender_female {
+    width: 18%;
+    display: flex;
+}
+
+.cm_kg_box {
+    margin-right: 20px;
+}
+
+.cm_box {
+    display: flex;
+    align-items: end;
+}
+
+.cm_box input {
+    margin-right: 10px;
+}
+
+.kg_box {
+    display: flex;
+    align-items: end;
+    margin-top: 25px;
+}
+
+.kg_box input {
+    margin-right: 10px;
+}
+
+.agree {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.agree_title {
+    font-size: 15px;
+}
+
+.agree_box {
+    border-radius: 4px;
+    font-size: 13px;
+    padding: 14px 15px;
+    width: 100%;
+    color: #535165;
+    border: 1px solid #e4e4e4;
+    margin-top: 20px;
+}
+
+.agree_content {
+    display: block;
+}
+
+.support_button {
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 20px;
+	display: flex;
+}
+
+.support_button .support_register {
+	float: left;
+	margin-right: 10px;
+}
+
+.support_button .support_register:hover {
+	background-color: #9551FC;
+	color: #fff;
+}
+
+.support_button .support_cancel:hover {
+	background-color: #9551FC;
+	color: #fff;
+}
+/* 기업 오디션 지원하기폼(auditionSupportForm.jsp) 끝 */
+
+/* 기업 오디션 지원내역 확인(이름, 연락처, 비밀번호 인증)폼(auditionSupportCheck.jsp) 시작 */
+.search_box {
+}
+
+.search_box .searchBtn {
+	background-color: gray;
+}
+
+.support_check {
+    margin-top: 20px;
+}
+
+.support_check span {
+    margin-left: 40%;
+    transform: translateX(-50%);
+    font-size: 20px;
+}
+
+.support_check input, button {
+    margin-top: 20px;
+}
+
+.support_check .sP_check {
+    width: 8%;
+    float: right;
+    border: 1px solid #eaeaea;
+}
+
+.support_check .sP_check:hover {
+    background-color: #9551FC;
+    color: #fff;
+}
+/* 기업 오디션 지원내역 확인(이름, 연락처, 비밀번호 인증)폼(auditionSupportCheck.jsp) 끝 */
+
+

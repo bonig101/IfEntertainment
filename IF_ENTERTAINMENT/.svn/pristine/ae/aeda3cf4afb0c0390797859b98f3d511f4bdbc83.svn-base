@@ -1,0 +1,10 @@
+package kr.or.ddit.service.goods;
+
+import javax.servlet.http.HttpServletRequest;
+
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.goods.GoodsNoticeVO;
+
+public interface IGoodsNoticeService {
+	public ServiceResult insertgoodsNotice(HttpServletRequest req, GoodsNoticeVO goodsNoticeVO);
+}

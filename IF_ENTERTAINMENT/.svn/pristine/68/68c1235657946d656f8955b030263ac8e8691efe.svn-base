@@ -1,0 +1,36 @@
+package kr.or.ddit.service.impl.goods;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.goods.IOrderMapper;
+import kr.or.ddit.service.goods.IOrderService;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.goods.OrderDetailVO;
+import kr.or.ddit.vo.goods.OrderVO;
+
+@Service
+public class OrderServiceImpl implements IOrderService {
+	
+	@Inject
+	private IOrderMapper orderMapper;
+
+	@Override
+	public int selectOrderListCount(PaginationInfoVO<OrderVO> pagingVO) {
+		return orderMapper.selectOrderListCount(pagingVO);
+	}
+
+	@Override
+	public List<OrderVO> selectOrderList(PaginationInfoVO<OrderVO> pagingVO) {
+		return orderMapper.selectOrderList(pagingVO);
+	}
+
+	@Override
+	public List<OrderDetailVO> selectOrderDetailList(OrderDetailVO orderDetailVO) {
+		return orderMapper.selectOrderDetailList(orderDetailVO);
+	}
+
+}

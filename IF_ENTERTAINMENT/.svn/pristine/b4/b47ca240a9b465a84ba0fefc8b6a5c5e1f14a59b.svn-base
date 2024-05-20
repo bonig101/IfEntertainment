@@ -1,0 +1,18 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div class="create-post detail_title_box">
+		<div>지원하기</div>
+	</div>
+	<img class="audition_support_img" src="${pageContext.request.contextPath }/resources/images/main/auditionSupport.png" alt="지원">
+
+	<a href="/entertain/audition/auditionSupportFrom.do" class="audition_support_link">지원하기</a>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+package kr.or.ddit.controller.entertain;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import kr.or.ddit.service.entertain.IAuditionService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.entertain.AuditionRegisterVO;
+import kr.or.ddit.vo.entertain.NationVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 오디션 신청 컨트롤러
+ * @author 이수진
+ */
+@Controller
+@Slf4j
+@RequestMapping("/entertain/audition")
+public class AuditionApplyInsertController {
+
+	@Inject
+	private IAuditionService auditionService;
+	
+	@RequestMapping(value = "/auditionSupportGuide.do", method = RequestMethod.GET)
+	public String auditionSupportGuide() {
+		return "entertain/auditionSupportGuide";
+	}
+	
+	@RequestMapping(value = "/auditionSupportFrom.do", method = RequestMethod.GET)
+	public String auditionSupportForm(NationVO nationVO, Model model) {
+		List<NationVO> nationList = auditionService.nationList();
+		model.addAttribute("nationList", nationList);
+//		log.info("nationList {}", nationList);
+		return "entertain/auditionSupportForm";
+	}
+	
+	@RequestMapping(value = "/auditionSupportFrom.do", method = RequestMethod.POST)
+	public String auditionSupportRegister(
+			HttpServletRequest req,
+			@Valid NationVO nationVO, 
+			@Valid AuditionRegisterVO auditionRegisterVO, 
+			Model model,
+			RedirectAttributes ra,
+			BindingResult br
+			) {
+		
+		return null;
+	}
+	
+}

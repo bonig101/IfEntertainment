@@ -1,0 +1,41 @@
+package kr.or.ddit.service.impl.goods;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.goods.IGoodsPurchaseMapper;
+import kr.or.ddit.service.goods.IGoodsPurchaseService;
+import kr.or.ddit.vo.goods.CartVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class GoodsPurchaseServiceImpl implements IGoodsPurchaseService {
+
+	@Inject
+	private IGoodsPurchaseMapper goodsPurchaseMapper;
+
+	@Override
+	public List<CartVO> cartSelect(String userNo) {
+		return goodsPurchaseMapper.cartSelect(userNo);
+	}
+
+	@Override
+	public List<CartVO> selectArtist(List<CartVO> cartList) {
+	    // artistList를 빈 리스트로 초기화
+	    List<CartVO> artistList = new ArrayList<>();
+	    for (CartVO cartVO : cartList) {
+	        String goodsNo = cartVO.getGoodsNo();
+	        CartVO goodsArtist = goodsPurchaseMapper.selectArtist(goodsNo);
+	        artistList.add(goodsArtist);
+	    }
+	    log.info("artistList" + artistList);
+	    return artistList;
+	}
+
+	}
+

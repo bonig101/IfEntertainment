@@ -1,0 +1,13 @@
+package kr.or.ddit.service.impl.goods;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.goods.IOrderMapper;
+import kr.or.ddit.service.goods.IOrderService;
+
+@Service
+public class OrderServiceImpl implements IOrderService {
+	
+	private IOrderMapper orderMapper;
+
+}

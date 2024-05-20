@@ -1,0 +1,18 @@
+package kr.or.ddit.vo.goods;
+
+
+import lombok.Data;
+
+@Data
+public class CartVO {
+	 private String cartNo;
+	 private String cartName;
+	 private String cartPrice;
+	 private String cartQuantity;
+	 private String userNo;
+	 private String goodsNo;
+	 private String cartThumbnail;
+	 private String goodsArtist;
+	 private String goodsQuantity;
+	 private String gcId;
+	 }

@@ -1,0 +1,25 @@
+package kr.or.ddit.mapper.common;
+
+import java.util.List;
+
+import kr.or.ddit.vo.statistic.GoodsSalesVO;
+import kr.or.ddit.vo.statistic.KeywordVO;
+import kr.or.ddit.vo.statistic.MemberRateVO;
+import kr.or.ddit.vo.statistic.StatisticInfoVO;
+
+public interface IStatisticMapper {
+	public List<String> selectAgIdList();
+	
+	// 커뮤니티 통계
+	public List<MemberRateVO> selectMemberRateList(StatisticInfoVO statisticInfoVO);
+	public List<KeywordVO> selectMaleKeywordList(StatisticInfoVO statisticInfoVO);
+	public List<KeywordVO> selectFemaleKeywordList(StatisticInfoVO statisticInfoVO);
+	public List<MemberRateVO> selectMemberAgeList(StatisticInfoVO statisticInfoVO);
+	public List<MemberRateVO> selectMemberGenderList(StatisticInfoVO statisticInfoVO);
+	
+	// 굿즈샵 통계
+	public List<GoodsSalesVO> selectArtistSalesList(StatisticInfoVO statisticInfoVO);
+	public List<GoodsSalesVO> selectTopSalesList(StatisticInfoVO statisticInfoVO);
+	public List<MemberRateVO> selectGenderSalesList(StatisticInfoVO statisticInfoVO);
+	public List<GoodsSalesVO> selectYearSalesList(StatisticInfoVO statisticInfoVO);
+}

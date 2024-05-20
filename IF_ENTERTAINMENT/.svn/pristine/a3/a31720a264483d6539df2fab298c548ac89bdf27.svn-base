@@ -1,0 +1,13 @@
+package kr.or.ddit.mapper.common;
+
+import java.util.Map;
+
+import kr.or.ddit.vo.common.UserVO;
+
+public interface IMypageMapper {
+
+	public void updateProfile(Map<String, Object> map);
+
+	public UserVO selectUserMypage(int userNo);
+
+}

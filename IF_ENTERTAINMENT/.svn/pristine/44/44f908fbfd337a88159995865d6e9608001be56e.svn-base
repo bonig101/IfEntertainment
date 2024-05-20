@@ -1,0 +1,11 @@
+package kr.or.ddit.socket;
+
+/**
+ * 웹소켓 알림 관련 핸들러
+ * @author 성이수
+ */
+public class WebSocketNotificationHandler {
+	// 웹 실시간 알림을 처리하기 위한 핸들러
+	// 실시간 알림이 필요한 각 분야에서 해당 핸들러 호출하여 실시간 알림 보낼 수 있도록
+	
+}

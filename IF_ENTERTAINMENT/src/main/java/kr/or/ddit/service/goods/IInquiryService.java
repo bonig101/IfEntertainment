@@ -1,0 +1,22 @@
+package kr.or.ddit.service.goods;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.goods.goodsInquiryVO;
+
+public interface IInquiryService {
+	public int selectInquiryListCount(PaginationInfoVO<goodsInquiryVO> pagingVO);
+	public List<goodsInquiryVO> selectInquiryList(PaginationInfoVO<goodsInquiryVO> pagingVO);
+	public goodsInquiryVO selectInquiry(int giNo);
+	public ServiceResult updateInquiry(goodsInquiryVO goodsInquiryVO);
+	
+	// 사용자
+	public int selectUserInquiryListCount(PaginationInfoVO<goodsInquiryVO> pagingVO);
+	public List<goodsInquiryVO> selectUserInquiryList(PaginationInfoVO<goodsInquiryVO> pagingVO);
+	public goodsInquiryVO selectUserInquiry(int giNo);
+	public ServiceResult goodsInquiryInsert(HttpServletRequest req, goodsInquiryVO goodsInquiryVO);
+}

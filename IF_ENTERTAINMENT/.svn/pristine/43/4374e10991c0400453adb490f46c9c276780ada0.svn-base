@@ -1,0 +1,114 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+
+
+
+<div class="gap no-gap">
+    <div class="inner-bg">
+        <div class="element-title">
+            <h2>앨범 수정 - ${albumVO.agId }</h2>
+        </div>
+        <div class="add-prod-from">
+            <form method="post" action="/entertain/artist/album/albumUpdate.do" id="artistForm" enctype="multipart/form-data">
+                <div class="row row-addproduct">
+                    <!-- 왼쪽 섹션 시작 -->
+                    <div class="col-md-6">
+                        <div class="addproduct-title">
+                            <span>앨범명</span>
+                        </div>
+                        <input type="text" id="alName" name="alName" value="${albumVO.alName }">
+                        <input type="hidden" id="alNo" name="alNo" value="${albumVO.alNo }">
+                        <input type="hidden" id="agId" name="agId" value="${albumVO.agId }">
+                        
+                        <div class="addproduct-title">
+                            <span>유튜브 URL</span>
+                        </div>
+                        <input type="text" id="alUrl" name="alUrl" value="${albumVO.alUrl }">
+                <div class="addproduct-title">
+						    <span>발매일</span>
+						</div>
+						<div class="agDate">
+						    <fmt:parseDate value="${albumVO.alDate}" pattern="yyyy-MM-dd" var="parsedDate" />
+						    <fmt:formatDate value="${parsedDate}" pattern="yyyy-MM-dd" var="formattedDate"/>
+						</div>
+						<input type="text" id="alDate" name="alDate" placeholder="${formattedDate}" value="${formattedDate}" pattern="\d{4}-\d{2}-\d{2}">
+
+
+                        
+                        <div class="addproduct-title">
+                            <span>앨범소개</span>
+                        </div>
+                        <textarea class="form-control" id="alIntro" name="alIntro" >${albumVO.alIntro }</textarea>
+                        
+<!--                         <div class="addproduct-title"> -->
+<!--                             <span>그룹 프로필 사진</span> -->
+<!--                         </div> -->
+<!--                         <label class="fileContainer"> -->
+<!--                             <span>찾아보기</span> -->
+<%--                             <input type="file" id="agPhoto" name="agPhoto" multiple="multiple"  value="${artist.agPhoto }"/> --%>
+<!--                         </label> -->
+                        <div class="addproduct-title">
+                            <span>앨범 사진</span>
+                        </div>
+                        <label class="fileContainer"> <span>찾아보기</span>
+                            <input type="file" id="alTempPhoto" name="alTempPhoto" />
+                        </label>
+                      <div class="prodthumimg-box">
+					    <c:choose>
+					        <c:when test="${fn:contains(albumVO.alPhoto, 'http')}">
+					            <img id="thumimg" src="${albumVO.alPhoto}" alt="" class="profile-img">
+					        </c:when>
+					        <c:otherwise>
+					            <img id="thumimg" src="${pageContext.request.contextPath}/resources/upload/group/${albumVO.alPhoto}" alt="" class="profile-img">
+					        </c:otherwise>
+					    </c:choose>
+					</div>
+					                        
+                        
+                        <div class="proddetailimg-box">
+                            <img id="detailimg" alt="" src="">
+                        </div>
+                    </div>
+                    <!-- 왼쪽 섹션 끝 -->
+                                     
+                    
+                </div>
+                <!-- 버튼 섹션 시작 -->
+                <div class="buttonz">
+                    <button type="button" id="addBtn" value="${name}">등록하기</button>
+                     <button type="button" id="listBtn">목록</button>
+                </div>
+                <!-- 버튼 섹션 끝 -->
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    flatpickr("#alDate", {
+        altInput: true,
+        altFormat: "Y-m-d",
+        dateFormat: "Y-m-d",
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#addBtn').click(function() {
+            $('#artistForm').submit();
+        });
+    });
+</script>
+

@@ -1,0 +1,55 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<style>
+.pitnik-title {
+	margin-top: 40x;
+	margin-bottom: 40px;
+	text-align: center;
+}
+
+.page-createbox .row>div {
+	margin-bottom: 20px;
+	padding: 0 70px;
+}
+</style>
+
+<div class="col-lg-12">
+	<div class="pitnik-title">
+		<h1>🙋 1:1 문의하기 작성</h1>
+		<p>※ 상담사에게 폭언, 욕설 등을 하지 말아 주세요. 답변을 받지 못하거나 사전안내 없이 삭제될 수 있습니다.</p>
+	</div>
+	<div class="central-meta">
+		<span class="create-post">문의하기</span>
+		<div class="page-createbox">
+			<form method="post" class="c-form">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="title1">문의유형</div>
+						<select class="form-control" style="width: 100%;">
+
+							<option>제품교환</option>
+							<option>멤버쉽</option>
+							<option>아티스트</option>
+							<option>기타</option>
+						</select>
+					</div>
+					<div class="col-lg-12">
+						<div class="title1">제목</div>
+						<div class="social-name">
+							<input type="text" placeholder="문의 제목을 입력해주세요 ! ">
+						</div>
+					</div>
+
+					<div class="col-lg-12">
+						<div class="title1">문의내용</div>
+						<textarea rows="5px" placeholder="문의하실 내용을 입력해주세요 !"></textarea>
+					</div>
+					<div class="col-lg-12">
+						<button class="main-btn" type="submit" data-ripple="">Submit</button>
+						<button class="main-btn3" type="submit" data-ripple="">Cancel</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

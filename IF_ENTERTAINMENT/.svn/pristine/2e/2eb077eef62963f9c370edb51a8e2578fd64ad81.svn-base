@@ -1,0 +1,14 @@
+package kr.or.ddit.service.goods;
+
+import java.util.List;
+
+import kr.or.ddit.vo.goods.AddressVO;
+
+public interface IAddressService {
+public List<AddressVO> addressManaege(String userNo);
+
+public int addressInsert(AddressVO addressVO);
+
+public int addressDelete(AddressVO addressVO);
+
+}

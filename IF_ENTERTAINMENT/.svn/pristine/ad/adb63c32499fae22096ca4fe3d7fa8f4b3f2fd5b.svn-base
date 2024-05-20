@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.IMypageMapper">
+
+	<update id="updateProfile">
+		UPDATE
+			"USER"
+		SET
+			USER_PROFILE = #{savedName}
+		WHERE
+			USER_NO = #{userNo}
+	</update>
+
+	<resultMap type="userVO" id="userMap">
+		<id property="userNo" column="user_no"/>
+		<result property="userNo" column="user_no"/>
+		<result property="userId" column="user_id"/>
+		<result property="userPw" column="user_pw"/>
+		<result property="userName" column="user_name"/>
+		<result property="userType" column="user_type"/>
+		<result property="userProfile" column="user_profile"/>
+		<result property="enabled" column="enabled"/>
+		<result property="memberTelno" column="member_telno"/>
+		<result property="memberEmail" column="member_email"/>
+		<result property="memberBirth" column="member_birth"/>
+		<result property="memberGender" column="member_gender"/>
+		<result property="memberPostcode" column="member_postcode"/>
+		<result property="memberAddress1" column="member_address1"/>
+		<result property="memberAddress2" column="member_address2"/>
+		<result property="memberRegdate" column="member_regdate"/>
+		<result property="memberNotification" column="member_notification"/>
+		<result property="memberLgnpath" column="member_lgnpath"/>
+		<result property="artistBirth" column="artist_birth"/>
+		<result property="artistIntro" column="artist_intro"/>
+		<result property="artistFakename" column="artist_fakename"/>
+		<result property="agId" column="ag_id"/>
+		<result property="nsGoods" column="ns_goods"/>
+		<result property="nsArtist" column="ns_artist"/>
+		<result property="nsCompany" column="ns_company"/>
+		<collection property="authList" resultMap="authMap"/>
+	</resultMap>	
+	
+	<resultMap type="userAuthVO" id="authMap">
+		<result property="auth" column="auth"/>
+	</resultMap>
+
+	<select id="selectUserMypage" parameterType="int" resultMap="userMap">
+		SELECT
+		    U.USER_NO, USER_NAME, USER_ID, USER_PW, USER_TYPE, USER_PROFILE, ENABLED,
+		    MEMBER_TELNO, MEMBER_EMAIL, MEMBER_BIRTH, MEMBER_GENDER, MEMBER_POSTCODE, MEMBER_ADDRESS1,
+		    MEMBER_ADDRESS2, MEMBER_REGDATE, MEMBER_NOTIFICATION, MEMBER_LGNPATH,
+		    ARTIST_BIRTH, ARTIST_INTRO, ARTIST_FAKENAME, AG_ID,
+		    AUTH, NS_GOODS, NS_ARTIST, NS_COMPANY
+		FROM "USER" U
+		LEFT OUTER JOIN MEMBER M ON(U.USER_NO = M.USER_NO)
+		LEFT OUTER JOIN ARTIST A ON (U.USER_NO = A.USER_NO)
+		LEFT OUTER JOIN USER_AUTH UA ON(U.USER_NO = UA.USER_NO)
+		LEFT OUTER JOIN NOTIFICATION_SETTING NS ON (U.USER_NO = NS.USER_NO)
+		WHERE M.MEMBER_DELYN = 'N' and M.MEMBER_STOPYN = 'N' AND U.USER_NO = #{userNo}
+	</select>
+	
+<update id="myPagePasswordUpdate">
+
+UPDATE "USER"
+SET 
+    USER_PW = #{userPw}
+WHERE
+    USER_NO = #{userNo}
+
+</update>
+
+<update id="myPageNoticeSettingUpdate">
+UPDATE 
+	NOTIFICATION_SETTING
+SET 
+    NS_GOODS = #{nsGoods}, 
+    NS_ARTIST = #{nsArtist}, 
+    NS_COMPANY = #{nsCompany}
+WHERE
+    USER_NO = #{userNo}
+</update>
+
+<!-- 여기 -->
+<update id="myPagememberNotificationUpdate">
+UPDATE 
+	MEMBER
+SET 
+    MEMBER_NOTIFICATION = #{memberNotification}
+WHERE
+    USER_NO = #{userNo}
+</update>
+
+
+</mapper>

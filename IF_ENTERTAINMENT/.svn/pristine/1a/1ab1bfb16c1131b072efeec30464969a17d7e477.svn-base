@@ -1,0 +1,74 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
+<div class="gap inner-bg">
+  <div class="table-styles">
+  
+  <div class="little-heading detail_gubun">
+  	<i class="fa-solid fa-chevron-right"></i>
+  	<h5 style="margin-bottom: 30px;">굿즈 공지사항</h5>
+  </div>
+  
+  	<div class="product-details">
+	  <div class="gap no-gap">
+	    <div class="single-post-detail paddlr130 detail-area">
+	   		<h1>${goodsNotice.bfTitle }</h1>
+	   		<div class="goodsNoti">
+		   		<p>${goodsNotice.bfRegdate }</p>
+		   		<span>${goodsNotice.userName }</span>
+	   		</div>
+	   		<hr>
+	   		<div class="goodsNotice_content">
+		    ${goodsNotice.bfContent }
+		    </div>
+		    <hr>
+		    <div class="thumb-box">
+		    	<h4>메인 썸네일 이미지</h4>
+			    <div class="product-detail-thumb" style="width: 500px">
+		   			<img src="${goodsNotice.baSavepath}" alt="">
+		   		</div>
+		    </div>
+	    </div>
+	    
+	    
+	    <div class="col-md-12">
+            <div class="buttonz addpro_buttonz">
+                <button type="button" id="updateBtn">수정</button>
+            	<button type="button" id="listBtn">목록</button>
+               	<button type="button" id="delBtn">삭제</button>
+               	<form action="/goods/notice/delete.do" method="post" id="delForm">
+					<input type="hidden" name="bfNo" value="${goodsNotice.bfNo }" />
+					<sec:csrfInput/>
+				</form>
+            </div>
+        </div>
+	  </div>
+	</div>
+  </div>
+</div>
+
+<script>
+$(function () {
+	var updateBtn = $("#updateBtn")
+	var listBtn = $("#listBtn");
+	var delBtn = $("#delBtn");
+	var delForm = $("#delForm");
+	
+	updateBtn.on("click", function () {
+		location.href = "/goods/notice/update.do?bfNo="+${goodsNotice.bfNo};
+	});
+	
+	listBtn.on("click", function () {
+		location.href = "/goods/notice/list.do";
+	});
+	
+	delBtn.on("click", function () {
+		if (confirm("게시물을 정말 삭제 하시겠습니까?")) {
+			delForm.submit();
+		}
+	});
+	
+	
+});
+</script>

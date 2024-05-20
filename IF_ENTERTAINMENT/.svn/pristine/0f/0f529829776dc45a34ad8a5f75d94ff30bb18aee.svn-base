@@ -1,0 +1,18 @@
+package kr.or.ddit.mapper.entertain;
+
+import java.util.List;
+
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.CompanyNoticeVO;
+
+public interface ICompanyNoticeMapper {
+
+	public int insertCompanyNotice(CompanyNoticeVO companyNoticetVO);
+	public int selectCompanyNoticeCount(PaginationInfoVO<CompanyNoticeVO> pagingVO);
+	public List<CompanyNoticeVO> selectCompanyNoticeList(PaginationInfoVO<CompanyNoticeVO> pagingVO);
+	public CompanyNoticeVO selectCompanyNotice(int bfNo);
+	
+	public int updateCompanyNotice(CompanyNoticeVO companyNoticeVO);
+	public int deleteCompanyNotice(int bfNo);
+
+}

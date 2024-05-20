@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.goods.IOrderMapper">
+
+	<resultMap type="orderVO" id="orderCancelMap">
+		<id property="orderNo" column="order_no"/>
+		<result property="orderTotalprice" column="order_totalprice"/>
+		<result property="userId" column="user_id"/>
+		<result property="orderPay" column="order_pay"/>
+		<result property="orderDate" column="order_date"/>
+		<result property="guiDate" column="gui_date"/>
+		<result property="guiReason" column="gui_reason"/>
+		<result property="guiDetail" column="gui_detail"/>
+		<result property="guiSavepath" column="gui_savepath"/>
+		<collection property="orderDetailList" resultMap="detailMap" />
+	</resultMap>
+	
+	<resultMap type="orderDetailVO" id="detailMap">
+		<id property="odNo" column="od_no" />
+		<result property="goodsThumbnail" column="goods_thumbnail"/>
+		<result property="goodsName" column="goods_name"/>
+		<result property="goodsNo" column="goods_no"/>
+		<result property="odQuantity" column="od_quantity"/>
+		<result property="odPrice" column="od_price"/>
+	</resultMap>
+
+	<sql id="orderDeliverySearch">
+		<if test="searchType != null and searchType == 'orderNo'">
+			and (O.ORDER_NO like  '%'||#{searchWord}||'%')
+		</if>
+		<if test="searchType != null and searchType == 'userId'">
+			and (U.USER_ID like  '%'||#{searchWord}||'%')
+		</if>
+	</sql>
+	
+	<sql id="orderCancelSearch">
+		<if test="searchType != null and searchType == 'orderNo'">
+			and (OI.ORDER_NO like  '%'||#{searchWord}||'%')
+		</if>
+		<if test="searchType != null and searchType == 'userId'">
+			and (U.USER_ID like  '%'||#{searchWord}||'%')
+		</if>
+	</sql>
+	
+	<update id="updateDeliverycomplate" parameterType="orderVO">
+	    UPDATE "ORDER"
+	    SET
+	        ORDER_DELIVERY = #{orderDelivery},
+	        CMPL_DATE = 
+	        <choose>
+	            <when test='orderDelivery == "Y"'>
+	                SYSDATE
+	            </when>
+	            <otherwise>
+               		NULL
+	            </otherwise>
+	        </choose>
+	    WHERE
+	        ORDER_NO = #{orderNo}
+	</update>
+	
+	<select id="selectOrderDeliveryList" parameterType="pagingVO" resultMap="orderCancelMap">
+		select	
+		    b.*
+		from (
+		    select
+		        a.*, ROWNUM AS rnum
+		    from(
+		        SELECT DISTINCT O.ORDER_NO, O.ORDER_TOTALPRICE, O.ORDER_PAY, O.ORDER_DATE,
+		               OD.OD_NO, OD.OD_QUANTITY, OD.OD_PRICE, OD.OD_STATUS,
+		               G.GOODS_NO, G.GOODS_NAME, G.GOODS_ARTIST, G.GOODS_THUMBNAIL, G.GOODS_PRICE,
+		               U.USER_ID
+		        FROM "ORDER" O
+		        LEFT OUTER JOIN
+		            ORDER_DETAIL OD ON (O.ORDER_NO = OD.ORDER_NO)
+		        LEFT OUTER JOIN
+		            GOODS G ON (G.GOODS_NO = OD.GOODS_NO)
+		        LEFT OUTER JOIN
+		            "USER" U ON (O.USER_NO = U.USER_NO)
+		        WHERE O.ORDER_DELIVERY = #{orderDelivery}
+		        <include refid="orderDeliverySearch" />
+		        ORDER BY O.ORDER_DATE DESC
+		      ) A
+		    ) B
+	        <![CDATA[
+				WHERE B.RNUM >= #{startRow} AND B.RNUM <= #{endRow}
+			]]>
+	</select>
+	
+	<select id="selectOrderDeliveryListCount" parameterType="pagingVO" resultType="int">
+		SELECT COUNT(O.ORDER_NO) AS order_count
+		FROM "ORDER" O
+		LEFT OUTER JOIN
+			"USER" U ON (O.USER_NO = U.USER_NO)
+		WHERE ORDER_DELIVERY = #{orderDelivery}
+		<include refid="orderDeliverySearch" />
+	</select>
+	
+	<update id="updateOrderStatusChange" parameterType="int">
+		UPDATE ORDER_DETAIL
+		SET OD_STATUS = 2
+		WHERE OD_NO = #{odNo}
+	</update>
+	
+	<update id="updateOrderIssueChange" parameterType="orderIssueVO">
+		UPDATE ORDER_ISSUE 
+		SET GUI_CNGDATE = SYSDATE
+		WHERE ORDER_NO = #{orderNo} AND OD_NO = #{odNo}
+	</update>
+	
+	<select id="selectAllorderChangeList" parameterType="pagingVO" resultType="orderVO">
+		select
+		    b.* 
+		from (
+		    select 
+		        a.*, ROWNUM AS rnum 
+		    from(
+		    SELECT 
+		        OD.ORDER_NO, O.ORDER_TOTALPRICE, O.ORDER_PAY, O.ORDER_DATE,
+		        OD.OD_NO, OD.OD_QUANTITY, OD.OD_PRICE, OD.OD_STATUS,
+		        OI.GUI_TYPE, OI.GUI_DETAIL, OI.GUI_DATE, OI.GUI_SAVEPATH, OI.GUI_CNGDATE,
+		        G.GOODS_NO, G.GOODS_NAME, G.GOODS_ARTIST, G.GOODS_THUMBNAIL, G.GOODS_PRICE,
+		        U.USER_ID
+		    FROM "ORDER" O LEFT OUTER JOIN ORDER_DETAIL OD ON (O.ORDER_NO = OD.ORDER_NO)
+		                   LEFT OUTER JOIN ORDER_ISSUE OI ON(OI.OD_NO = OD.OD_NO)
+		                   LEFT OUTER JOIN GOODS G ON(G.GOODS_NO = OD.GOODS_NO)
+		                   LEFT OUTER JOIN "USER" U ON(U.USER_NO = O.USER_NO)
+		    WHERE 1=1 
+		    <include refid="orderCancelSearch" />
+		    AND OI.GUI_TYPE = 2 
+		    AND OD.OD_STATUS = #{odStatus}
+		  ) A
+		) B
+		<![CDATA[
+			WHERE B.RNUM >= #{startRow} AND B.RNUM <= #{endRow}
+		]]>
+	</select>
+	
+	<select id="selectAllOrderChangeListCount" parameterType="pagingVO" resultType="int">
+		SELECT COUNT(O.ORDER_NO) AS order_count
+		FROM "ORDER" O 
+		LEFT OUTER JOIN
+		    ORDER_ISSUE OI ON (O.ORDER_NO = OI.ORDER_NO)
+		LEFT OUTER JOIN
+		    ORDER_DETAIL OD ON (OD.OD_NO = OI.OD_NO)
+		LEFT OUTER JOIN
+    		"USER" U ON (O.USER_NO = U.USER_NO)
+		WHERE OI.GUI_TYPE = 2 and  OD.OD_STATUS = #{odStatus}
+		<include refid="orderCancelSearch" />
+	</select>
+	
+	<select id="selectAllorderCancelList" parameterType="pagingVO" resultMap="orderCancelMap">
+		select	
+		    b.*
+		from (
+		    select
+		        a.*, ROWNUM AS rnum
+		    from(
+		        SELECT DISTINCT O.ORDER_NO, O.ORDER_TOTALPRICE, O.ORDER_PAY, O.ORDER_DATE,
+		               OD.OD_NO, OD.OD_QUANTITY, OD.OD_PRICE,
+		               OI.GUI_TYPE, OI.GUI_REASON, OI.GUI_DETAIL, OI.GUI_DATE, OD.OD_STATUS,
+		               G.GOODS_NO, G.GOODS_NAME, G.GOODS_ARTIST, G.GOODS_THUMBNAIL, G.GOODS_PRICE,
+		               U.USER_ID
+		        FROM "ORDER" O
+		        LEFT OUTER JOIN
+		            ORDER_DETAIL OD ON (O.ORDER_NO = OD.ORDER_NO)
+		        LEFT OUTER JOIN
+		            ORDER_ISSUE OI ON (OI.ORDER_NO = O.ORDER_NO)
+		        LEFT OUTER JOIN
+		            GOODS G ON (G.GOODS_NO = OD.GOODS_NO)
+		        LEFT OUTER JOIN
+		            "USER" U ON (O.USER_NO = U.USER_NO)
+		        WHERE OI.GUI_TYPE = 1
+		        <include refid="orderCancelSearch" />
+		        ORDER BY OI.GUI_DATE DESC
+		      ) A
+		    ) B
+		    <![CDATA[
+				WHERE B.RNUM >= #{startRow} AND B.RNUM <= #{endRow}
+			]]>
+	</select>
+
+	<select id="selectAllorderCancelListCount" parameterType="pagingVO" resultType="int">
+		SELECT COUNT(DISTINCT O.ORDER_NO) AS order_count
+		FROM "ORDER" O
+		LEFT OUTER JOIN
+		    ORDER_ISSUE OI ON (O.ORDER_NO = OI.ORDER_NO)
+		LEFT OUTER JOIN
+    		"USER" U ON (O.USER_NO = U.USER_NO)
+		WHERE OI.GUI_TYPE = 1
+		<include refid="orderCancelSearch" />
+	</select>
+
+	<update id="updateodStatus" parameterType="int">
+		UPDATE "ORDER_DETAIL"
+		SET OD_STATUS = 3
+		WHERE OD_NO = #{odNo}
+	</update>
+	
+	<update id="updateDelivery" parameterType="string">
+		UPDATE "ORDER"
+			SET ORDER_DELIVERY = 'C'
+			WHERE ORDER_NO = #{orderNo}
+	</update>
+
+	<select id="selectOrderIssueList" parameterType="pagingVO" resultType="orderIssueVO">
+		SELECT B.*   
+		FROM
+		(
+		    SELECT A.*, ROW_NUMBER() OVER (ORDER BY A.GUI_DATE DESC) AS RNUM
+		    FROM
+		    (
+		     SELECT ORDER_NO, OD_NO, GUI_TYPE, GUI_REASON, GUI_DETAIL, GUI_SAVEPATH, GUI_DATE, 
+		        ORDER_DATE, orderCount, odTotal, GOODS_THUMBNAIL, GOODS_NAME, GOODS_ARTIST, GOODS_NO, ORDER_TOTALPRICE
+		    FROM( 
+		        SELECT 
+		           OI.ORDER_NO, OD.OD_NO, OI.GUI_TYPE, OI.GUI_REASON, OI.GUI_DETAIL, GUI_SAVEPATH, OI.GUI_DATE, 
+		           G.GOODS_THUMBNAIL, G.GOODS_NAME, G.GOODS_ARTIST, G.GOODS_NO,
+                   (SELECT SUM(OD_QUANTITY) FROM ORDER_DETAIL WHERE ORDER_NO = OD.ORDER_NO) AS odTotal,
+		           O.ORDER_TOTALPRICE, O.ORDER_DATE, (select count(*) from order_detail where od.order_no = order_no) as orderCount,
+		           ROW_NUMBER() OVER (PARTITION BY O.ORDER_NO ORDER BY O.ORDER_NO) AS rn
+		    FROM 
+		        ORDER_ISSUE OI
+		    LEFT OUTER JOIN 
+		        "ORDER" O ON(O.ORDER_NO = OI.ORDER_NO)
+		    LEFT OUTER JOIN
+		        ORDER_DETAIL OD ON (O.ORDER_NO = OD.ORDER_NO)
+		     LEFT OUTER JOIN
+		        GOODS G ON (OD.GOODS_NO = G.GOODS_NO)
+		    WHERE O.USER_NO = #{userNo}
+		    ) T
+		    WHERE RN = 1
+		    ) A
+		) B
+		<![CDATA[
+		WHERE B.RNUM >= 1 AND B.RNUM <= 100000
+		]]>
+	</select>
+
+	<select id="selectOrderIssueListCount" parameterType="pagingVO" resultType="int">
+		SELECT COUNT(ORDER_NO)
+			FROM (
+			    SELECT 
+			        OI.ORDER_NO, 
+			        ROW_NUMBER() OVER (PARTITION BY O.ORDER_NO ORDER BY O.ORDER_NO) AS rn
+			    FROM 
+			        ORDER_ISSUE OI
+			    LEFT OUTER JOIN 
+			        "ORDER" O ON (OI.ORDER_NO = O.ORDER_NO) 
+			    LEFT OUTER JOIN 
+			        "USER" U ON (O.USER_NO = U.USER_NO)
+			    WHERE 
+			        O.USER_NO = #{userNo}
+			) t
+			WHERE rn = 1
+	</select>
+
+	<update id="updateOrderStatus" parameterType="int">
+		update order_detail
+			set
+			od_status = '1'
+			where od_no = #{odNo}
+	</update>
+	<insert id="insertIssueChange"  parameterType="orderIssueVO">
+		insert into order_issue(
+		    order_no, gui_type, gui_detail, od_no, gui_savepath, gui_date
+		)values(
+		    #{orderNo}, #{guiType}, #{guiDetail}, #{odNo}, #{guiSavepath}, sysdate
+		)
+	</insert>
+	
+	<update id="updategoodsQuantityConuntPlus" parameterType="orderDetailVO">
+		UPDATE GOODS
+		SET GOODS_QUANTITY = GOODS_QUANTITY + #{odQuantity}
+		WHERE GOODS_NO = (SELECT GOODS_NO FROM ORDER_DETAIL WHERE OD_NO = #{odNo})
+	</update>
+
+	<insert id="insertGoodsIssue" parameterType="orderIssueVO">
+		insert into order_issue(
+		    order_no ,od_no, gui_type, gui_reason, gui_detail, gui_date
+		)values(
+		    #{orderNo}, #{odNo}, #{guiType}, #{guiReason}, #{guiDetail}, sysdate
+		)
+	</insert>
+	
+	<select id="selectOrderDetailNoList" parameterType="string" resultType="orderDetailVO">
+		SELECT OD_NO, OD_QUANTITY
+			FROM ORDER_DETAIL OD
+			LEFT OUTER JOIN
+			    "ORDER" O ON(O.ORDER_NO = OD.ORDER_NO)
+			WHERE O.ORDER_NO = #{orderNo}
+	</select>
+
+	<select id="selectOrderDetailList" parameterType="orderDetailVO" resultType="orderDetailVO">
+		SELECT
+		    OD.OD_QUANTITY, OD.OD_PRICE, O.ORDER_NO, O.ORDER_DELIVERY, O.USER_NO, O.CMPL_DATE, OD.OD_NO, OD.OD_STATUS,
+		    G.GOODS_THUMBNAIL, G.GOODS_NO, G.GOODS_MEMBERSHIP, G.GOODS_NAME, G.GOODS_ARTIST, U.USER_NAME, (SELECT count(order_no) FROM ORDER_ISSUE WHERE order_no = #{orderNo}) AS ODISSUE,
+		    MA.MA_POSTCODE, MA_ADDRESS1, MA_ADDRESS2, MA_RECIEVER, MA_TELNO, MA_NATION,  O.ORDER_DATE, U.USER_ID,
+		    OD.OD_QUANTITY * OD.OD_PRICE AS OD_TOTALPRICE,
+		    ORDER_TOTALPRICE,ORDER_PAY, ORDER_DELIVERY
+		FROM ORDER_DETAIL OD 
+		LEFT OUTER JOIN
+		    "ORDER" O ON (OD.ORDER_NO = O.ORDER_NO)
+		LEFT OUTER JOIN
+		    "USER" U ON (O.USER_NO = U.USER_NO) 
+		LEFT OUTER JOIN
+		    GOODS G ON (OD.GOODS_NO = G.GOODS_NO)
+		LEFT OUTER JOIN
+		    MEMBER_ADDRESS MA ON (O.MA_NUMBER = MA.MA_NUMBER)
+		LEFT OUTER JOIN
+		    ORDER_ISSUE OI ON (OD.OD_NO = OI.OD_NO)
+		WHERE O.ORDER_NO = #{orderNo}
+		ORDER BY G.GOODS_NAME DESC
+	</select>
+
+	<select id="selectOrderListCount" parameterType="pagingVO" resultType="int">
+		SELECT COUNT(O.ORDER_NO)
+			FROM 
+			    "ORDER" O
+			LEFT OUTER JOIN
+			    ORDER_ISSUE OI ON(O.ORDER_NO = OI.ORDER_NO) 
+			WHERE USER_NO = #{userNo} and (gui_type != 1 or gui_type is null)
+	</select>
+
+	<select id="selectOrderList" parameterType="pagingVO" resultType="orderVO">
+		SELECT B.*            
+			FROM
+			(
+			    SELECT A.*, ROW_NUMBER() OVER (ORDER BY A.ORDER_DATE DESC) AS RNUM
+			    FROM
+			    (
+			        SELECT 
+			            ORDER_NO, GOODS_NO, OD_NO, ORDER_TOTALPRICE, ORDER_DELIVERY, USER_NO, MA_NUMBER,
+			            GOODS_THUMBNAIL, GOODS_NAME, GOODS_MEMBERSHIP, GOODS_ARTIST, orderCount, odTotal, GUI_TYPE, ORDER_DATE
+			        FROM (
+			            SELECT 
+			                O.ORDER_NO, G.GOODS_NO, OD.OD_NO, O.ORDER_TOTALPRICE, O.ORDER_DELIVERY, O.USER_NO,O.MA_NUMBER, G.GOODS_THUMBNAIL, OI.GUI_TYPE,
+			                G.GOODS_NAME, G.GOODS_ARTIST, G.GOODS_MEMBERSHIP, O.ORDER_DATE,
+			                ROW_NUMBER() OVER (PARTITION BY O.ORDER_NO ORDER BY O.ORDER_NO) AS rn,
+                            (SELECT COUNT(OD_QUANTITY) FROM ORDER_DETAIL WHERE ORDER_NO = OD.ORDER_NO) AS orderCount,
+			                (SELECT SUM(OD_QUANTITY) FROM ORDER_DETAIL WHERE ORDER_NO = OD.ORDER_NO) AS odTotal
+			            FROM 
+			                "ORDER" O 
+			            LEFT OUTER JOIN 
+			                "USER" U ON (O.USER_NO = U.USER_NO)
+			            LEFT OUTER JOIN
+			                ORDER_DETAIL OD ON (O.ORDER_NO = OD.ORDER_NO)
+			            LEFT OUTER JOIN
+			                GOODS G ON (OD.GOODS_NO = G.GOODS_NO)
+			            LEFT OUTER JOIN
+			                ORDER_ISSUE OI ON (O.ORDER_NO = OI.ORDER_NO)
+			            WHERE 
+			                O.USER_NO = #{userNo} AND (GUI_TYPE != 1 OR GUI_TYPE IS NULL) 
+			        ) t
+			        WHERE 
+			            rn = 1 
+			    ) A
+			) B
+			<![CDATA[
+			WHERE B.RNUM >= 1 AND B.RNUM <= 100000
+			]]>
+	</select>
+
+
+</mapper>

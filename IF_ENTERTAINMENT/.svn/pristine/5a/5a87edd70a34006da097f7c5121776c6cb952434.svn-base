@@ -1,0 +1,77 @@
+package kr.or.ddit.service.impl.entertain;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.entertain.ICompanyNoticeMapper;
+import kr.or.ddit.service.entertain.ICompanyNoticeService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.CompanyNoticeVO;
+
+@Service
+public class CompanyNoticeServiceImpl implements ICompanyNoticeService {
+
+	@Inject
+	private ICompanyNoticeMapper companyNoticeMapper;
+	
+	@Override
+	public ServiceResult insertCompanyNotice(HttpServletRequest req, CompanyNoticeVO companyNoticeVO) {
+		ServiceResult result = null;
+		int status = companyNoticeMapper.insertCompanyNotice(companyNoticeVO);
+		if(status > 0) { 	// 등록 처리가 완료되었을 때
+			result = ServiceResult.OK;
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public int selectCompanyNoticeCount(PaginationInfoVO<CompanyNoticeVO> pagingVO) {
+		return companyNoticeMapper.selectCompanyNoticeCount(pagingVO);
+	}
+
+	@Override
+	public List<CompanyNoticeVO> selectCompanyNoticeList(PaginationInfoVO<CompanyNoticeVO> pagingVO) {
+		return companyNoticeMapper.selectCompanyNoticeList(pagingVO);
+	}
+
+	@Override
+	public CompanyNoticeVO selectCompanyNotice(int bfNo) {
+		return companyNoticeMapper.selectCompanyNotice(bfNo); 
+	}
+	
+
+	@Override
+	public ServiceResult updateCompanyNotice(HttpServletRequest req, CompanyNoticeVO companyNoticeVO) {
+		ServiceResult result = null;
+		int status = companyNoticeMapper.updateCompanyNotice(companyNoticeVO);
+		if(status > 0) { 
+			result = ServiceResult.OK;
+			
+		} else { 
+			result = ServiceResult.FAILED;
+		}
+		return result;
+
+	}
+
+	@Override
+	public ServiceResult deleteCompanyNotice(HttpServletRequest req, int bfNo) {
+		ServiceResult result = null;
+		CompanyNoticeVO companyNoticeVO = companyNoticeMapper.selectCompanyNotice(bfNo);
+		int status = companyNoticeMapper.deleteCompanyNotice(bfNo);
+		if(status > 0) { 
+			result = ServiceResult.OK;
+		} else { 
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+}

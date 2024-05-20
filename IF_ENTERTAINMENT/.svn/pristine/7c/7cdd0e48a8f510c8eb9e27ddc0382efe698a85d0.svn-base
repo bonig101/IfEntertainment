@@ -1,0 +1,176 @@
+package kr.or.ddit.controller.community;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import kr.or.ddit.service.community.IMemberManageService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.common.UserVO;
+import kr.or.ddit.vo.community.FeedReportVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 회원 정보, 연예인 등록, 신고된 게시글 및 유저, 블랙리스트를 관리 할 수 있는 회원관리 컨트롤러
+ * @author 이수진
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/memManage")
+public class MemberManageController {
+	
+	@Inject
+	private IMemberManageService memberManageService;
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/admin/memberList.do", method = RequestMethod.GET)
+	public String memberList(
+			@RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(required = false, defaultValue = "title") String searchType,
+			@RequestParam(required = false) String searchWord,
+			Model model
+			) {
+		
+		PaginationInfoVO<UserVO> pagingVO = new PaginationInfoVO<UserVO>();
+		
+		if(StringUtils.isBlank(searchWord)) {
+			pagingVO.setSearchType(searchType);
+			pagingVO.setSearchWord(searchWord);
+			model.addAttribute("searchType", searchType);
+			model.addAttribute("searchWord", searchWord);
+		}
+		
+		pagingVO.setCurrentPage(currentPage);
+		int totalRecord = memberManageService.selectMemberCount(pagingVO);
+		
+		pagingVO.setTotalRecord(totalRecord);
+		log.info("###########currentPage {}", currentPage);
+		log.info("###########totalRecord {}", totalRecord);
+		
+		List<UserVO> dataList = memberManageService.memberList(pagingVO);
+		pagingVO.setDataList(dataList);
+		
+		model.addAttribute("pagingVO", pagingVO);
+		
+		return "admin/community/memberList";
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/admin/memberList.do", method = RequestMethod.POST)
+	public String artistInsert(
+			HttpServletRequest req,
+			UserVO userVO, Model model,
+			RedirectAttributes ra
+			) {
+		String goPage = "";
+		
+		Map<String, String> errors = new HashMap<String, String>();
+		
+		if(StringUtils.isBlank(userVO.getUserId())) {
+			errors.put("userId", "아티스트 ID를 입력해주세요.");
+		}
+		if(StringUtils.isBlank(userVO.getUserPw())) {
+			errors.put("userPw", "비밀번호를 입력해주세요.");
+		}
+		if(StringUtils.isBlank(userVO.getUserPw1())) {
+			errors.put("userPw1", "비밀번호 확인을 입력해주세요.");
+		}
+		
+		userVO.setUserType("3");
+		
+		if(errors.size() > 0) {
+			model.addAttribute("errors", errors);
+			model.addAttribute("userVO", userVO);
+			goPage = "admin/community/memberList";
+		}else {
+			
+			ServiceResult result = memberManageService.artistInsert(req, userVO);
+//			log.info("resultresult {}", result);
+			if(result.equals(ServiceResult.OK)) {
+				
+				ra.addFlashAttribute("message", "등록이 완료되었습니다.");
+				goPage = "redirect:/community/memManage/admin/memberList.do";
+			}else {
+				ra.addAttribute("message", "등록에 실패하였습니다.");
+				goPage = "redirect:/community/memManage/admin/memberList.do";
+			}
+		}
+		return goPage;
+		
+	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/admin/feedReportList.do",method = RequestMethod.GET)
+	public String reportBoardList(
+			@RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(required = false, defaultValue = "title") String searchType,
+			@RequestParam(required = false) String searchWord,
+			Model model
+			) {
+		PaginationInfoVO<FeedReportVO> pagingVO = new PaginationInfoVO<FeedReportVO>();
+		
+		if(StringUtils.isBlank(searchWord)) {
+			pagingVO.setSearchType(searchType);
+			pagingVO.setSearchWord(searchWord);
+			
+			model.addAttribute("searchType", searchType);
+			model.addAttribute("searchWord", searchWord);
+		}
+		log.info("searchType {}", searchType);
+		log.info("searchWord {}", searchWord);
+		
+		pagingVO.setCurrentPage(currentPage);
+		
+		int totalRecord = memberManageService.selectFeedReportCount(pagingVO);
+		pagingVO.setTotalRecord(totalRecord);
+//		log.info("feedReportCurentPage {}", currentPage);
+//		log.info("feedReportTotalRecord {}", totalRecord);
+		
+		List<FeedReportVO> dataList = memberManageService.feedReportList(pagingVO);
+		pagingVO.setDataList(dataList);
+//		log.info("dataList {}", dataList);
+		model.addAttribute("pagingVO", pagingVO);
+		
+		
+		return "admin/community/feedReportList";
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@ResponseBody
+	@PostMapping("/admin/feedReportList.do")
+	public ResponseEntity<ServiceResult> reportState(@RequestBody FeedReportVO feedReportVO) {
+		log.info("feedReportVO {}", feedReportVO);
+		
+		FeedReportVO reportUser = memberManageService.reportUpdate(feedReportVO);
+		log.info("reportUserreportUser {}", reportUser);
+		
+		if(feedReportVO.getReportChecked().equals("userReport")) {
+			memberManageService.reportUserStop(reportUser);
+		}else {
+			memberManageService.reportState(feedReportVO);
+			log.info("feedReportVOfeedReportVO {}", feedReportVO);
+		}
+		
+		return new ResponseEntity<ServiceResult>(HttpStatus.OK);
+	}
+
+}

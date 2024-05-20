@@ -1,0 +1,138 @@
+package kr.or.ddit.controller.goods;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.service.goods.IAddressService;
+import kr.or.ddit.service.goods.IGoodsPurchaseService;
+import kr.or.ddit.vo.common.CustomUser;
+import kr.or.ddit.vo.common.UserVO;
+import kr.or.ddit.vo.entertain.NationVO;
+import kr.or.ddit.vo.goods.AddressVO;
+import kr.or.ddit.vo.goods.CartVO;
+import kr.or.ddit.vo.goods.OrderVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 결제 API를 활용한 상품 구매 프로세스 컨트롤러
+ * @author 조재훈, 성이수
+ *
+ */
+@Controller
+@Slf4j
+@RequestMapping("/goods")
+public class GoodsPurchaseController {
+	
+	
+	@Inject
+	private IGoodsPurchaseService goodsPurchaseService;
+	@Inject
+	private IAddressService addressService;
+	
+	// 상품 구매 시 재고 감소 시키기 (조재훈)
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MEMBER', 'ROLE_ARTIST')")
+	@RequestMapping(value = "/goodsPurchase.do")
+	public String goodsPurchase(Model model, CartVO cartVO2) {
+		
+		log.info("cartVO2@@@" + cartVO2);
+		
+		CustomUser user = (CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		UserVO userVO = user.getUser();
+		String userNo = userVO.getUserNo() + "";
+		List<CartVO> cartList = new ArrayList<CartVO>();
+		if(cartVO2.getCartName() != null) {
+			cartList.add(cartVO2);
+		}else {
+			cartList = goodsPurchaseService.cartSelect(userNo);
+			log.info("### cartList" + cartList);
+		}
+		
+		
+		int totalPrice = 0;
+		for (CartVO cartVO : cartList) {
+		        int cartPrice = Integer.parseInt(cartVO.getCartPrice());
+		        int cartQuantity = Integer.parseInt(cartVO.getCartQuantity());
+		        totalPrice += cartPrice * cartQuantity;
+		    
+		}
+		log.info("totalPrice" + totalPrice);
+		
+		// 상품상단에 아티스트 이름을 띄우기 위해 리스트를 가져온다.
+		List<CartVO> artistList = goodsPurchaseService.selectArtist(cartList);
+		for (int i = 0; i < cartList.size(); i++) {
+		    String goodsArtist = artistList.get(i).getGoodsArtist();
+		    cartList.get(i).setGoodsArtist(goodsArtist);
+		}
+		try {
+			List<AddressVO> addressList = goodsPurchaseService.addressSelect(userNo);
+			List<NationVO> nationList = addressService.nationSelect();
+			String userName = goodsPurchaseService.selectUserName(userNo);
+			log.info("addressList ??" + addressList);
+			model.addAttribute("cartList",cartList);
+			model.addAttribute("addressList",addressList);
+			model.addAttribute("nationList",nationList);
+			model.addAttribute("userNo",userNo);
+			model.addAttribute("totalPrice",totalPrice);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		
+		return "goods/goodsPurchase";
+		
+	}
+//	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MEMBER', 'ROLE_ARTIST')")
+//	@RequestMapping(value = "/kakao.do" , method=RequestMethod.POST)
+//	public ResponseEntity<String> kakao() {
+//		int status = 0;
+//		log.info("cartVO ???");
+//		
+//		if (status > 0) { 
+//			return new ResponseEntity<String>(HttpStatus.OK);
+//		} else {
+//			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+//		}
+//	}
+	 @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MEMBER', 'ROLE_ARTIST')")
+	 @PostMapping("/kakao.do")
+	 	public ResponseEntity<?> processPayment(@RequestBody OrderVO orderVO) {
+		 	CustomUser user = (CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			UserVO userVO = user.getUser();
+			int userNo = userVO.getUserNo();
+			orderVO.setUserNo(userNo);
+			int status = 0;
+			int count = 0;
+		 				
+			if(orderVO.getMaNumber() == null) {
+				status = goodsPurchaseService.addressInsert(orderVO);
+				
+			}
+			if(status > 0) {
+				String maNumber = goodsPurchaseService.selectMaNumber(userNo);
+				orderVO.setMaNumber(maNumber);
+				log.info("maNumber" + maNumber);
+			}
+			count = goodsPurchaseService.purchaseInsert(orderVO);
+			
+	      
+	        return ResponseEntity.ok().body("결제 정보가 성공적으로 처리되었습니다.");
+	    }
+}
+	
+	
+	// 재고 감소 후 재고를 체크해봤을 때 5개 이하라면 발주 진행(내역에 인서트 정도만)(성이수)
+	
+

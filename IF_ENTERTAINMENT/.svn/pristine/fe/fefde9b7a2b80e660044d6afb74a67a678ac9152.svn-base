@@ -1,0 +1,98 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+		<!-- responsive header 시작 -->
+		<div class="topbar stick">
+			<div class="logo">
+				<a title="" href="newsfeed.html"><img src="images/logo.png" alt=""></a>
+			</div>
+			<div class="top-area">
+
+			<div class="main-menu">
+					<span>
+						<a href="#"><i class="fa fa-search" style="margin-right: 10px; color: white;" aria-hidden="true"></i></a>
+						<a href="#" style="position: relative;">
+							<i class="fa fa-bell" style="margin-right: 10px; color: white;" aria-hidden="true"></i>
+							<em class="noti"></em>
+							</a>
+						<a href="#"><i class="fa fa-user" style="margin-right: 30px; color: white;" aria-hidden="true"></i></a>
+						<a href=""></a>
+						<a href="#"><i class="fa fa-user-plus" style="margin-right: 10px; color: white;" aria-hidden="true"></i></a>
+						<a href="#"><i class="fa fa-star" style="margin-right: 10px; color: white;" aria-hidden="true"></i></a>
+						<a href="#"><i class="fa fa-shopping-bag" style="color: white;" aria-hidden="true"></i></a>
+					</span>
+			</div>
+
+				<ul class="setting-area">
+					<li><a href="#" title="Languages" data-ripple=""><i>
+								<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+									fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"
+									stroke-linejoin="round" class="feather feather-globe">
+									<circle cx="12" cy="12" r="10"></circle>
+									<line x1="2" y1="12" x2="22" y2="12"></line>
+									<path
+										d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+									</path>
+								</svg></i><span>한국어</span></a>
+						<div class="dropdowns languages">
+							<div data-gutter="10" class="row">
+								<div class="col-md-3">
+									<ul class="dropdown-meganav-select-list-lang">
+										<li class="active">
+											<a href="#">
+												<img title="Image Title" alt="Image Alternative text"
+													src="images/flags/US.png">English(US)
+											</a>
+										</li>
+										<li class="active">
+											<a href="#">
+												<img title="Image Title" alt="Image Alternative text"
+													src="images/flags/KOR.png">한국어
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<img title="Image Title" alt="Image Alternative text"
+													src="images/flags/JP.png">日本語
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<img title="Image Title" alt="Image Alternative text"
+													src="images/flags/CN.png">简体中文
+											</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!-- 밑 하위 메뉴 -->
+			<nav>
+				<ul class="nav-list">
+					<li>
+						<a class="" href="#" title="">Feed</a>
+					</li>
+					<li>
+						<a class="" href="#" title="">Artist</a>
+					</li>
+					<li>
+						<a class="" href="#" title="">Live</a>
+					</li>
+					<li>
+						<a class="" href="#" title="">Schedule</a>
+					</li>
+					<li>
+						<a class="" href="#" title="">Shop</a>
+					</li>
+				</ul>
+			</nav><!-- nav menu -->
+		</div>
+		<!-- 헤더 끝 -->
+
+<script type="text/javascript">
+
+	ws = new WebSocket(url);
+
+
+</script>

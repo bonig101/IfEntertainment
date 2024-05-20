@@ -1,0 +1,12 @@
+package kr.or.ddit.vo.goods;
+
+import lombok.Data;
+
+@Data
+public class OrderIssueVO {
+	 private String orderNo;
+	 private String guiType;
+	 private String guiReason;
+	 private String guiDetail;
+	 private int odId;
+}

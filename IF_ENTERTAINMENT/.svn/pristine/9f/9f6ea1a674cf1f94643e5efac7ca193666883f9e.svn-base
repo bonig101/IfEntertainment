@@ -1,0 +1,15 @@
+package kr.or.ddit.service.impl.community;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.community.IJoinMapper;
+import kr.or.ddit.service.community.IJoinService;
+
+@Service
+public class JoinServiceImpl implements IJoinService {
+
+	@Inject
+	private IJoinMapper joinMapper;
+}

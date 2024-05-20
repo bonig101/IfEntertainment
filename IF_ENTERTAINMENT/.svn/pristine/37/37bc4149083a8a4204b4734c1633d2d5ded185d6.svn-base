@@ -1,0 +1,72 @@
+package kr.or.ddit.socket;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
+
+import lombok.extern.slf4j.Slf4j;
+
+
+
+/**
+ * 웹소켓 알림 관련 핸들러
+ * @author 성이수
+ */
+@ServerEndpoint("/notiserver")
+@Slf4j
+public class WebSocketNotificationHandler {
+	// 웹 실시간 알림을 처리하기 위한 핸들러
+	// 실시간 알림이 필요한 각 분야에서 해당 핸들러 호출하여 실시간 알림 보낼 수 있도록
+	//클라이언트가 서버에 연결할때 호출되는 메서드
+		private static List<Session> list = new ArrayList<Session>();
+		
+		private void print(String msg) {
+			System.out.printf("[%tT] %s\n", Calendar.getInstance(), msg);
+		}
+		
+		@OnOpen
+		public void handleOpen(Session session) {
+			print("클라이언트 연결");
+			list.add(session); //접속자 관리
+		}
+		
+		@OnMessage
+		public void handleMessage(String msg, Session session) {
+//			int index = msg.indexOf("#", 2);
+//			String where = msg.substring(0,1);
+//			String user = msg.substring(2, index);
+//			String txt = msg.substring(index + 1);
+			
+			log.info("!!!!!!!!!!!!!! 소켓!!!!!!!!!!");
+			
+			for (Session s : list) {
+				if (s != session) {
+					try {
+						s.getBasicRemote().sendText(msg);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		}
+	
+		@OnClose
+		public void handleClose() {
+			
+		}
+		
+		@OnError
+		public void handleError(Throwable t) {
+			
+		}
+		
+}

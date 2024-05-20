@@ -1,0 +1,303 @@
+package kr.or.ddit.service.impl.community;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.community.ISurveyMapper;
+import kr.or.ddit.service.community.ISurveyService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.community.SurveyFormVO;
+import kr.or.ddit.vo.community.SurveyOptionVO;
+import kr.or.ddit.vo.community.SurveyQuestionVO;
+import kr.or.ddit.vo.community.SurveyResultVO;
+import kr.or.ddit.vo.community.SurveyVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class SurveyServiceImpl implements ISurveyService {
+	
+	@Inject
+	private ISurveyMapper surveyMapper;
+
+	/**
+	 * 설문지 폼 등록 
+	 */
+	@Override
+	public ServiceResult insertSurvey(HttpServletRequest req, SurveyFormVO surveyFormVO) {
+		ServiceResult result = null;
+		String thumbnail = null;
+		
+		try {
+			// 썸네일 db저장을 위한 이름을 가져오며 서버경로에도 실제로 업로드해준다.
+			thumbnail = surveyFileUpload(surveyFormVO, req);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if(thumbnail != null) {
+			surveyFormVO.setSfPhoto(thumbnail);	// 썸네일 경로 저장
+		} else {
+			log.info("### thumbnail is null");
+		}
+		
+		int status = surveyMapper.insertSurvey(surveyFormVO);
+		
+		if(status > 0) {
+			// 설문지가 성공적으로 등록되었다면 해당 설문지에 포함된 질문리스트를 가져와 DB에 입력한다.
+			List<SurveyQuestionVO> sqList = surveyFormVO.getSurveyQuestionList();
+			if(sqList != null && sqList.size() > 0) {
+				for (SurveyQuestionVO surveyQuestionVO : sqList) {
+					surveyQuestionVO.setSfNo(surveyFormVO.getSfNo());
+					int questionStatus = surveyMapper.insertSurveyQuestion(surveyQuestionVO);
+					if(questionStatus > 0) {
+						// 질문이 성공적으로 등록되었다면 해당 질문에 포함된 옵션리스트를 가져와 DB에 입력한다.
+						List<SurveyOptionVO> soList = surveyQuestionVO.getOptionList();
+						if(soList != null && soList.size() > 0) {
+							for(SurveyOptionVO surveyOptionVO : soList) {
+								surveyOptionVO.setSqNo(surveyQuestionVO.getSqNo());
+								surveyMapper.insertSurveyOption(surveyOptionVO);
+							}
+						}
+					}
+				}
+			}
+			result = ServiceResult.OK;
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+
+	private String surveyFileUpload(SurveyFormVO surveyFormVO, HttpServletRequest req) throws Exception {
+		
+		String savePath = "/resources/survey/";
+		
+		String saveLocate = null;
+		if(surveyFormVO.getSfFile() != null) {
+			String saveName = UUID.randomUUID().toString();
+			saveName += "_" + surveyFormVO.getSfFile().getOriginalFilename();
+			saveLocate = req.getServletContext().getRealPath(savePath);
+			
+			File file = new File(saveLocate);
+			if(!file.exists()) {
+				file.mkdirs();
+			}
+			
+			saveLocate += saveName;
+			File saveFile = new File(saveLocate);
+			surveyFormVO.getSfFile().transferTo(saveFile);
+			
+			savePath += saveName;
+			
+		}
+		
+		return savePath;
+	}
+
+	/**
+	 * 페이징 처리 및 검색결과를 위한 설문지 폼의 개수를 리턴
+	 */
+	@Override
+	public int selectSurveyCount(PaginationInfoVO<SurveyFormVO> pagingVO) {
+		return surveyMapper.selectSurveyCount(pagingVO);
+	}
+
+	/**
+	 * 페이징 처리 및 검색 결과가 포함된 설문지 폼 리스트 리턴
+	 */
+	@Override
+	public List<SurveyFormVO> selectSurveyList(PaginationInfoVO<SurveyFormVO> pagingVO) {
+		return surveyMapper.selectSurveyList(pagingVO);
+	}
+
+	/**
+	 * 설문지 번호를 받아서 디테일 정보를 리턴
+	 */
+	@Override
+	public SurveyFormVO selectSurvey(int sfNo) {
+		return surveyMapper.selectSurvey(sfNo);
+	}
+
+	/**
+	 * 설문지 VO를 받아 업데이트 처리 후 ServiceResult 상태값 리턴
+	 */
+	@Override
+	public ServiceResult modifySurvey(SurveyFormVO surveyFormVO, HttpServletRequest req) {
+		ServiceResult result = null;
+		String thumbnail = null;
+		
+		if(surveyFormVO.getSfFile() != null) {
+			try {
+				thumbnail = surveyFileUpdate(surveyFormVO, req);
+				surveyFormVO.setSfPhoto(thumbnail);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			int status = surveyMapper.modifySurvey(surveyFormVO);
+			if(status > 0) {
+				result = ServiceResult.OK;
+			} else {
+				result = ServiceResult.FAILED;
+			}
+			
+		} else {
+			surveyMapper.modifySurvey(surveyFormVO);
+			result = ServiceResult.OK;
+		}
+		return result;
+	}
+
+	/**
+	 * 설문 업데이트 시 기존에 있던 파일은 삭제하고 새로 받은 파일을 저장한다.
+	 * @param surveyFormVO
+	 * @param req
+	 * @return 새로 받은 파일의 저장될 파일명 return
+	 * @throws IOException 
+	 */
+	private String surveyFileUpdate(SurveyFormVO surveyFormVO, HttpServletRequest req) throws IOException {
+		String savePath = "/resources/survey/";
+		
+		String saveLocate = null;
+		if(surveyFormVO.getSfFile() != null) {
+			String saveName = UUID.randomUUID().toString();
+			saveName += "_" + surveyFormVO.getSfFile().getOriginalFilename();
+			saveLocate = req.getServletContext().getRealPath(savePath);
+			
+			File file = new File(saveLocate);
+			if(!file.exists()) {
+				file.mkdirs();
+			}
+			
+			saveLocate += saveName;
+			File saveFile = new File(saveLocate);
+			surveyFormVO.getSfFile().transferTo(saveFile);
+			
+			// 기존에 있던 파일은 삭제
+			File oldFile = new File(req.getServletContext().getRealPath(savePath) + surveyFormVO.getSfPhoto());
+			oldFile.delete();
+			
+			savePath += saveName;
+			
+		}
+		
+		return savePath;
+	}
+
+	/**
+	 * 질문과 보기들이 담긴 VO를 받아 질문을 먼저 수정 한 후 보기들을 수정한다
+	 */
+	@Override
+	public ServiceResult modifySurveyQuestion(SurveyQuestionVO surveyQuestionVO) {
+		ServiceResult result = null;
+		
+		if(surveyQuestionVO != null) {
+			int status = surveyMapper.modifySurveyQuestion(surveyQuestionVO);
+			if(status > 0) {
+				List<SurveyOptionVO> optionList = surveyQuestionVO.getOptionList();
+				if(optionList != null && optionList.size() > 0) {
+					for (SurveyOptionVO surveyOptionVO : optionList) {
+						surveyMapper.modifySurveyOption(surveyOptionVO);
+					}
+					result = ServiceResult.OK;
+				} else {
+					result = ServiceResult.FAILED;
+				}
+			}
+		}
+		
+		return result;
+	}
+
+	/**
+	 * 설문지 VO를 전달받아 해당설문에 해당하는 질문과 보기를 모두 삭제한다.
+	 */
+	@Override
+	public ServiceResult deleteSurvey(SurveyFormVO surveyFormVO) {
+		ServiceResult result = null;
+		List<SurveyQuestionVO> sqList = surveyFormVO.getSurveyQuestionList();
+		if(sqList != null && sqList.size() > 0) {
+			for (SurveyQuestionVO surveyQuestionVO : sqList) {
+				int sqNo = surveyQuestionVO.getSqNo();
+				log.info("{}번 질문에 해당되는 옵션 삭제 시작", sqNo);
+				surveyMapper.deleteSurveyOption(sqNo);
+			}
+			int sfNo = surveyFormVO.getSfNo();
+			int statusQuestion = surveyMapper.deleteSurveyQuestion(sfNo);
+			if(statusQuestion > 0) {
+				int statusSurvey = surveyMapper.deleteSurvey(sfNo);
+				if(statusSurvey > 0) {
+					result = ServiceResult.OK;
+				}
+			}
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	/**
+	 * 커뮤니티 메인 페이지에서 띄울 설문 정보를 가져온다.
+	 * 파라미터 없이 유일하게 display여부가 Y인 하나의 정보를 가져온다.
+	 */
+	@Override
+	public SurveyFormVO selectSurveyPopup() {
+		return surveyMapper.selectSurveyPopup();
+	}
+
+	/**
+	 * 설문 실시 메서드
+	 */
+	@Override
+	public ServiceResult conductSurvey(SurveyVO surveyVO) {
+		ServiceResult result = null;
+		int status = surveyMapper.conductSurvey(surveyVO);
+		if(status > 0) {
+			List<SurveyResultVO> surveyResultList = surveyVO.getSurveyResultList();
+			for (SurveyResultVO surveyResultVO : surveyResultList) {
+				surveyResultVO.setSurveyNo(surveyVO.getSurveyNo());
+				surveyMapper.insertSurveyResult(surveyResultVO);
+			}
+			result = ServiceResult.OK;
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	/**
+	 * 설문 마감 버튼을 클릭시 해당 설문을 즉시 마감하고 결과를 확인할 수 있다.
+	 */
+	@Override
+	public ServiceResult closeSurvey(int sfNo) {
+		ServiceResult result = null;
+		int status = surveyMapper.closeSurvey(sfNo);
+		if(status > 0) {
+			result = ServiceResult.OK;
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+}
+
+
+
+
+
+
+
+
+

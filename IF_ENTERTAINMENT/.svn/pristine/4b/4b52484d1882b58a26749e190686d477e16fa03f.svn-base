@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.goods.IGoodsPurchaseMapper">
+
+	<select id="cartSelect" resultType="cartVO">
+	select * from cart
+	where user_no = #{userNo}
+	</select>
+	
+	<select id="selectArtist" resultType="cartVO">
+	select goods_artist 
+	from goods
+	where goods_no = ${goodsNo}
+	</select>
+	
+	<select id="addressSelect" resultType="addressVO">
+	select * from member_address
+	where user_no = #{userNo}	
+	</select>
+	
+	<select id="selectUserName" resultType="string">
+		select user_name 
+		from "USER"
+		where user_no = #{userNo}
+	</select>
+</mapper>

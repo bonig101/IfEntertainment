@@ -1,0 +1,140 @@
+package kr.or.ddit.controller.entertain;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import kr.or.ddit.service.entertain.IAuditionService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.entertain.AuditionRegisterVO;
+import kr.or.ddit.vo.entertain.NationVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 오디션 신청 컨트롤러
+ * @author 이수진
+ */
+@Controller
+@Slf4j
+@RequestMapping("/entertain/audition")
+public class AuditionApplyInsertController {
+
+	@Inject
+	private IAuditionService auditionService;
+	
+	@RequestMapping(value = "/auditionSupportGuide.do", method = RequestMethod.GET)
+	public String auditionSupportGuide() {
+		return "entertain/auditionSupportGuide";
+	}
+	
+	@RequestMapping(value = "/auditionSupportFrom.do", method = RequestMethod.GET)
+	public String auditionSupportForm(NationVO nationVO, Model model) {
+		List<NationVO> nationList = auditionService.nationList();
+		model.addAttribute("nationList", nationList);
+//		log.info("nationList {}", nationList);
+		return "entertain/auditionSupportForm";
+	}
+	
+	@RequestMapping(value = "/auditionSupportFrom.do", method = RequestMethod.POST)
+	public String auditionSupportRegister(
+			HttpServletRequest req,
+			AuditionRegisterVO auditionRegisterVO, 
+			Model model,
+			RedirectAttributes ra
+			) {
+		
+		String goPage = "";
+		
+		Map<String, String> errors = new HashMap<String, String>();
+		
+//		if(StringUtils.isBlank(auditionRegisterVO.getArTitle())) {
+//			errors.put("arTitle", "제목을 입력해주세요.");
+//		} else if(auditionRegisterVO.getArTitle().length() > 20) {
+//			errors.put("arTitle", "제목은 20자 이내로 입력해주세요.");
+//		}
+//		
+//		if(StringUtils.isBlank(auditionRegisterVO.getArCategory())) {
+//			errors.put("arCategory", "지원분야를 선택해주세요.");
+//		}
+//		if(StringUtils.isBlank(auditionRegisterVO.getArNation())) {
+//			errors.put("nationName", "국적을 선택해주세요.");
+//		}
+//		if(StringUtils.isBlank(auditionRegisterVO.getArPw())) {
+//			errors.put("arPw", "비밀번호를 입력해주세요");
+//		}else if(!auditionRegisterVO.getArPw().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$")) {
+//			errors.put("arPw", "대문자 1개 이상, 소문자 1개 이상, 숫자 1개 이상, 특수문자 1개 이상을 포함한 8자 이상을 입력해주세요.");
+//		}
+//		if(!auditionRegisterVO.getArPw().equals(auditionRegisterVO.getArPw1())) {
+//			errors.put("arPw1", "비밀번호가 일치하지 않습니다.");
+//		}
+//		if(StringUtils.isBlank(auditionRegisterVO.getArName())) {
+//			errors.put("arName", "이름을 입력해주세요.");
+//		}
+//		if(StringUtils.isBlank(auditionRegisterVO.getArGender())) {
+//			errors.put("arGender", "성별을 선택해주세요.");
+//		}
+//		if(StringUtils.isBlank(auditionRegisterVO.getArBirth())) {
+//			errors.put("arBirth", "생년월일을 선택해주세요.");
+//		}
+//		if(auditionRegisterVO.getArHeight() == null) {
+//			errors.put("arHeight", "신장을 입력해주세요.");
+//		}
+//		if(auditionRegisterVO.getArWeight() == null) {
+//			errors.put("arWeight", "체중을 입력해주세요.");
+//		}
+//		
+//		if(StringUtils.isBlank(auditionRegisterVO.getArTelno())) {
+//			errors.put("arTelno", "연락처를 입력해주세요.");
+//		}else if(!auditionRegisterVO.getArTelno().matches("^\\d{3}-\\d{3,4}-\\d{4}$")) {
+//			errors.put("arTelno", "올바른 연락처 형식이 아닙니다.");
+//		}
+//		if(StringUtils.isBlank(auditionRegisterVO.getArCategory())) {
+//			errors.put("arEmail", "올바른 이메일 형식이 아닙니다.");
+//		}
+//		
+//		MultipartFile auditionPhotoFile = auditionRegisterVO.getAuditionPhotoFile();
+//		if(auditionPhotoFile == null || auditionPhotoFile.isEmpty()) {
+//			errors.put("arPhonto", "오디션 사진을 업로드해주세요.");
+//		}
+//		
+//		MultipartFile arVideo = auditionRegisterVO.getArVideo();
+//		if(arVideo == null || arVideo.isEmpty()) {
+//			errors.put("arVideo", "오디션 지원영상을 업로드해주세요.");
+//		}
+		
+		log.info("auditionRegisterVO {}",auditionRegisterVO);
+		if(errors.size() > 0) {	// 오류가 있을 때
+			model.addAttribute("errors", errors);
+			model.addAttribute("AuditionRegisterVO", auditionRegisterVO);
+//			model.addAttribute("NationVO", nationVO);
+			goPage = "entertain/auditionSupportForm";
+		}else {	// 오류가 없을 때
+			log.info("123123AuditionRegisterVOAuditionRegisterVOAuditionRegisterVO",auditionRegisterVO);
+			ServiceResult result = auditionService.auditionSupportRegister(req, auditionRegisterVO);
+//			ServiceResult result = auditionService.auditionSupport(req, auditionRegisterVO);
+			
+			if(result.equals(ServiceResult.OK)) {
+				ra.addFlashAttribute("message", "오디션 지원이 완료되었습니다.");
+				goPage = "redirect:/entertain/audition/auditionSupportGuide.do";
+			}else {
+				model.addAttribute("message", "오디션 지원에 실패하였습니다. 다시 시도해주세요!");
+				goPage = "entertain/auditionSupportForm";
+			}
+		}
+		return goPage;
+	}
+	
+}

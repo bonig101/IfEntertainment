@@ -1,0 +1,13 @@
+package kr.or.ddit.mapper.goods;
+
+import java.util.List;
+
+import kr.or.ddit.vo.goods.AddressVO;
+
+public interface IAddressMapper {
+
+	public List<AddressVO> addressManaege(String userNo);
+
+	public int addressInsert(AddressVO addressVO);
+
+}

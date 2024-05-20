@@ -1,0 +1,20 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div class="col-lg-12">
+		<form class="we-form support_check" method="post">
+			<span>지원내역 확인하기</span>
+			<input type="text" placeholder="이름">
+			<input type="text" placeholder="연락처">
+			<input type="password" placeholder="비밀번호">
+			<input type="submit" value="확인" class="sP_check">
+		</form>
+	</div>
+</body>
+</html>

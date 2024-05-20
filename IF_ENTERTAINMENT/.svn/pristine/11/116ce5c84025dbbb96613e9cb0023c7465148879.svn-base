@@ -1,0 +1,32 @@
+package kr.or.ddit.controller.community;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.community.IFeedService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 피드 수정 및 삭제 컨트롤러
+ * @author 임민혁
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/feed")
+public class FeedModifyController {
+	// 아티스트는 수정을 할 때 멤버십에게만 공개할지에 대한 여부를 수정할 수 있도록
+	// 수정시 본인이 기존에 올렸던 영상이나 사진은 미리보기로 있을 수 있도록
+	
+	// 본인이 작성한 게시글만 삭제가 가능하되 
+	// 삭제 할 수 있는 권한은 작성한 유저 + 관리자는 모든 글 유저 삭제 가능하도록
+	@Inject
+	private IFeedService feedService;
+	
+	
+
+	
+	
+	
+}

@@ -1,0 +1,16 @@
+package kr.or.ddit.mapper.entertain;
+
+import java.util.List;
+
+import kr.or.ddit.vo.entertain.AlbumVO;
+import kr.or.ddit.vo.entertain.TrackListVO;
+
+public interface IArtistMapper {
+
+	public List<AlbumVO> albumList(String agId);
+
+	public List<TrackListVO> selectAlbum(int alNo);
+
+	public AlbumVO albumDetail(int alNo);
+
+}

@@ -1,0 +1,25 @@
+package kr.or.ddit.service.goods;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.goods.OrderDetailVO;
+import kr.or.ddit.vo.goods.OrderIssueVO;
+import kr.or.ddit.vo.goods.OrderVO;
+
+public interface IOrderService {
+	public int selectOrderListCount(PaginationInfoVO<OrderVO> pagingVO);
+	public List<OrderVO> selectOrderList(PaginationInfoVO<OrderVO> pagingVO);
+	public List<OrderDetailVO> selectOrderDetailList(OrderDetailVO orderDetailVO);
+	public ServiceResult insertGoodsIssue(OrderIssueVO orderIssueVO);
+	public ServiceResult insertIssueChange(HttpServletRequest req, OrderIssueVO orderIssueVO);
+	public int selectOrderIssueListCount(PaginationInfoVO<OrderIssueVO> pagingVO);
+	public List<OrderIssueVO> selectOrderIssueList(PaginationInfoVO<OrderIssueVO> pagingVO);
+	public int selectAllorderCancelListCount(PaginationInfoVO<OrderVO> pagingVO);
+	public List<OrderVO> selectAllorderCancelList(PaginationInfoVO<OrderVO> pagingVO);
+	public int selectAllOrderChangeListCount(PaginationInfoVO<OrderVO> pagingVO);
+	public List<OrderVO> selectAllorderChangeList(PaginationInfoVO<OrderVO> pagingVO);
+}

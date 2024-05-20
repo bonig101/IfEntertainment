@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.goods.IGoodsMapper">
+
+	<select id="selectprodthumb" parameterType="int" resultType="string">
+		select 
+			GOODS_THUMBNAIL
+		from goods
+		where goods_no = #{goodsNo} 
+	</select> 
+
+	<delete id="deleteTagList" parameterType="int">
+		delete from goods_tag
+			where goods_no = #{goodsNo}
+	</delete>
+
+	<delete id="deleteProdFiledel" parameterType="int">
+		delete from GOODS_ATTACHFILE
+		where ga_no = #{gaNo}
+	</delete>
+
+	<select id="selectProdFile" parameterType="int" resultType="goodsFileVO">
+		select 
+		GA_DETAILIMG
+		from GOODS_ATTACHFILE
+		where ga_no = #{gaNo}
+	</select>
+
+	<update id="updateProd" parameterType="goodsVO">
+		update goods
+		    set 
+		goods_artist = #{goodsArtist},
+		gc_id = #{gcId},
+		goods_name = #{goodsName},
+		goods_price= #{goodsPrice},
+		goods_display= #{goodsDisplay},
+		goods_membership = #{goodsMembership},
+		goods_quantity = #{goodsQuantity},
+		goods_limit = #{goodsLimit},
+		goods_autocndtn = #{goodsAutocndtn},
+		goods_thumbnail = #{goodsThumbnail},
+		goods_autobuycount = #{goodsAutobuycount}
+		where 
+		    goods_no = #{goodsNo}
+
+	</update>
+		
+	<update id="deleteProd" parameterType="int">
+		update goods 
+		set goods_delyn = 'Y'
+		where goods_no = #{goodsNo}
+	</update>
+	
+	<delete id="deleteProdTag" parameterType="int">
+		delete from goods_tag
+			where goods_no = #{goodsNo}
+	</delete>
+	
+	<delete id="deleteProdFile" parameterType="int">
+		delete from goods_attachfile
+			where goods_no = #{goodsNo}
+	</delete>
+
+	<resultMap type="goodsVO" id="prodMap">
+	    <id property="goodsNo" column="goods_no"/>
+	    <result property="goodsThumbnail" column="goods_thumbnail"/>
+	    <result property="goodsName" column="goods_name"/>
+	    <result property="goodsPrice" column="goods_price"/>
+	    <result property="goodsArtist" column="goods_artist"/>
+	    <result property="gcId" column="gc_id"/>
+	    <result property="goodsDisplay" column="goods_display"/>
+	    <result property="goodsQuantity" column="goods_quantity"/>
+	    <result property="goodsLimit" column="goods_limit"/>
+	    <result property="goodsAutocndtn" column="goods_autocndtn"/>
+	    <result property="goodsAutobuycount" column="goods_autobuycount"/>
+	    <result property="goodsRegdate" column="goods_regdate"/>
+	    <collection property="goodsTagList" resultMap="prodTagMap" />
+	    <collection property="goodsFileList" resultMap="prodFileMap" />
+	</resultMap>
+	
+	<resultMap type="goodsTagVO" id="prodTagMap">
+	    <id property="gtNo" column="gt_no"/>
+	    <result property="gtName" column="gt_name"/>
+	</resultMap>
+	
+	<resultMap type="goodsFileVO" id="prodFileMap">
+	    <id property="gaNo" column="ga_no"/>
+	    <result property="gaDetailimg" column="ga_detailimg"/>
+	</resultMap>
+
+
+	<select id="selectProd" parameterType="int" resultType="goodsVO" resultMap="prodMap">
+		select
+		    g.goods_no, g.goods_thumbnail, g.goods_name, g.goods_price, g.goods_artist, g.gc_id, 
+		    g.goods_display, g.goods_quantity, g.goods_limit, g.goods_autocndtn,
+		    g.goods_autobuycount, g.goods_regdate, gt.gt_no, gt.gt_name, ga.ga_no, ga_detailimg
+		from goods g left outer join goods_tag gt on(g.goods_no = gt.goods_no)
+		             left outer join goods_attachfile ga on(g.goods_no = ga.goods_no)
+		where g.goods_no = #{goodsNo} and g.goods_delyn = 'N'
+	</select>
+
+	<insert id="insertGoodsTag" parameterType="goodsTagVO">
+		insert into goods_tag(
+		    GT_NO, GT_NAME, GOODS_NO
+		)values (
+		    seq_goods_tag.nextval, #{gtName}, #{goodsNo}
+		)
+	</insert>
+
+	<insert id="insertProdFile" parameterType="goodsFileVO">
+		insert into GOODS_ATTACHFILE (
+		  GA_NO, GA_DETAILIMG, GOODS_NO
+		)values(
+		    seq_goods_attachfile.nextval, #{gaDetailimg}, #{goodsNo} 
+		)
+	</insert>
+	
+	<insert id="insertProd" parameterType="goodsVO" useGeneratedKeys="true">
+		<selectKey keyProperty="goodsNo" resultType="int" order="BEFORE">
+			select seq_goods.nextval from dual
+		</selectKey>
+		insert into goods(
+			GOODS_NO, GOODS_NAME, GOODS_PRICE, GOODS_QUANTITY, GOODS_REGDATE, GOODS_MEMBERSHIP,
+			GOODS_ARTIST, GOODS_DISPLAY, GOODS_THUMBNAIL, GOODS_LIMIT, GOODS_AUTOCNDTN, 
+			GOODS_AUTOBUYCOUNT, GC_ID, GOODS_DELYN
+			)values(
+				#{goodsNo}, #{goodsName}, #{goodsPrice}, #{goodsQuantity}, sysdate, #{goodsMembership},
+				#{goodsArtist}, #{goodsDisplay}, #{goodsThumbnail}, #{goodsLimit}, #{goodsAutocndtn},
+				#{goodsAutobuycount}, #{gcId}, 'N'
+			)
+	</insert>
+
+	<select id="selectAritstList" resultType="artistgroupVO">
+		select AG_ID, AG_NAME, AG_DATE, AG_INTRO, AG_PROFILE, AG_DELYN
+    		from ARTIST_GROUP
+	</select>
+	
+	<select id="selectCategoryList" resultType="categoryVO">
+		select GC_ID, GC_REGDATE
+    		from GOODS_CATEGORY
+	</select>
+
+	<sql id="prodSearch">
+		<if test="searchType != null and searchType == 'title'">
+			and(goods_name like '%'||#{searchWord}||'%')
+		</if>
+		<if test="searchType != null and searchType == 'artist'">
+			and(goods_artist like '%'||#{searchWord}||'%')
+			</if>
+		<if test="searchType != null and searchType == 'category'">
+			and(gc_id like '%'||#{searchWord}||'%')
+		</if>
+	</sql>
+	
+	<sql id="GoodsSearch">
+		<if test="searchWord != null">
+				and UPPER(goods_name) like UPPER('%'||#{searchWord}||'%')
+		</if>
+	</sql>
+
+	<select id="selectProdListCount" parameterType="pagingVO" resultType="int" >
+		select count(goods_no)
+		from goods
+		where goods_delyn = 'N' 
+		<include refid="prodSearch"></include>
+	</select>
+	
+	<select id="selectProdList" parameterType="pagingVO" resultType="goodsVO">
+		select	
+			b.*
+		from (
+			select
+				a.*, row_number() over(order by goods_no desc) rnum
+			from(	
+				select
+                    GOODS_NO, GOODS_NAME, GOODS_PRICE, GOODS_QUANTITY, GOODS_REGDATE, GOODS_MEMBERSHIP, 
+                    GOODS_ARTIST, GOODS_DISPLAY, GOODS_THUMBNAIL, GOODS_LIMIT, GOODS_AUTOCNDTN, GOODS_AUTOBUYCOUNT, GC_ID
+                from goods
+				where 1=1 and goods_delyn = 'N'
+			<include refid="prodSearch" />
+			order by GOODS_NO desc
+			) a
+		) b
+		<![CDATA[
+		where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+	
+	<select id="selectGoodsList" resultType="goodsVO" parameterType="pagingVO">
+			   select	
+		        b.*
+		    from (
+		        select
+		            a.*, row_number() over(
+		                <choose>
+		                    <when test="sort=='highPrice'">
+		                        order by GOODS_PRICE desc
+		                    </when>
+		                    <when test="sort=='lowPrice'">
+		                        order by GOODS_PRICE asc
+		                    </when>
+		                    <otherwise>
+		                        order by GOODS_NO asc
+		                    </otherwise>
+		                </choose>
+		            ) rnum
+		        from(	
+		            select
+		                GOODS_NO, GOODS_NAME, GOODS_PRICE, GOODS_QUANTITY, GOODS_REGDATE, GOODS_MEMBERSHIP, 
+		                GOODS_ARTIST, GOODS_DISPLAY, GOODS_THUMBNAIL, GOODS_LIMIT, GOODS_AUTOCNDTN, GOODS_AUTOBUYCOUNT, GC_ID
+		            from goods
+		            where 1=1 
+		              and goods_delyn = 'N' 
+		              and goods_artist = #{goodsArtist}
+		            <include refid="GoodsSearch" />
+		            <if test="gcId != null">
+		                and GC_ID = #{gcId}
+		            </if>
+		        ) a
+		    ) b
+		    <![CDATA[
+		    where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		    ]]>
+	</select>
+
+	
+	<select id="selectGoodsListCount" resultType="int" >
+		select count(goods_no)
+		from goods
+		where goods_delyn = 'N' and goods_artist = #{goodsArtist} 
+					 <if test="gcId != null">
+		                and GC_ID = #{gcId}
+		            </if>
+		<include refid="GoodsSearch"/>
+	</select>
+	
+	<select id="selectGcId" resultType="goodsVO">
+		select gc_id
+		from goods
+		where goods_artist = #{goodsArtist}
+	</select>
+	
+	<select id="goodsShopDetail" resultType="goodsVO">
+		select * from goods
+		where goods_no = #{goodsNo}
+	</select>
+	
+	<select id="goodsCart" resultType="cartVO">
+		select * from cart
+		where user_no = #{userNo}
+	</select>
+	
+	<insert id="goodsCartInsert" parameterType="cartVO">
+		insert into cart(
+		cart_no,cart_name, cart_price, cart_quantity, user_no, goods_no,cart_thumbnail
+		)values(
+		SEQ_CART.NEXTVAL,#{cartName},#{cartPrice},#{cartQuantity},#{userNo},#{goodsNo},#{cartThumbnail}
+		)
+	</insert>
+	
+	<select id="selectOne" resultType="int" parameterType="cartVO">
+		 select count(*) from cart
+	  where user_no = #{userNo} and goods_no = #{goodsNo}
+	</select>
+	
+	<delete id="goodsCartDelete" parameterType="cartVO">
+		delete from cart
+		where user_no = #{userNo} and goods_no = #{goodsNo}
+	</delete>
+	
+	<update id="goodsCartUpdate" parameterType="cartVO">
+		update cart set
+		cart_quantity = #{cartQuantity}
+		where user_no = #{userNo} and goods_no = #{goodsNo}
+		
+	</update>
+</mapper>

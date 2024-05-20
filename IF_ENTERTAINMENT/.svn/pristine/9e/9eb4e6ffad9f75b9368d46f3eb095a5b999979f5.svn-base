@@ -1,0 +1,51 @@
+package kr.or.ddit.service.impl.entertain;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.entertain.ICompanyNewsMapper;
+import kr.or.ddit.service.entertain.ICompanyNewsService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.CompanyNoticeVO;
+import kr.or.ddit.vo.entertain.IREventVO;
+
+@Service
+public class CompanyNewsServiceImpl implements ICompanyNewsService {
+
+	@Inject
+	private ICompanyNewsMapper companyNewsMapper;
+
+	@Override
+	public ServiceResult insertCompanyNotice(HttpServletRequest req, CompanyNoticeVO companyNoticetVO) {
+		ServiceResult result = null;
+		int status = companyNewsMapper.insertCompanyNotice(companyNoticetVO);
+		if(status > 0) { 	// 등록 처리가 완료되었을 때
+			companyNewsMapper.insertCompanyNoticeDetail(companyNoticetVO);
+			
+			result = ServiceResult.OK;
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public int selectCompanyNoticeCount(PaginationInfoVO<CompanyNoticeVO> pagingVO) {
+		return companyNewsMapper.selectCompanyNoticeCount(pagingVO);
+	}
+
+	@Override
+	public List<CompanyNoticeVO> selectCompanyNoticeList(PaginationInfoVO<CompanyNoticeVO> pagingVO) {
+		return companyNewsMapper.selectCompanyNotice(pagingVO);
+	}
+
+	@Override
+	public CompanyNoticeVO selectCompanyNotice(int bfNo) {
+		return companyNewsMapper.selectCompanyNotice(bfNo); 
+	}
+}

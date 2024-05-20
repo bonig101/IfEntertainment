@@ -1,0 +1,63 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+
+<div class="central-meta">
+	<span class="create-post user_goodsnotice">공지사항
+		<!-- <a title="" href="#">Full Month</a> -->
+	</span>
+	<table class="table monthly-forecast">
+		<thead>
+			<tr>
+				<th>번호</th>
+				<th>제 목</th>
+				<th>등록일</th>
+				<!--<th>Description</th>
+ 				<th>Temp</th>
+				<th>Humidity</th>
+				<th>Percip</th> -->
+			</tr>
+		</thead>
+		<tbody>
+			<c:set value="${pagingVO.dataList }" var="goodsNoticeList" />
+			<c:choose>
+				<c:when test="">
+					<tr>
+	        			<td colspan="3">상품 리스트가 존재하지 않습니다.</td>
+	        		</tr>
+				</c:when>
+				<c:otherwise>
+					<c:forEach items="${goodsNoticeList }" var="goodsNotice">
+						<tr class="goodsNoticeList">
+							<td><span>${goodsNotice.bfNo }</span></td>
+							<td><a href="/goods/notice/userdetail.do?bfNo=${goodsNotice.bfNo}"><span>${goodsNotice.bfTitle }</span></a></td>
+							<td><span>${goodsNotice.bfRegdate }</span></td>
+						</tr>
+					</c:forEach>
+				</c:otherwise>
+			</c:choose>
+		</tbody>
+	</table>
+	<div class="card-footer prod-footer clearfix" id="pagingArea">
+		${pagingVO.pagingHTML }
+	</div>
+</div>
+
+
+
+
+<script type="text/javascript">
+	$(function () {
+		
+		var pagingArea = $("#pagingArea");
+		
+		pagingArea.on("click", "a", function (event) {
+			event.preventDefault();
+			var pageNo = $(this).data("page");
+			searchForm.find("#page").val(pageNo);
+			searchForm.submit();
+		});
+	})
+</script>

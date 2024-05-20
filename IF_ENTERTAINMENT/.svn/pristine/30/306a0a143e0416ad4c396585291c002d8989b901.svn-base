@@ -1,0 +1,26 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<div class="sliderz-slick">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="central-meta">
+                <h6 class="create-post"></h6>
+                <div class="slick-multiple">
+                    <c:forEach items="${artistCommentList}" var="artist">
+                        <div class="slick-slide-item" style="width: 150px; background-color: #B9F2D0;border-radius: 30px;">
+                            <img src="${pageContext.request.contextPath}${artist.userProfile}" class="img-fluid" alt="" style="border-radius: 50%;size: 50px;height: 70px;">
+                            <div>
+                                <div>
+                                    <span>${artist.mnNickName }</span>
+                                    <img alt="" src="">                   
+                                </div>
+                                <span>${artist.fcContent}</span>   
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

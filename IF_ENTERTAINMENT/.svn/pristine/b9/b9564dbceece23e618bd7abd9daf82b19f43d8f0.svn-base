@@ -1,0 +1,112 @@
+package kr.or.ddit.mapper.community;
+
+import java.util.List;
+
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.common.UserVO;
+import kr.or.ddit.vo.community.MainArtistGroupVO;
+import kr.or.ddit.vo.community.MemberNickNameVO;
+import kr.or.ddit.vo.goods.GoodsVO;
+import kr.or.ddit.vo.community.CommunityVO;
+import kr.or.ddit.vo.community.FeedAttachFileVO;
+import kr.or.ddit.vo.community.FeedCommentLikeVO;
+import kr.or.ddit.vo.community.FeedCommentVO;
+import kr.or.ddit.vo.community.FeedLikeVO;
+import kr.or.ddit.vo.community.FeedReportVO;
+import kr.or.ddit.vo.community.FeedVO;
+
+public interface IFeedMapper {
+
+	public int selectFeedListCount(PaginationInfoVO<FeedVO> pagingVO);
+
+	public List<FeedVO> selectFeedList(PaginationInfoVO<FeedVO> pagingVO);
+
+	public void deleteFeed(FeedVO feedVO);
+
+	public FeedVO feedListDetail(int feedNo);
+
+	public int insertFeed(FeedVO feedVO);
+
+	public void insertFeedFile(FeedAttachFileVO feedFileVO);
+
+	public int selectCommentListCount(PaginationInfoVO<FeedCommentVO> pagingVO);
+
+	public List<FeedCommentVO> selectCommentList(PaginationInfoVO<FeedCommentVO> pagingVO);
+
+	public FeedCommentVO feedCommentListDetail(int fcNo);
+
+	public void deleteComment(FeedCommentVO commentVO);
+
+	public void updateComment(FeedCommentVO commentVO);
+
+	public List<MainArtistGroupVO> selectArtist();
+
+	public int updateFeed(FeedVO feedVO);
+
+	public FeedAttachFileVO selectFeedFile(Integer integer);
+
+	public void deleteFeedFile(Integer integer);
+
+	public List<MainArtistGroupVO> getArtistById(String agId);
+
+	public CommunityVO selectUser(CommunityVO communityVO);
+
+	public int comSignUp(CommunityVO comSignUp);
+
+	public void nicSignUp(MemberNickNameVO nickVO);
+
+	public List<FeedVO> mainFeedList(FeedVO feedVO);
+
+	public List<FeedCommentVO> mainCommentList(int feedNo);
+
+	public List<FeedVO> getArtistFeed(String feedNo);
+
+	public List<FeedVO> getArtistFeedComment(int feedNo);
+
+	// feed 게시글 정보 조회(2024.04.16)
+	public FeedVO selectFeed(int feedNo);
+
+	public void insertFeedComment(FeedCommentVO feedComVO);
+
+	public void feedReport(FeedReportVO feedReportVO);
+
+	public List<FeedVO> artistCommentList(String agId);
+
+	public UserVO userTypeSelect(int userNo);
+
+	public List<FeedVO> myFeedList(FeedVO myFeed);
+
+	public List<FeedVO> myCommentList(FeedVO myFeed);
+
+	public String checkMembership(FeedVO feedVO);
+
+	public int likePost(FeedLikeVO feedLike);
+
+	public String alreadyLiked(FeedLikeVO feedLike);
+
+	public int getLikeCount(int feedNo);
+
+	public void deleteLike(FeedLikeVO feedLike);
+
+	public int likefeedPost(FeedCommentLikeVO feedCommentLike);
+
+	public String alreadyFeedLiked(FeedCommentLikeVO feedCommentLike);
+
+	public void deleteFeedLike(FeedCommentLikeVO feedCommentLike);
+
+	public int getCommentLikeCount(int fcNo);
+
+	public MemberNickNameVO checkNickName(String mnNickname);
+
+	public List<GoodsVO> getGoodsList(GoodsVO goodsVO);
+
+	public String selectComment(FeedCommentVO commentVO);
+
+	public List<MainArtistGroupVO> getArtist();
+
+	public List<GoodsVO> getGoodsList1(GoodsVO goodsVO);
+
+
+
+}

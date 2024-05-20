@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="kr.or.ddit.mapper.entertain.ICompanyNoticeMapper">
+	
+	<sql id="CompanyNoticeSearch">
+		<if test="searchType != null and searchType == 'title'">
+			and (BF_TITLE like '%'||#{searchWord}||'%')
+		</if>
+	</sql>
+	
+	<!-- 사용자 -->
+
+	<sql id="CompanyNoticeUserSearch">
+		<if test="searchType != null and searchType == 'title'">
+			and (BF_TITLE like '%'||#{searchWord}||'%')
+		</if>
+	</sql>
+	
+	<insert id="insertCompanyNotice" parameterType="CompanyNoticeVO" useGeneratedKeys="true">
+	<selectKey keyProperty="bfNo" resultType="int" order="BEFORE">
+			select seq_board_form.nextval from dual
+	</selectKey>
+      INSERT INTO
+			BOARD_FORM
+        (BF_NO
+        , BF_TITLE
+        , BF_CONTENT
+        , BF_REGDATE
+        , BF_DELYN 
+        , USER_NO
+        , BT_NO)
+        VALUES
+        (#{bfNo}, #{bfTitle}, #{bfContent}, SYSDATE, 'N', #{userNo}, 2)
+    </insert>
+	
+	<select id="selectCompanyNotice" parameterType="int" resultType="CompanyNoticeVO">
+    	SELECT
+			BF_NO 
+			, BF_TITLE 
+			, BF_CONTENT 
+			, BF_REGDATE
+			, (SELECT USER_NAME FROM "USER" WHERE USER_NO = BF.USER_NO) AS bfWriter
+			, BF_DELYN 
+			, BT_NO
+		FROM 
+			BOARD_FORM BF
+		WHERE 
+			BF_NO = #{bfNo} AND BT_NO = 2
+	</select>
+    
+	<select id="selectCompanyNoticeCount" parameterType="pagingVO" resultType="int">
+		SELECT 
+			COUNT(BF_NO)
+		FROM
+			BOARD_FORM
+		WHERE 
+			BT_NO = 2
+			AND BF_DELYN = 'N' 
+		<include refid="CompanyNoticeSearch"/>
+	</select>
+	
+	<select id="selectCompanyNoticeList" parameterType="pagingVO" resultType="CompanyNoticeVO">
+SELECT
+	B.*
+FROM(
+	SELECT
+		A.*, ROW_NUMBER() OVER(ORDER BY A.BF_NO DESC) RNUM
+	FROM(
+		SELECT
+			BF_NO
+			, BF_TITLE
+			, BF_CONTENT
+			, BF_REGDATE
+			, (SELECT USER_NAME FROM "USER" WHERE USER_NO = BOARD_FORM.USER_NO) AS bfWriter
+			, BF_DELYN
+			, BT_NO
+		FROM
+			BOARD_FORM
+		WHERE
+			BT_NO = 2
+			AND BF_DELYN = 'N' 
+			<include refid="CompanyNoticeSearch"/> 
+		ORDER BY
+			BF_NO DESC
+	)A
+)B
+<![CDATA[
+	WHERE 
+		B.RNUM >= #{startRow} 
+	AND
+		B.RNUM <= #{endRow}
+]]>
+
+	</select>
+
+	<update id="updateCompanyNotice">
+		UPDATE 
+			BOARD_FORM
+		SET
+			BF_TITLE = #{bfTitle},
+			BF_CONTENT = #{bfContent},
+			BF_REGDATE = SYSDATE
+		WHERE 
+			BF_NO = #{bfNo} 
+		AND BT_NO = 2
+	</update>
+	
+	<update id="deleteCompanyNotice">
+		UPDATE 
+			BOARD_FORM
+		SET 
+			BF_DELYN = 'Y'
+		WHERE 
+			BF_NO = #{bfNo} 
+		AND BT_NO = 2
+	</update>
+	
+	<!-- 사용자 -->
+	
+	<select id="selectUserCompanyNoticeList" parameterType="pagingVO" resultType="CompanyNoticeVO">
+		SELECT
+			B.*
+		FROM(
+			SELECT
+				A.*, ROW_NUMBER() OVER(ORDER BY A.BF_NO DESC) RNUM
+			FROM(
+			SELECT
+				BF_NO
+				, BF_TITLE
+				, BF_CONTENT
+				, BF_REGDATE
+				, BT_NO
+			FROM
+				BOARD_FORM
+			WHERE
+				BT_NO = 2
+				<include refid="CompanyNoticeUserSearch"/>
+				AND BF_DELYN &lt;&gt; 'Y' 
+				ORDER BY
+					BF_NO DESC
+			)A
+		)B
+		<![CDATA[
+			WHERE 
+				B.RNUM >= #{startRow} 
+			AND
+				B.RNUM <= #{endRow}
+		]]>
+	</select>
+	
+	<select id="selectUserCompanyNoticeCount" parameterType="pagingVO" resultType="int">
+		SELECT 
+			COUNT(BF_NO)
+		FROM
+			BOARD_FORM
+		WHERE 
+			BT_NO = 2
+		AND 
+			BF_DELYN &lt;&gt; 'Y' 
+		<include refid="CompanyNoticeUserSearch"/>
+		
+	</select>
+	
+	<select id="selectUserCompanyNotice" parameterType="int" resultType="CompanyNoticeVO">
+    	SELECT
+			BF_NO 
+			, BF_TITLE 
+			, BF_CONTENT 
+			, BF_REGDATE
+			, (SELECT USER_NAME FROM "USER" WHERE USER_NO = BF.USER_NO) AS bfWriter
+			, BF_DELYN 
+			, BT_NO
+		FROM 
+			BOARD_FORM BF
+		WHERE 
+			BF_NO = #{bfNo} AND BT_NO = 2
+	</select>
+	
+	<!-- 디테일 이전 다음  -->
+
+</mapper>

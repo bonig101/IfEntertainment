@@ -1,0 +1,82 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>
+.b-meta {
+	height: 150px;
+}
+.degree{
+	margin-top: 10px;
+}
+.yesterday{
+	width: 100px;
+    left: 288px;
+    bottom: 50px;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+}
+.upDownRate {
+	color: red;
+}
+.updownMark {
+	width: 20px;
+}
+.info-meta {
+    width: 385px;
+    height: 100px;
+    border-bottom: 3px solid #a389d4;
+    padding-bottom: 20px;
+}
+
+
+</style>
+
+<div class="info-section">
+	<div class="panel-widget">
+		<div class="b-meta">
+			<i class="icon-people"></i>
+			<div class="info-meta">
+				<div>금일 접속자 수</div>
+				<h4 class="degree">5412</h4>
+				<div class="yesterday">
+					<span>전일대비</span>
+					<span class="upDownRate">
+						<img class="updownMark" alt="" src="${pageContext.request.contextPath }/resources/stock/up.png">
+						0.27%
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel-widget">
+		<div class="b-meta">
+			<i class="icon-login"></i>
+			<div class="info-meta">
+				<div>금일 가입자 수</div>
+				<h4 class="degree">4515</h4>
+				<div class="yesterday">
+					<span>전일대비</span>
+					<span class="upDownRate">
+						<img class="updownMark" alt="" src="${pageContext.request.contextPath }/resources/stock/up.png">
+						0.27%
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel-widget">
+		<div class="b-meta">
+			<i class="fa fa-won"></i>
+			<div class="info-meta">
+				<div>금일 판매금액</div>
+				<h4 class="degree">8289</h4>
+				<div class="yesterday">
+					<span>전일대비</span>
+					<span class="upDownRate">
+						<img class="updownMark" alt="" src="${pageContext.request.contextPath }/resources/stock/up.png">
+						0.27%
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

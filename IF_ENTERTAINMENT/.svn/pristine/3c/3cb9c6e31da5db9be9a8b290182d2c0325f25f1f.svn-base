@@ -1,0 +1,18 @@
+package kr.or.ddit.controller.common;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+/**
+ * 엔터테인먼트 메인페이지 
+ * @author 홍진영
+ */
+@Controller
+public class MainController {
+	
+	@RequestMapping(value="/")
+	public String main() {
+		return "index";
+	}
+	
+}

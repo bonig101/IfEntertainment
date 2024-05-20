@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.community.IMemberManageMapper">
+
+	<sql id="memberListSearch">
+		<if test="searchType != null and searchWord == 'title'">
+			and(user_name like '%' || #{searchWord} || '%')
+		</if>
+	</sql>
+
+
+	<select id="selectMemberCount" parameterType="pagingVO" resultType="int" >
+		select count(user_no)
+		from "USER"
+		<include refid="memberListSearch"/>
+	</select>
+	
+	<select id="memberList" parameterType="pagingVO" resultType="pagingVO">
+		select
+		    u.user_no,
+		    u.user_name,
+		    u.user_id,
+		    m.member_telno,
+		    m.member_email,
+		    m.member_birth,
+		    m.member_regdate,
+		    m.member_stopyn
+		from
+		    "USER" u
+		join
+		    member m on u.user_no = m.user_no
+		    <include refid="memberListSearch"/>
+
+	</select>
+
+
+</mapper>

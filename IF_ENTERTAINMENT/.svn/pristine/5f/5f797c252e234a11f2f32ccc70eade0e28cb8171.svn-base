@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.community.IFeedMapper">
+	<select id="selectUser" resultType="CommunityVO">
+		SELECT 
+		    C.CJ_NO,
+		    C.CJ_DATE,
+		    C.USER_NO,
+		    C.AG_ID,
+		    U.USER_PROFILE,
+		    u.user_type,
+		    mn.MN_NICKNAME,
+            AG.AG_PROFILE
+		  
+		FROM 
+		    COMMUNITY C
+		JOIN 
+		    "USER" U ON C.USER_NO = U.USER_NO
+		JOIN 
+		    MEMBER_NICKNAME mn ON U.USER_NO = mn.USER_NO
+        JOIN
+            ARTIST_GROUP AG ON C.AG_ID = AG.AG_ID
+		WHERE 
+	    C.USER_NO = #{userNo}
+	    AND C.AG_ID =  #{agId}
+		AND C.CJ_NO = MN.CJ_NO
+	</select>
+
+	<insert id="comSignUp" parameterType="communityVO">
+		<selectKey keyProperty="cjNo" resultType="int" order="BEFORE">
+			select SEQ_COMMUNITY.nextval from dual
+		</selectKey>
+		    INSERT INTO COMMUNITY (CJ_NO, USER_NO, AG_ID, CJ_DATE)
+		    VALUES (#{cjNo}, #{userNo}, #{agId}, SYSDATE)
+	</insert>
+	
+	<insert id="nicSignUp" parameterType="memberNickNameVO">
+	    INSERT INTO MEMBER_NICKNAME (MN_NO, MN_NICKNAME,USER_NO,CJ_NO)
+	    VALUES (SEQ_MEMBER_NICKNAME.NEXTVAL, #{mnNickname}, #{userNo}, #{cjNo})
+	</insert>
+
+	<select id="checkNickName" resultType="memberNickNameVO">
+		select mn_nickname from member_nickname 
+		where mn_nickname = #{mnNickName}
+		
+	</select>
+	<select id="myPwCheck" resultType="userVO">
+		select *
+			from "USER"
+			WHERE USER_NO=#{userNo}
+		
+	</select>
+
+
+</mapper>

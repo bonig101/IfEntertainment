@@ -1,0 +1,18 @@
+package kr.or.ddit.mapper.goods;
+
+import java.util.List;
+
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.ArtistGroupVO;
+import kr.or.ddit.vo.goods.GoodsAttachfileVO;
+import kr.or.ddit.vo.goods.GoodsCategoryVO;
+import kr.or.ddit.vo.goods.GoodsVO;
+
+public interface IGoodsMapper {
+	public int selectProdListCount(PaginationInfoVO<GoodsVO> pagingVO);
+	public List<GoodsVO> selectProdList(PaginationInfoVO<GoodsVO> pagingVO);
+	public List<ArtistGroupVO> selectAritstList();
+	public List<GoodsCategoryVO> selectCategoryList();
+	public int insertProd(GoodsVO goodsVO);
+	public void insertProdFile(GoodsAttachfileVO goodsFileVO);
+}

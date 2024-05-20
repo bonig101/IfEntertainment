@@ -1,0 +1,26 @@
+package kr.or.ddit.service.community;
+
+import java.util.List;
+
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.common.UserVO;
+import kr.or.ddit.vo.community.FeedReportVO;
+
+public interface IMemberManageService {
+
+	public int selectMemberCount(PaginationInfoVO<UserVO> pagingVO);
+
+	public List<UserVO> memberList(PaginationInfoVO<UserVO> pagingVO);
+
+	public int selectFeedReportCount(PaginationInfoVO<FeedReportVO> pagingVO);
+
+	public List<FeedReportVO> feedReportList(PaginationInfoVO<FeedReportVO> pagingVO);
+
+	public void reportState(FeedReportVO feedReportVO);
+
+	public FeedReportVO reportUpdate(FeedReportVO feedReportVO);
+
+	public void reportUserStop(FeedReportVO reportUser);
+
+}

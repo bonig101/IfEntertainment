@@ -1,0 +1,116 @@
+### 그라데이션 배경색 
+https://webgradients.com/
+
+### 페이지 내에 회사이름 적을 때!!
+If entertainment
+
+### jsp 절대경로 적을 때
+${pageContext.request.contextPath }
+
+### 포맷팅 taglib
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+### 금액 포맷팅
+<fmt:formatNumber value="${myOrderDetail.odPrice }" pattern="#,###"/>원
+
+### 날짜 포맷팅
+<fmt:formatDate value="${gi.giTitle }" pattern="yyyy-MM-dd" />
+
+### 제이쿼리 CDN
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+### 시큐리티 권한 적용
+
+	1. 엔터테인먼트 페이지는 권한 설정 x 
+	
+	2. 사용자, 아티스트, 관리자 모두 사용 가능한 페이지
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MEMBER', 'ROLE_ARTIST')")
+	
+	3. 아티스트, 관리자만 사용 가능한 페이지
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ARTIST')")
+	
+	4. 관리자만 사용가능한 페이지
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+
+### 일반 폼태그일 경우 </form> 태그 바로 위에 한줄 추가
+<form>
+	<sec:csrfInput/>
+</form>
+
+### 비동기 방식일 경우 속성 추가
+beforeSend: function(xhr){
+	xhr.setRequestHeader(header, token);
+},
+
+### 태그라이브러리 시큐리티
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
+
+### 로그인한 회원정보 가져오기
+CustomUser user = (CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+UserVO userVO = user.getUser();
+
+
+CustomUser user = (CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		UserVO userVO = user.getUser();
+		String userNo = userVO.getUserNo() + "";
+		
+### (VO자동완성)컬럼명 -> 카멜케이스 변환
+SELECT
+    ' private '||
+    DECODE( DATA_TYPE , 'NUMBER', 'int ', 'String ' ) ||
+    CASE
+        WHEN INSTR(column_name, '_') > 0 THEN
+            REPLACE(LOWER(SUBSTR(column_name, 1, INSTR(column_name, '_') - 1)), '_', '') ||
+            INITCAP(SUBSTR(column_name, INSTR(column_name, '_') + 1))
+        ELSE
+            LOWER(column_name)
+    END
+    ||';'
+FROM COLS
+WHERE TABLE_NAME = '테이블명'
+ORDER BY COLUMN_ID;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT
+    age_group,
+    SUM(CASE WHEN member_gender = 'M' THEN 1 ELSE 0 END) AS male_count,
+    SUM(CASE WHEN member_gender = 'F' THEN 1 ELSE 0 END) AS female_count
+FROM (
+    SELECT
+        CASE
+            WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, TO_DATE(member_birth, 'YY/MM/DD')) / 12) < 20 THEN '10대 이하'
+            WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, TO_DATE(member_birth, 'YY/MM/DD')) / 10) < 30 THEN '20대'
+            WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, TO_DATE(member_birth, 'YY/MM/DD')) / 10) < 40 THEN '30대'
+            WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, TO_DATE(member_birth, 'YY/MM/DD')) / 10) < 50 THEN '40대'
+            ELSE '50대 이상'
+        END AS age_group,
+        member_gender
+    FROM
+        member
+) subquery
+GROUP BY
+    age_group
+ORDER BY
+    age_group;
+

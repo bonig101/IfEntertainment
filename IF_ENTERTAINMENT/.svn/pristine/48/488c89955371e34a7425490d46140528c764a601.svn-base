@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.community.IFeedMapper">
+		<resultMap type="feedCommentVO" id="feedcommentMap">
+			<id property="fcNo" column="fc_no" />
+			<result property="fcContent" column="fc_content" />
+			<result property="fcRegdate" column="fc_regdate" />
+			<result property="fcDelyn" column="fc_delyn" />
+			<result property="mnNickName" column="mn_nickname" />
+			<result property="faFilter" column="fa_filter" />
+			<result property="feedMembership" column="feed_membership" />
+			<result property="userProfile" column="user_profile" />
+			<result property="userNo" column="user_no" />
+			<result property="userType" column="user_type" />
+			<result property="cjNo" column="cj_no" />
+			<result property="feedNo" column="feed_no" />
+			<result property="feedType" column="feed_type" />
+			
+		</resultMap>
+		<resultMap type="feedVO" id="feedMap">
+			<id property="feedNo" column="feed_no" />
+			<result property="feedType" column="feed_type" />
+			<result property="feedRegdate" column="feed_regdate" />
+			<result property="feedContent" column="feed_content" />
+			<result property="feedDelyn" column="feed_delyn" />
+			<result property="userNo" column="user_no" />
+			<result property="userType" column="user_type" />
+			<result property="agId" column="ag_id" />
+			<result property="faSavepath" column="fa_savepath" />
+			<result property="faSavedname" column="fa_savedname" />
+			<result property="faFilter" column="fa_filter" />
+			<result property="faName" column="fa_name" />
+			<result property="feedMembership" column="feed_membership" />
+			<result property="mnNickName" column="mn_nickname" />
+			<result property="faMime" column="fa_mime" />
+			<result property="userProfile" column="user_profile" />
+			<result property="clNo" column="cl_no" />
+			<result property="fcNo" column="fc_no" />
+			<result property="cjNo" column="cj_no" />
+			<result property="cjDate" column="cj_date" />
+			<result property="flNo" column="fl_no" />
+			<result property="mnNo" column="mn_no" />
+			<result property="auth" column="auth" />
+			<collection property="feedCommentList" resultMap="feedcommentMap"/>
+		</resultMap>
+
+
+		<sql id="feedSearch">
+			<if test="searchType != null and searchType == 'content'">
+				and(feed_content like '%'||#{searchWord}||'%')
+			</if>
+	
+		</sql>
+
+	
+		<select id="selectFeedListCount"  parameterType="pagingVO" resultType="int" >
+			select count(feed_no)
+				from feed 
+				where 1=1
+				and feed_delyn = 'N'
+				<include refid="feedSearch"></include>
+		</select>
+	
+
+		<select id="selectFeedList" resultType="feedVO" resultMap="feedMap">
+		    select
+		        b.*, mn.mn_nickname
+		    from (
+		        select
+		            a.*, row_number() over(order by feed_no desc) rnum
+		        from (
+		            select
+		                f.feed_no, f.feed_type, f.feed_content, f.feed_regdate, 
+		                f.feed_membership, f.feed_delyn, f.user_no, f.ag_id
+		            from feed f
+		            left outer join "USER" u on f.user_no = u.user_no
+		            left outer join feed_attachfile fa on f.feed_no = fa.feed_no
+		            where 1=1
+		            <include refid="feedSearch" />
+		            and f.feed_delyn = 'N'
+		            order by f.feed_no desc
+		        ) a
+		    ) b
+		    left outer join member_nickname mn on b.user_no = mn.user_no
+		    <![CDATA[
+		    where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		    ]]>
+		</select>
+	<!-- 		<select id="selectFeedList" resultType="feedVO" resultMap="feedMap"> -->
+<!-- 			select -->
+<!-- 				    b.* -->
+<!-- 				from ( -->
+<!-- 				    select -->
+<!-- 				        a.*, row_number() over(order by feed_no desc) rnum -->
+<!-- 				    from ( -->
+<!-- 				        select -->
+<!-- 				            f.feed_no, f.feed_type, f.feed_content, f.feed_regdate,  -->
+<!-- 				            f.feed_membership, f.feed_delyn, f.user_no, f.ag_id -->
+<!-- 				        from feed f -->
+<!-- 				        left outer join "USER" u on f.feed_no = u.user_no -->
+<!-- 				        left outer join feed_attachfile fa on f.feed_no = fa.feed_no -->
+<!-- 				        where 1=1 -->
+<!-- 				        <include refid="feedSearch" /> -->
+<!-- 				        and f.feed_delyn = 'N' -->
+<!-- 				        order by f.feed_no desc -->
+<!-- 				    ) a -->
+<!-- 				) b -->
+<!-- 				<![CDATA[ -->
+<!-- 				where b.rnum >= #{startRow} and b.rnum <= #{endRow} -->
+<!-- 				]]> -->
+	
+<!-- 		</select> -->	
+		
+		
+		
+		
+	
+	
+		<update id="deleteFeed">
+			update feed
+			set feed_delyn='Y'
+			where feed_no=#{feedNo}
+		</update>
+	
+		<select id="feedListDetail" resultType="feedVO">
+		    SELECT f.*, fa.FA_SAVEDNAME, mn.MN_NICKNAME,fa.FA_MIME
+		    FROM feed f
+		    LEFT JOIN feed_attachfile fa ON f.feed_no = fa.feed_no
+		    LEFT JOIN member_nickname mn ON f.user_no = mn.user_no
+		    LEFT JOIN "USER" u ON f.user_no = u.user_no
+             LEFT JOIN
+			    COMMUNITY C on mn.CJ_NO = C.CJ_NO
+		    WHERE f.feed_no = #{feedNo}
+            AND F.ag_Id = C.ag_id
+		</select>
+
+	
+		<insert id="insertFeed" parameterType="feedVO" useGeneratedKeys="true">
+		    <selectKey keyProperty="feedNo" resultType="int" order="BEFORE">		
+		        select seq_feed.nextval from dual
+		    </selectKey>
+			    insert into feed(
+			        feed_no,
+			        feed_type, 
+			        feed_regdate,
+			        feed_content,
+			        feed_membership,
+			        feed_delyn,    
+			        user_no, 
+			        ag_Id
+			    ) values(
+			        #{feedNo},
+			        #{feedType},
+			        sysdate, 
+			        #{feedContent},
+			        #{feedMembership},
+			        #{feedDelyn},
+			        #{userNo},
+			        #{agId}    
+			    )
+			</insert>
+
+		<insert id="insertFeedFile" parameterType="feedAttachFileVO">
+		
+			insert into feed_attachfile(
+			    fa_no,
+			    fa_name,
+			    fa_savepath,
+			    fa_savedname,
+			    fa_mime,
+			    fa_fancysize,
+			    fa_filter,
+			    feed_no
+			) values (
+			    seq_feed_attachfile.nextval,
+			    #{faName},
+			    #{faSavepath},
+			    #{faSavedname},
+			    #{faMime},
+			    #{faFancysize},
+			    #{faFilter},
+			    #{feedNo}
+			)
+		</insert>
+	
+		<update id="updateFeed" parameterType="feedVO">
+			update feed
+			set
+				feed_content = #{feedContent},
+				feed_regdate = sysdate
+			where feed_no = #{feedNo}
+		</update>
+	
+	
+		<select id="selectFeedFile" parameterType="int" resultType="feedAttachFileVO">
+			select
+				fa_savepath
+			from feed_AttachFile
+			where feed_no = #{feedNo}
+		</select>
+	
+		<delete id="deleteFeedFile" parameterType="int">
+			delete from feed_AttachFile
+			where feed_no = #{feedNo}
+		</delete>
+	
+ 		<select id="mainFeedList" resultType="feedVO" resultMap="feedMap">
+			    SELECT f.*, fa.FA_SAVEDNAME,fa.FA_FILTER, mn.MN_NICKNAME,mn.cj_no ,fa.FA_MIME, u.user_profile,u.user_type
+				    FROM feed f
+	                LEFT JOIN COMMUNITY c ON f.ag_Id = c.ag_Id
+				    LEFT JOIN feed_attachfile fa ON f.feed_no = fa.feed_no
+				    LEFT JOIN member_nickname mn ON f.user_no = mn.user_no
+				    LEFT JOIN "USER" u ON f.user_no = u.user_no
+				    LEFT JOIN MEMBER_NICKNAME m ON f.user_no = m.user_no AND m.cj_no IS NOT NULL
+				    WHERE f.ag_Id =#{agId}
+				    AND u.user_type = #{userType}
+				    AND f.feed_DELYN = 'N'
+	                AND C.CJ_NO = MN.CJ_NO
+	                <if test="userNo != null and userNo != 0">
+					    AND f.user_NO = #{userNo}
+					</if>
+				    AND (f.feed_membership = 0 OR f.user_NO = 0 OR (f.feed_membership = 1 AND m.cj_no IS NOT NULL))
+				    ORDER BY f.feed_regdate DESC
+		</select>
+
+
+	<select id="getArtistFeed" resultType="feedVO" resultMap="feedMap">
+		SELECT
+		    f.feed_Type,
+		    f.user_no,
+		    f.feed_regdate,
+		    f.feed_content,
+		    f.feed_Membership,
+		    f.ag_id,
+		    fa.fa_savedname,
+		    fa.fa_mime,
+		    fl.user_NO ,
+		    fl.FEED_NO ,
+		    u.USER_PROFILE,
+		    u.user_type,
+		    mn.mn_NickName,
+		    mn.cj_no,
+		    fc.FC_NO,
+		    fc.FC_CONTENT,
+		    fc.FC_REGDATE,
+		    fc.USER_NO AS COMMENT_USER_NO,
+		    fc.FEED_NO AS COMMENT_FEED_NO,
+		    mnc.mn_NickName AS COMMENTER_NICKNAME,
+		    uc.USER_PROFILE AS COMMENTER_PROFILE
+		
+		FROM
+		    FEED f
+		    LEFT JOIN FEED_ATTACHFILE fa ON f.FEED_NO = fa.FEED_NO
+		    LEFT JOIN FEED_LIKE fl ON f.FEED_NO = fl.FEED_NO
+		    LEFT JOIN "USER" u ON f.USER_NO = u.USER_NO
+		    LEFT JOIN MEMBER_NICKNAME mn ON f.USER_NO = mn.USER_NO
+		    LEFT JOIN FEED_COMMENT fc ON f.FEED_NO = fc.FEED_NO
+		    LEFT JOIN "USER" uc ON fc.USER_NO = uc.USER_NO
+		    LEFT JOIN MEMBER_NICKNAME mnc ON fc.USER_NO = mnc.USER_NO
+		
+		WHERE
+		    f.FEED_NO =#{feedNo}
+	</select>
+	
+	<select id="selectFeed" parameterType="int" resultType="feedVO">
+		  SELECT
+		    f.feed_No,
+		    f.feed_Type,
+		    f.user_no,
+		    f.feed_regdate,
+		    f.feed_content,
+		    f.feed_Membership,
+		    f.ag_id,
+		    fa.fa_filter,
+		    fa.fa_savedname,
+		    fa.fa_mime,
+		    u.user_profile,
+		    u.user_type,
+		    mn.mn_nickname,
+		    mn.cj_no
+		FROM
+		    FEED f
+		LEFT JOIN
+		    FEED_ATTACHFILE fa ON f.FEED_NO = fa.FEED_NO
+		LEFT JOIN
+		    "USER" u ON f.user_no = u.user_no
+		LEFT JOIN
+		    COMMUNITY c ON u.user_no = c.user_no
+		LEFT JOIN
+		    MEMBER_NICKNAME mn ON c.cj_no = mn.cj_no
+		WHERE
+		    f.FEED_NO =#{feedNo}
+		    AND f.ag_id = c.ag_id
+	</select>
+	
+	<resultMap type="feedCommentVO" id="artistFeedCmtMap">
+		<id property="fcNo" column="fc_no" />
+		<result property="fcContent" column="fc_content" />
+		<result property="fcRegdate" column="fc_regdate" />
+		<result property="fcDelyn" column="fc_delyn" />
+		<result property="mnNickName" column="mn_nickname" />
+		<result property="userProfile" column="user_profile" />
+		<result property="userNo" column="user_no" />
+		<result property="feedNo" column="feed_no" />
+		<result property="cjNo" column="cj_no" />
+		<result property="userType" column="user_type" />
+	</resultMap>
+	
+	<select id="getArtistFeedComment" resultType="feedCommentVO">
+			 SELECT
+			    FC.fc_no, fc_content, fc.user_no, fc_regdate,
+			    U.user_profile,
+			    U.user_type,
+			    mnc.mn_nickname,
+			    mnc.cj_no,
+			    fc.feed_No,
+			    F.AG_ID,
+			    F.FEED_TYPE
+			FROM FEED_COMMENT FC
+			LEFT JOIN FEED F ON FC.FEED_NO = F.FEED_NO
+			LEFT JOIN "USER" U ON FC.user_No = U.user_No
+			LEFT JOIN MEMBER_NICKNAME mnc ON fc.USER_NO = mnc.USER_NO
+            LEFT JOIN
+			    COMMUNITY C ON FC.USER_NO = C.USER_NO 
+                AND MNC.CJ_NO = C.CJ_NO
+			WHERE
+			    fc.feed_No =#{feedNo}
+			    AND FC_DELYN = 'N'
+                AND F.ag_Id = C.ag_id
+
+		</select>
+	<select id="memberShipYn" resultType="feedVO">
+		select cj_no from  membership
+	</select>
+
+	<select id="myFeedList" resultType="feedVO" >
+		SELECT f.*, fa.FA_SAVEDNAME,fa.fa_filter, mn.MN_NICKNAME,mn.cj_no, fa.FA_MIME, u.user_profile,u.user_type
+                    FROM feed f
+                   
+                    LEFT JOIN
+                        FEED_ATTACHFILE fa ON f.FEED_NO = fa.FEED_NO
+                    LEFT JOIN
+                        "USER" u ON f.user_no = u.user_no
+                    LEFT JOIN
+                        COMMUNITY c ON u.user_no = c.user_no
+                    LEFT JOIN
+                        MEMBER_NICKNAME mn ON c.cj_no = mn.cj_no
+                   
+                    WHERE f.ag_Id =#{agId}
+                    AND f.user_no = #{userNo}
+                    AND f.feed_DELYN = 'N'
+                    AND f.ag_id = c.ag_id
+                    ORDER BY f.feed_regdate DESC
+		
+	</select>	    
+	<select id="myFeedList1" resultType="feedVO" >
+		SELECT f.*, fa.FA_SAVEDNAME,fa.fa_filter, mn.MN_NICKNAME,mn.cj_no, fa.FA_MIME, u.user_profile,u.user_type
+                    FROM feed f
+                   
+                    LEFT JOIN
+                        FEED_ATTACHFILE fa ON f.FEED_NO = fa.FEED_NO
+                    LEFT JOIN
+                        "USER" u ON f.user_no = u.user_no
+                    LEFT JOIN
+                        COMMUNITY c ON u.user_no = c.user_no
+                    LEFT JOIN
+                        MEMBER_NICKNAME mn ON c.cj_no = mn.cj_no
+                   
+                    WHERE f.ag_Id =#{agId}
+                    AND f.user_no = #{userNo}
+                    AND f.feed_DELYN = 'N'
+                    AND f.ag_id = c.ag_id
+                    and fa.fa_mime is not null
+                    ORDER BY f.feed_regdate DESC
+		
+	</select>	    
+	
+	<select id="myCommentList" resultType="feedVO" >
+		SELECT DISTINCT
+			    FC.fc_no,
+			    FC.fc_content,
+			    FC.user_no,
+			    FC.fc_regdate,
+			    U.user_profile,
+			    U.user_type, 
+			    MNC.mn_nickname,
+			    MNC.cj_no,
+			    FC.feed_no,
+			    F.ag_id,
+			    F.feed_type
+			FROM
+			    FEED_COMMENT FC
+			LEFT JOIN
+			    FEED F ON FC.FEED_no = f.feed_No
+			LEFT JOIN
+			    "USER" U ON FC.user_no = U.user_no
+			LEFT JOIN
+			    MEMBER_NICKNAME MNC ON FC.USER_NO = MNC.USER_NO
+			LEFT JOIN
+			    COMMUNITY C ON FC.USER_NO = C.USER_NO 
+                AND MNC.CJ_NO = C.CJ_NO
+			WHERE
+			    F.ag_Id = #{agId}
+			    AND FC.user_no =#{userNo}
+			    AND FC.FC_DELYN = 'N'
+			    AND F.ag_Id = C.ag_id 
+			    AND F.FEED_DELYN='N'
+			    ORDER BY FC.fc_regdate DESC
+		
+	</select>	    
+	<select id="checkMembership" resultType="String">
+	    SELECT m.CJ_NO
+		FROM membership mn
+		LEFT JOIN MEMBER_NICKNAME m ON mn.cj_no = m.cj_no
+		WHERE m.MN_NICKNAME = #{mnNickName}
+	</select>
+
+	<select id="getGoodsList" resultType="goodsVO">
+		select *
+             from goods
+             where goods_artist=#{agId}
+	
+	</select>
+	<select id="getGoodsList1" resultType="goodsVO">
+		select goods_No
+             from goods
+             where goods_artist=#{goodsArtist}
+             and goods_membership=#{goodsMembership}
+	
+	</select>
+	
+	
+</mapper>

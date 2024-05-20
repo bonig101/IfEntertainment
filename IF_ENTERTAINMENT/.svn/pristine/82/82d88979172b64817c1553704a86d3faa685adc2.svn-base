@@ -1,0 +1,32 @@
+package kr.or.ddit.service.entertain;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.AuditionBoardVO;
+import kr.or.ddit.vo.entertain.AuditionRegisterVO;
+import kr.or.ddit.vo.entertain.NationVO;
+
+public interface IAuditionService {
+
+	public int selectNoticeCount(PaginationInfoVO<AuditionBoardVO> pagingVO);
+
+	public List<AuditionBoardVO> auditionScheduleList(PaginationInfoVO<AuditionBoardVO> pagingVO);
+
+	public AuditionBoardVO auditionScheduleDetail(int bfNo);
+
+	public List<NationVO> nationList();
+
+	public ServiceResult auditionSupportRegister(HttpServletRequest req, AuditionRegisterVO auditionRegisterVO);
+
+	public List<AuditionRegisterVO> auditionSupportList();
+
+	public AuditionRegisterVO auditionSupportDetail(int arNo);
+
+
+
+
+}

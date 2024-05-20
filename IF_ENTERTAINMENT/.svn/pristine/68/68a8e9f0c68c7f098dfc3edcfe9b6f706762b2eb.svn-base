@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.community.IFeedMapper">
+	<resultMap type="feedVO" id="feedMap">
+		<id property="feedNo" column="feed_no" />
+		<result property="feedType" column="feed_type" />
+		<result property="feedRegdate" column="feed_regdate" />
+		<result property="feedContent" column="feed_content" />
+		<result property="feedMembership" column="feed_membership" />
+		<result property="feedDelyn" column="feed_delyn" />
+		<result property="userNo" column="user_no" />
+		<result property="agId" column="ag_id" />
+	</resultMap>
+
+	<sql id="feedSearch">
+<!-- 		<if test="searchType != null and searchType == 'userno'"> -->
+<!-- 			and(user_no like '%'||#{searchWord}||'%') -->
+<!-- 		</if> -->
+		<if test="searchType != null and searchType == 'content'">
+			and(feed_content like '%'||#{searchWord}||'%')
+		</if>
+
+	</sql>
+
+	<select id="selectFeedListCount"  parameterType="pagingVO" resultType="int" >
+	select count(feed_no)
+		from feed
+		where 1=1
+		<include refid="feedSearch"></include>
+	</select>
+
+	<select id="selectFeedList" resultType="feedVO" resultMap="feedMap">
+		select
+			b.*
+		from(
+			select
+					a.*, row_number() over(order by feed_no desc) rnum
+				from(	
+					select
+					    f.feed_no, f.feed_type, f.feed_content, f.feed_regdate, 
+					    f.feed_membership, f.feed_delyn,f.user_no,f.ag_id
+					from feed f left outer join "USER" u on(f.feed_no = u.user_no)
+	            				 left outer join feed_attachfile fa on(f.feed_no = fa.feed_no)
+					where 1=1
+				<include refid="feedSearch" />
+				order by f.feed_no desc
+				) a
+			) b
+			<![CDATA[
+			where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+			]]>
+	
+	</select>
+
+
+	<update id="deleteFeed">
+		update feed
+		set feed_delyn='Y'
+		where feed_no=#{feedNo}
+	</update>
+
+</mapper>

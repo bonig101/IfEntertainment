@@ -1,0 +1,11 @@
+package kr.or.ddit.mapper.common;
+
+import java.util.List;
+
+import kr.or.ddit.vo.common.NotificationVO;
+
+public interface IWebSocketMapper {
+	public int insertInquiry(NotificationVO notificationVO);
+	public List<NotificationVO> selectAlarmList(String userId);
+	public int updateReadAlarm(int notiNo);
+}

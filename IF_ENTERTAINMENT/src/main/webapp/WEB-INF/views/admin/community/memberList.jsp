@@ -1,0 +1,884 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/company.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/bootstrap.min.css">
+<script src="${pageContext.request.contextPath }/resources/js1/bootstrap.min.js"></script>
+</head>
+<style type="text/css">
+
+.list_buttons_box {
+	width: 100%;
+}
+
+.list_buttons_box .mem_searchBtn {
+	margin-top: 0px;
+}
+
+.list_buttons_box input {
+	border-color: #E4E0E0 !important;
+	width: auto !important;
+}
+.list_buttons_box span {
+	font-weight: normal;
+	text-transform: none;
+}
+
+.bottons_box {
+	display: flex;
+	justify-content: space-evenly;
+	height: 40px;
+}
+
+.searchform_box {
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+	height: 40px;
+}
+
+.mem_searchType {
+}
+
+.mem_edit {
+	width: 20%
+}
+
+.list_buttons_box .mem_remove {
+	margin-top: 0px;
+}
+
+.delRegiForm {
+	width: 55% !important;
+	margin: 0;
+}
+
+.mem_artistRegister {
+	width: 40%;
+}
+
+/* 모달 내부 */
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%;
+  position: relative;
+  z-index: 9999 !important;
+  color: #000;
+  left: 6%;
+  top: 12%;
+}
+
+/* 닫기 버튼 */
+.close {
+  color: #000;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 30px;
+}
+
+.close:hover,
+.close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.mem_modalTitle {
+	text-align: center;
+	padding: 30px;
+}
+
+/* 배경 어둡게 */
+.modal {
+  display: none; /* 초기에는 숨겨짐 */
+  position: fixed;
+  z-index: 99999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4); /* 배경 어둡게 */
+}
+
+/* 등록 및 취소 버튼 */
+.model_buttons {
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.model_buttons button {
+  margin-left: 10px;
+}
+
+#artistForm {
+}
+
+#artistTable {
+	width: 90%;
+	margin: 0 auto;
+    border-top: 2px solid #000;
+	border-bottom: 2px solid #000;
+
+}
+
+
+#imgFile {
+/*  	width: 250px;  */
+/*  	height: auto;  */
+/*  	padding:13px 20px;  */
+/*  	background-color: gray;  */
+/*  	position: absolute;  */
+/*  	top: 28.5%;  */
+/*  	left: 21.5%;  */
+}
+
+#imgFile::after {
+}
+
+.custom-file {
+    position: relative;
+    display: inline-block;
+    width: 280px; /* 필드의 너비를 조정할 수 있습니다. */
+}
+
+.custom-file-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.custom-file-label {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+/*     background-color: #007bff; /* 필드 배경색을 원하는 색상으로 변경할 수 있습니다. */ */
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#previewImage {
+	margin-right: 20px;
+	border-radius: 50%;
+	height: 100px;
+	width: 100px; 
+}
+
+
+/* 모달 - 수정하기*/
+/* 모달 스타일 */
+.modify_modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+/*   overflow: auto; */
+/*   overflow-y: hidden; */
+  background-color: rgba(0,0,0,0.4);
+}
+.modify_modal>input {
+border-radius: 5px;
+    float: left;
+    padding: 13px 20px;
+    width: 74%;
+    border: 1px solid #eaeaea;
+    background-color: olive;
+    
+}
+
+/* 모달 콘텐츠 */
+.modify_modal-content {
+   background-color: #fefefe;
+   margin: 10% 20%;
+   padding: 20px;
+   border: 1px solid #888;
+   width: 70%;
+   height: 165%;
+   position: relative;
+   z-index: 9999 !important;
+   color: #000;
+   overflow-y: hidden;
+}
+
+/* 닫기 버튼 스타일 */
+.modify_close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.modify_close:hover,
+.modify_close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#modiftTable {
+	width: 90%;
+	margin: 0 auto;
+    border-top: 2px solid #000;
+	border-bottom: 2px solid #000;
+
+}
+#artistRegister {
+	border: medium none;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+    color: #fff;
+    width: 140px;
+    font-size: 14px;
+    line-height: 40px;
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0) linear-gradient(-135deg, #1de9b6 0%, #1dc4e9 100%) repeat scroll 0 0;
+    -webkit-transition: all 0.2s linear 0s;
+    -moz-transition: all 0.2s linear 0s;
+    -ms-transition: all 0.2s linear 0s;
+    -o-transition: all 0.2s linear 0s;
+    transition: all 0.2s linear 0s;
+}
+table tr th:first-child, table tr td:first-child {
+   	padding: 24px 5px;
+}
+table tbody tr td:last-child {
+	    padding: 24px 5px;
+}
+table tr th {
+	text-align: center;
+}
+table tbody tr td {
+	text-align: center;
+}
+table tr th:first-child {
+	padding-left: 96px;
+}
+td span button {
+	border: none;
+	background: inherit;
+}
+td span button:first-child {
+	margin-right: 20px;
+}
+
+#artistRegister i {
+	margin-right: 7px;
+	margin-left: -4px;
+}
+
+.tdArea {
+	text-align: left;
+}
+
+.pwInputArea {
+	width: 20% !important;
+}
+
+.rCBtn {
+	border: none;
+    font-size: 18px;
+    padding: 10px 23px;
+}
+
+.rCBtn:focus,
+.rCBtn:active {
+	outline: none;
+}
+
+#artistRegister:focus,
+#artistRegister:active {
+    outline: none;
+}
+
+#artistRegister:hover {
+    background: #333;
+}
+
+.memModalInput {
+	height: 40px;
+    border-color: #e9ecef #e9ecef #e9ecef #e9ecef;
+    border-style: solid;
+    border-radius: 5px;
+}
+
+#pagingArea {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+</style>
+<body>
+
+<div class="gap inner-bg">
+    <div class="table-styles">
+
+        <div class="little-heading">
+            <h2 class="header_title" style="margin-bottom: 30px">🙋‍♀️ 회원 관리</h2>
+        </div>
+
+        <div class="gap listbar-container">
+            <div class="discount-copon list-bar list_buttons_box">
+                <div class="row">
+                    <!-- 		<div class="col-md-2" style="display: flex;"> -->
+                    <!-- 		    <button class="filter-btn btn-st filter_btn " data-feedType="1">팬</button> -->
+                    <!-- 		    <button class="filter-btn btn-st filter_btn" data-feedType="2">아티스트</button> -->
+                    <!-- 		</div> -->
+                    <div class="col-md-4">
+                        <form method="post" id="searchForm">
+                            <input type="hidden" name="page" id="page" />
+                            <div class="searchform-box searchform_box">
+
+                                <input type="text" class="mem_searchWord" name="searchWord" value="${searchWord}"
+                                    placeholder="이름으로 검색">
+
+                                <button type="submit" class="mem_searchBtn">검색</button>
+                            </div>
+                            <sec:csrfInput />
+                        </form>
+                    </div>
+                    <div class="col-md-3 bottons_box">
+                        <!-- 			<button class="mem_edit" name="" value="">편집</button> -->
+                        <form id="deleteForm" class="delRegiForm">
+                            <button type="submit" class="mem_remove" style="width: 150px">선택항목 삭제하기</button>
+                            <!-- 	        	<input type="hidden" name="" id="selectedFeedIds"/> -->
+                            <sec:csrfInput />
+                        </form>
+                        <div id="mem_artistRegister">
+                            <button id="artistRegister" value="artistRegister"><i class="fa fa-plus"
+                                    aria-hidden="true"></i>아티스트 등록</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 아티스트등록 모달 시작 -->
+        <div id="artistModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 class="mem_modalTitle">아티스트 등록</h2>
+                <!-- 아티스트 등록 폼 -->
+                <form id=artistForm method="post" action="/community/memManage/admin/memberList.do"
+                    enctype="multipart/form-data">
+                    
+                    <!-- 자동입력버튼 -->
+		            <div class="buttonz addpro_buttonz" style="position: absolute; top:150px; right: 100px;">
+				    	<button type="button" id="autobutton">자동입력 버튼</button>
+				    </div>
+                    
+                    <table id="artistTable">
+                        <tr>
+                            <td width="15%" class="tdArea"><label for="imgFile" style="color: #000;">프로필 사진</label></td>
+                            <td colspan="3" class="tdArea" style="display: flex; justify-content: center; align-items: center;">
+                                <img id="previewImage"
+                                    src="${pageContext.request.contextPath }/resources/images/profile.png"
+                                    style="max-width: 100px;">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input memModalInput" id="imgFile" name="imgFile">
+                                    <label class="custom-file-label" for="imgFile">이미지를 선택해주세요.</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="15%" class="tdArea"><label for="userId" style="color: #000;">아티스트 ID</label></td>
+                            <td colspan="3" class="tdArea"><input type="text" id="userId" name="userId" class="memModalInput" value="${userVO.userId }"></td>
+                        </tr>
+                        <tr>
+                            <td width="15%" class="tdArea"><label for="userPw" style="color: #000;">비밀번호</label></td>
+                            <td class="tdArea pwInputArea"><input type="password" id="userPw" name="userPw" class="memModalInput" value="${userVO.userPw }"></td>
+                            <td width="15%" class="tdArea"><label for="userPw1" style="color: #000;">비밀번호 확인</label></td>
+                            <td class="tdArea"><input type="password" id="userPw1" name="userPw1" class="memModalInput" value="${userVO.userPw1 }"></td>
+                        </tr>
+                        <tr>
+                            <td width="15%" class="tdArea"><label for="userName" style="color: #000;">아티스트 이름</label></td>
+                            <td colspan="3" class="tdArea"><input type="text" id="userName" name="userName" class="memModalInput"
+                                    value="${userVO.userName }"></td>
+                        </tr>
+                    </table>
+                    <!-- 등록 및 취소 버튼 -->
+                    <div class="model_buttons">
+                        <button type="button" class="register btn-st rCBtn">등록</button>
+                        <button type="button" class="cancel btn-st rCBtn">취소</button>
+                    </div>
+                    <sec:csrfInput />
+                </form>
+
+
+            </div>
+        </div>
+        
+        <!-- 아티스트등록 모달 끝 -->
+        <div class="widget">
+            <table class="prj-tbl striped table-responsive">
+                <thead class="color">
+                    <tr class="prodTitle feedTitle">
+                        <th width="7%"><i class="all-slct"></i></th>
+                        <th width="7%"><em>번호</em></th>
+                        <th width="10%"><em>아이디</em></th>
+                        <th width="10%"><em>이름</em></th>
+                       <!-- 		             <th width="13%"><em>연락처</em></th> -->
+                       <!-- 		             <th width="13%"><em>이메일</em></th> -->
+                       <!-- 		             <th width="10%"><em>생년월일</em></th> -->
+                       <!-- 		             <th width="10%"><em>가입일</em></th> -->
+                        <th width="10%"><em>등록여부</em></th>
+                        <th width="10%"><em>상태</em></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:set value="${pagingVO.dataList}" var="memberList" />
+                    <c:choose>
+                        <c:when test="${empty memberList}">
+                            <tr>
+                                <td colspan="10">회원 리스트가 존재하지 않습니다.</td>
+                            </tr>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach items="${memberList}" var="member">
+                                <tr class="prodTitle feedList">
+                                    <td><input type="checkbox" class="selectFeed" value="${member.userNo }" /></td>
+                                    <td><span>${member.userNo}</span></td>
+                                    <td><span>${member.userId}</span></td>
+                                    <td><span>${member.userName}</span></td>
+                                    <%-- <td><span>${member.memberTelno}</span></td> --%>
+                                        <%-- <td><span>${member.memberEmail}</span></td> --%>
+                                            <%-- <td><span>${member.memberBirth}</span></td> --%>
+                                                <%-- <td><span>
+                                                        <fmt:formatDate value="${member.memberRegdate}"
+                                                            pattern="yyyy-MM-dd" />
+                                                    </span></td> --%>
+                                    <td>
+                                        <span>${member.artistFakename == null ? '미등록' : '등록'}</span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <button id="modify" class="modify"><i class="fa fa-pencil"
+                                                    aria-hidden="true"></i></button>
+                                            <button id="delete"><i class="icon-trash"></i></button>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
+                </tbody>
+            </table>
+        </div>
+
+
+        <div id="modify_myModal" class="modal">
+            <div class="modify_modal-content">
+                <span class="modify_close">&times;</span>
+                <h2 class="mem_modalTitle">회원 정보 수정</h2>
+                <form id="modifyForm">
+                    <table id="modiftTable">
+                        <tr>
+                            <td width="15%"><label for="imgFile">프로필 사진</label></td>
+                            <td colspan="3" style="display: flex; justify-content: center; align-items: center;">
+
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="imgFile" name="imgFile">
+                                    <label class="custom-file-label" for="imgFile">이미지를 선택해주세요.</label>
+                                </div>
+                                <img id="previewImage"
+                                    src="${pageContext.request.contextPath }/resources/images/profile.png"
+                                    style="max-width: 100px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="15%"><label for="userId">아이디</label></td>
+                            <td colspan="3">ID</td>
+                        </tr>
+                        <tr>
+                            <td width="15%"><label for="userPw">비밀번호</label></td>
+                            <td><input type="password" id="userPw" name="userPw" placeholder="비밀번호"></td>
+                            <td width="15%"><label for="userPw1">비밀번호 확인</label></td>
+                            <td><input type="password" id="userPw1" name="userPw1" placeholder="비밀번호 확인"></td>
+                        </tr>
+                        <tr>
+                            <td width="15%"><label for="userName">이름</label></td>
+                            <td colspan="3"><input type="text" id="userName" name="userName" placeholder="이름"></td>
+                        </tr>
+                        <tr>
+                            <td width="15%"><label for="memberEmail">이메일</label></td>
+                            <td colspan="3">이메일</td>
+                        </tr>
+                        <tr>
+                            <td width="15%"><label for="address">주소</label></td>
+                            <td>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" id="memberPostcode" name="memberPostcode"
+                                        value="" placeholder="지번">
+                                    <button type="button" class="btn btn-secondary btn-flat"
+                                        onclick="DaumPostcode()">우편번호
+                                        찾기</button>
+                                </div>
+                            </td>
+                            <td width="15%">
+                                <input type="text" class="form-control" id="memberAddress1" name="memberAddress1"
+                                    value="" placeholder="주소입력">
+                            </td>
+                            <td width="15%"><input type="text" class="form-control" id="memberAddress2"
+                                    name="memberAddress2" value="" placeholder="상세주소를 입력해주세요"></td>
+                        </tr>
+                        <tr>
+                            <td width="15%"><label for="birthDate">생년월일</label></td>
+                            <td><input type="date" id="birthDate" name="birthDate" placeholder="생년월일"></td>
+                        </tr>
+                        <tr>
+                            <td width="15%"><label for="memberGender">성별</label></td>
+                            <td>
+                                <div style="display: flex;">
+                                    <div class="genderM">
+                                        <input type="radio" id="memberGender" name="memberGender" value="M">
+                                        <span>남자</span>
+                                    </div>
+                                    <div class="genderF">
+                                        <input type="radio" id="memberGender" name="memberGender" value="F">
+                                        <span>여자</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="15%"><label for="memberTelno">휴대폰번호</label></td>
+                            <td><input type="text" id="memberTelno" name="memberTelno" placeholder="휴대폰번호"></td>
+                        </tr>
+                        <tr>
+                            <td width="15%"><label for="memberNotification">알림 수신 </label></td>
+                            <td>
+                                <div id="alarmStyle">
+                                    <div id="alarmStyle_">
+                                        <div class="alarm_radio" style="display: flex;">
+                                            <div class="alarm_Y">
+                                                <input type="radio" class="male" id="memberNotification1"
+                                                    name="memberNotification" value="Y">
+                                                <span> 동의</span>
+                                            </div>
+                                            <div class="alarm_N">
+                                                <input type="radio" id="memberNotification2" name="memberNotification"
+                                                    value="N">
+                                                <span>비동의</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="15%"><label for="notification">알림 수신 종류</label></td>
+                            <td>
+                                <div class="checkAlarm" style="display: flex;">
+                                    <div class="checkBox">
+                                        <span>커뮤니티</span>
+                                        <input type="checkbox" id="commnotiSetting" name="notiSetting" value="power"
+                                            style="margin: 0px; margin-left: 20px;">
+                                    </div>
+                                    <div class="checkBox">
+                                        <span>굿즈샵</span>
+                                        <input type="checkbox" id="goodsnotiSetting" name="notiSetting" value="book"
+                                            style="margin: 0px; margin-left: 20px;" />
+                                    </div>
+                                    <div class="checkBox">
+                                        <span>이벤트</span>
+                                        <input type="checkbox" id="evennotiSetting" name="notiSetting" value="movie"
+                                            style="margin: 0px; margin-left: 20px;" />
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="15%"><label for="notification">알림 수신 유형</label></td>
+                            <td>
+                                <div class="checkAlarm" style="display: flex;">
+                                    <div class="checkBox" style="display: flex;">
+                                        <span>SMS</span>
+                                        <input type="checkbox" id="smsCheckbox" name="notiType" value="sms">
+                                    </div>
+                                    <div class="checkBox" style="display: flex;">
+                                        <span>Email</span>
+                                        <input type="checkbox" id="emailCheckbox" name="notiType" value="email">
+                                    </div>
+                                    <div class="checkBox" style="display: flex;">
+                                        <span>웹 실시간</span>
+                                        <input type="checkbox" id="webCheckbox" name="notiType" value="web">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="15%"><label for="membershipStatus">멤버십 현황</label></td>
+                            <td>
+                                멤버십 현황
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="15%"><label for="artistRegistration">아티스트 등록</label></td>
+                            <td><input type="checkbox" id="artistRegistration" name="artistRegistration"
+                                    value="register">
+                            </td>
+                        </tr>
+                    </table>
+                    <!-- 버튼 -->
+                    <div class="model_buttons ">
+                        <button type="submit" class="update">수정</button>
+                        <button type="button" class="cancel">취소</button>
+                    </div>
+                    <sec:csrfInput />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+	
+<script type="text/javascript">
+
+$(function() {
+	var searchForm = $("#searchForm");
+    var pagingArea = $("#pagingArea");
+    
+    var artistForm = $("#artistForm");
+    var register = $(".register");
+    var cancel = $(".cancel");
+    
+    var imgFile = $("#imgFile");
+    var userId = $("#userId");
+    var userPw = $("#userPw");
+    var userPw1 = $("#userPw1");
+    var userName = $("#userName");
+    
+    
+	// 아티스트등록
+    pagingArea.on("click", "a", function(event){
+        event.preventDefault();
+        var pageNo = $(this).data("page");
+        searchForm.find("#page").val(pageNo);
+        searchForm.submit();
+    });
+    
+    $("#artistRegister").click(function() {
+        $("#artistModal").show();
+    });
+
+    // 모달 닫기 버튼 클릭 시 모달 숨김
+    $(".close").click(function() {
+        $("#artistModal").hide();
+    });
+    
+ 	// 파일 입력 필드 변경 시 파일 이름을 표시
+    $('.custom-file-input').on('change', function() {
+        var fileName = $(this).val().split('\\').pop();
+        $(this).siblings('.custom-file-label').html(fileName);
+    });
+ 
+    function previewFile() {
+        var preview = document.getElementById('previewImage');
+        var file = document.querySelector('input[type=file]').files[0];
+        var reader = new FileReader();
+
+        reader.onloadend = function () {
+            preview.src = reader.result;
+        }
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "";
+        }
+    }
+    
+    register.on("click", function() {
+    	
+    	var imgFile = $("#imgFile")[0].files[0];
+    	if (!imgFile) {
+	        Swal.fire(
+	       		'',
+	       		'이미지를 첨부해주세요.',
+	       		'warning'
+	       	)
+	        return;
+    	}else {
+    		var allowedImageTypes = ["image/jpeg", "image/png"];
+            if (allowedImageTypes.indexOf(imgFile.type) === -1) {
+//                 alert('이미지 파일 형식만 지원됩니다. (JPEG, PNG, GIF)');
+                Swal.fire(
+               		'',
+               		'이미지 파일 형식만 지원됩니다. (JPEG, PNG)',
+               		'warning'
+               	)
+                return;
+            }
+    	}
+    	
+    	var userId = $("#userId").val();
+    	if (userId == null || userId == "") {
+			Swal.fire(
+			  '',
+			  'ID를 입력해주세요.',
+			  'warning'
+			)
+         userId.focus();
+         return;
+     	}
+    	
+    	var userPw =$("#userPw").val();
+    	var userPw1 =$("#userPw1").val();
+    	if (userPw == null || userPw == "") {
+	        Swal.fire(
+	    		'',
+	    		'비밀번호를 입력해주세요.',
+	    		'warning'
+	    	)
+	        userPw.focus();
+	        return;
+     	} else if (userPw1 == null || userPw1 == "") {
+//         	alert("비밀번호 확인을 입력해주세요.");
+        	Swal.fire(
+        		'',
+        		'비밀번호 확인을 입력해주세요.',
+        		'warning'
+        	)
+        	userPw1.focus();
+        	return;
+        } else if (userPw !== userPw1) {
+//             alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            Swal.fire(
+        		'',
+        		'비밀번호와 비밀번호 확인이 일치하지 않습니다..',
+        		'warning'
+        	)
+            userPw1.focus();
+            return;
+        }
+    	
+    	var userName = $("#userName").val();
+    	var nameRegex = /^[^0-9`~!@#$%\^&*()\-_=+\\|\[\]{};:'",.<>\/?]*$/;
+        if (userName == null || userName == "") {
+//             alert("이름을 입력해주세요.");
+            Swal.fire(
+           		'',
+           		'이름을 입력해주세요.',
+           		'warning'
+           	)
+            userName.focus();
+            return;
+        } else if (!nameRegex.test(userName)) {
+//             alert("이름에 특수문자나 숫자를 사용할 수 없습니다.");
+            Swal.fire(
+           		'',
+           		'이름에 특수문자나 숫자를 사용할 수 없습니다.',
+           		'warning'
+           	)
+            userName.focus();
+            return;
+        }
+        
+        artistForm.submit();
+        
+//         Swal.fire({
+//             icon: "success",
+//             title: "성공적으로 등록되었습니다.",
+//             showConfirmButton: false,
+//             timer: 1500,
+//         });
+    
+// 	    setTimeout(function() {
+// 	        window.location.href = "/community/memManage/admin/memberList.do";
+// 	    }, 1500);
+	    
+    });
+    
+    $(".cancel").on("click", function() {
+        $("#artistModal").hide();
+    });
+
+    
+ 	// 수정 모달
+    var modifyModal = $("#modify_myModal");
+    var modifyBtn = $(".modify");
+    var modifyClose = $(".modify_close");
+
+    modifyBtn.on("click", function() {
+        modifyModal.css("display", "block");
+    });
+
+    modifyClose.on("click", function() {
+        modifyModal.css("display", "none");
+    });
+
+    $(window).on("click", function(event) {
+        if (event.target === modifyModal[0]) {
+            modifyModal.css("display", "none");
+        }
+    });
+
+
+    
+    
+});
+</script>
+
+<script type="text/javascript">
+	$(function () {
+	    var imgFile = $("#imgFile");
+	    imgFile.on("change", function (event) {
+	        var file = event.target.files[0];
+	        
+	        if(isimgFile(file)){
+	            var reader = new FileReader();
+	            reader.onload = function (e) {
+	                $("#previewImage").attr("src", e.target.result); // 여기를 수정했습니다.
+	            }
+	            reader.readAsDataURL(file);
+	        }else {
+	            alert("이미지 파일만 등록 가능합니다.");
+	        }
+	    });
+	
+	    function isimgFile(file) {
+	        var ext = file.name.split(".").pop().toLowerCase();
+	        return ($.inArray(ext,["jpg","jpeg","png", "gif"]) === -1) ? false : true;
+	    }
+	    
+	    $("#autobutton").on("click", function(){
+	    	$("#userId").val("artist7777");	    	
+	    	$("#userPw").val("qwerQ1234");	    	
+	    	$("#userPw1").val("qwerQ1234");	    	
+	    	$("#userName").val("권지용");	    	
+	    });
+	    
+	});
+	
+	
+
+	
+</script>
+</body>
+</html>

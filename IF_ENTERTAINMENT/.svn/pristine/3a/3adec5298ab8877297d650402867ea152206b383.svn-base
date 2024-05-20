@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.goods.IOrderMapper">
+
+	<update id="updateOrderStatus" parameterType="int">
+		update order_detail
+			set
+			od_status = '1'
+			where od_no = #{odNo}
+	</update>
+	<insert id="insertIssueChange"  parameterType="orderIssueVO">
+		insert into order_issue(
+		    order_no, gui_type, gui_detail, od_no, gui_savepath
+		)values(
+		    #{orderNo}, #{guiType}, #{guiDetail}, #{odNo}, #{guiSavepath}
+		)
+	</insert>
+
+	<insert id="insertGoodsIssue" parameterType="orderIssueVO">
+		insert into order_issue(
+		    order_no, gui_type, gui_reason, gui_detail
+		)values(
+		    #{orderNo}, #{guiType}, #{guiReason}, #{guiDetail}
+		)
+	</insert>
+
+	<select id="selectOrderDetailList" parameterType="orderDetailVO" resultType="orderDetailVO">
+		SELECT
+		    OD.OD_QUANTITY, OD.OD_PRICE, O.ORDER_NO, O.ORDER_DELIVERY, O.USER_NO, O.CMPL_DATE, OD.OD_NO, OD.OD_STATUS,
+		    G.GOODS_THUMBNAIL, G.GOODS_NAME, G.GOODS_ARTIST, 
+		    U.USER_NAME,
+		    MA.MA_POSTCODE, MA_ADDRESS1, MA_ADDRESS2, MA_RECIEVER, MA_TELNO, MA_NATION,
+		    ORDER_TOTALPRICE,ORDER_PAY
+		FROM ORDER_DETAIL OD 
+		LEFT OUTER JOIN
+		    "ORDER" O ON (OD.ORDER_NO = O.ORDER_NO)
+		LEFT OUTER JOIN
+		    "USER" U ON (O.USER_NO = U.USER_NO) 
+		LEFT OUTER JOIN
+		    GOODS G ON (OD.GOODS_NO = G.GOODS_NO)
+		LEFT OUTER JOIN
+		    MEMBER_ADDRESS MA ON (O.MA_NUMBER = MA.MA_NUMBER)
+		WHERE O.USER_NO = #{userNo} AND O.ORDER_NO = #{orderNo}
+	</select>
+
+	<select id="selectOrderListCount" parameterType="pagingVO" resultType="int">
+		SELECT COUNT(ORDER_NO)
+		FROM "ORDER"
+		WHERE USER_NO = #{userNo}
+	</select>
+
+	<select id="selectOrderList" parameterType="pagingVO" resultType="orderVO">
+		SELECT 
+    ORDER_NO, GOODS_NO, OD_NO, ORDER_TOTALPRICE, ORDER_DELIVERY, USER_NO, GOODS_THUMBNAIL, GOODS_NAME, GOODS_ARTIST, orderCount, GUI_TYPE
+		FROM (
+		    SELECT 
+		        O.ORDER_NO, G.GOODS_NO, OD.OD_NO, O.ORDER_TOTALPRICE, O.ORDER_DELIVERY, O.USER_NO, G.GOODS_THUMBNAIL, OI.GUI_TYPE,
+		        G.GOODS_NAME, G.GOODS_ARTIST, ROW_NUMBER() OVER (ORDER BY O.ORDER_NO) AS rn,
+		        (select count(*) from order_detail where od.order_no = order_no) as orderCount
+		    FROM 
+		        "ORDER" O 
+		    LEFT OUTER JOIN 
+		        "USER" U ON (O.USER_NO = U.USER_NO)
+		    LEFT OUTER JOIN
+		        ORDER_DETAIL OD ON (O.ORDER_NO = OD.ORDER_NO)
+		    LEFT OUTER JOIN
+		        GOODS G ON (OD.GOODS_NO = G.GOODS_NO)
+		    LEFT OUTER JOIN
+		        ORDER_ISSUE OI ON(O.ORDER_NO = OI.ORDER_NO)
+		    WHERE 
+		        O.USER_NO = #{userNo} and (gui_type != 1 or gui_type is null) 
+		) t
+		WHERE rn = 1
+	</select>
+
+
+</mapper>

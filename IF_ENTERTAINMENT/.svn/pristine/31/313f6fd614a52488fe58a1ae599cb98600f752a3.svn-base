@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.ISignMapper">
+		
+		
+		<resultMap id="userMemberVO" type="userVO">
+   			 <result property="memberEmail" column="MEMBER_EMAIL"/>
+		</resultMap>
+
+<select id="findEmail" resultMap="userMemberVO">
+    SELECT m.MEMBER_EMAIL
+    FROM USER u
+    JOIN MEMBER m ON u.USER_ID = m.MEMBER_TELNO
+    WHERE u.USER_ID = #{userId} AND u.USER_NAME = #{userName} AND m.MEMBER_TELNO = #{memberTelno}
+</select>
+</mapper>

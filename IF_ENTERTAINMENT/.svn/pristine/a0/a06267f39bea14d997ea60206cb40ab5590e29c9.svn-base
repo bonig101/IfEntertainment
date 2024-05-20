@@ -1,0 +1,246 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style type="text/css">
+.image-container {
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    height: 100px; /* 부모 요소의 높이를 지정 */
+}
+   .modal .modal-dialog {
+        margin-top: 150px; 
+    }
+</style>
+  <link rel="icon" href="images/fav.png" type="image/png" sizes="16x16"> 
+  <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/main.min.css">
+<%--   <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/style.css"> --%>
+  <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/color.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/responsive.css">
+</head>
+<body>
+    <div class="col-lg-9">
+        <div class="central-meta">
+            <h4 class="create-post">배송지 관리</h4>
+                <table class="table table-responsive-md table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>배송지명</th>
+                            <th>받는사람</th>
+                            <th>주소</th>
+                            <th>연락처</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="list" items="${addressList}">
+                            <tr>
+                                <td><span>${list.maPlace}</span></td>
+                                <td><span>${list.maReciever}</span></td>
+                                <td><span>(${list.maPostcode})</br> ${list.maAddress1}</br>${list.maAddress2 }</span></td>
+                                <td><span>${list.maTelno}</span></td>
+                                <td>
+								    <div style="display: flex; flex-direction: column; gap: 8px;">
+								        <c:choose>
+								            <c:when test="${list.maDefault == 'Y'}">
+								            <div style="display: flex; flex-direction: column; align-items: center;">
+											    <div style="display: flex; justify-content: center; align-items: center; background-color: #E6E6FA; border-radius: 20px; padding: 5px 10px; margin-bottom: 10px;">
+											        기본배송지
+											    </div>
+											    <form action="">
+											  <button type="submit" class="">수정</button>
+											  </form>
+											</div>
+
+
+										</c:when>
+								           <c:otherwise>
+											    <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+												    <form action="" method="post" style="display: flex; flex-basis: 100%; justify-content: space-between;">
+												        <input type="hidden" class="maNumber" value="${list.maNumber}" />
+												          <button type="button" class="editButton" style="flex: 1; margin-right: 5px;">수정</button>
+        												  <button type="button" class="deleteButton" style="flex: 1; margin-left: 5px;">삭제</button>
+												    </form>
+												    <form action="" method="post" style="flex-basis: 100%; margin-top: 10px;">
+												        <button type="submit" style="width: 100%;">기본배송지로 설정</button>
+												    </form>
+												</div>
+
+											</c:otherwise>
+
+								        </c:choose>
+								    </div>
+								</td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+                <!-- 배송지 등록 버튼 추가 -->
+                <div style="text-align: right; margin-top: 20px;">
+                   <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#shippingAddressModal">배송지 등록</a>
+                </div>
+        </div>
+    </div>
+    <!-- 배송지 등록 모달 -->
+		<div class="modal fade" id="shippingAddressModal" tabindex="-1" role="dialog" aria-labelledby="shippingAddressModalLabel" aria-hidden="true">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="shippingAddressModalLabel">배송지 등록</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <!-- 배송지 등록 폼 -->
+		      	<form>
+				    <div class="form-group">
+				        <label for="maPlace">배송지명</label>
+				        <input type="text" class="form-control" id="maPlace">
+				    </div>
+				    <div class="form-group">
+				        <label for="maReciever">받는사람</label>
+				        <input type="text" class="form-control" id="maReciever">
+				    </div>
+				    <div class="form-group">
+				        <label for="maAddress1">주소</label>
+				        <input type="text" class="form-control" id="maAddress1">
+				        <button type="button" id="findAddress" class="btn btn-primary">주소 검색</button>
+				    </div>
+				    <div class="form-group">
+				        <label for="maPostcode">우편번호</label>
+				        <input type="text" class="form-control" id="maPostcode">
+				    </div>
+				    <div class="form-group">
+				        <label for="maAddress2">상세주소</label>
+				        <input type="text" class="form-control" id="maAddress2">
+				    </div>
+				    <div class="form-group">
+				        <label for="maTelno">연락처</label>
+				        <input type="text" class="form-control" id="maTelno">
+				    </div>
+				    <div class="form-group">
+				        <label for="maNation">국적</label>
+				        <input type="text" class="form-control" id="maNation">
+				        <input type="hidden" class="form-control" id="userNo" value="${userNo}">
+				    </div>
+				</form>
+
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+		        <button type="button" class="btn btn-primary" id="saveButton">저장</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+</body>
+	<script src="${pageContext.request.contextPath }/resources/js/main.min.js"></script>
+	<script src="${pageContext.request.contextPath }/resources/js/userincr.js"></script>
+	<script src="js/script.js"></script>
+	<script src="https://ssl.daumcdn.net/dmaps/map_js_init/postcode.v2.js"></script>
+	<script>
+	document.getElementById('findAddress').addEventListener('click', function() {
+	    new daum.Postcode({
+	        oncomplete: function(data) {
+	            document.getElementById('maPostcode').value = data.zonecode;
+	            document.getElementById('maAddress1').value = data.address;
+	            document.getElementById('maAddress2').focus();
+	        }
+	    }).open();
+	});
+	
+	$(document).ready(function() {
+	    // "저장" 버튼 클릭 이벤트
+	    $('#saveButton').click(function() {
+	        // 입력 데이터 수집
+	        var data = {
+	            maPlace: $('#maPlace').val(),
+	            maReciever: $('#maReciever').val(),
+	            maPostcode: $('#maPostcode').val(),
+	            maAddress1: $('#maAddress1').val(),
+	            maAddress2: $('#maAddress2').val(),
+	            maTelno: $('#maTelno').val(),
+	            maNation: $('#maNation').val(),
+	            userNo : $('#userNo').val()
+	        };
+			console.log("data??",data);
+	        $.ajax({
+	            type: "POST",
+	            url: "/goods/address/addressInsert.do",
+	            contentType: "application/json",
+	            data: JSON.stringify(data),
+	            success: function(response) {
+	                alert("데이터가 성공적으로 저장되었습니다.");
+	                $('#shippingAddressModal').modal('hide');
+	             	location.reload();
+	            },
+	            error: function(xhr, status, error) {
+	                alert("데이터 저장에 실패했습니다.");
+	            }
+	        });
+	    });
+	});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.editButton').click(function(e) {
+        e.preventDefault(); 
+
+        var maNumber = $(this).closest('form').find('.maNumber').val();
+        console.log("maNumber2313?", maNumber);
+        
+        $.ajax({
+            url: '/goods/address/addressUpdate.do', 
+            type: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify({maNumber: maNumber}),
+            success: function(response) {
+                console.log('수정 성공:', response);
+            },
+            error: function(xhr, status, error) {
+                console.error('수정 실패:', status, error);
+            }
+        }); // AJAX 호출 종료
+    }); // editButton 클릭 이벤트 종료
+
+
+    $('.deleteButton').click(function(e) {
+        e.preventDefault(); 
+
+        var maNumber = $(this).closest('form').find('.maNumber').val();
+        console.log("maNumber2313?", maNumber);
+        $.ajax({
+            url: '/goods/address/addressDelete.do',
+            type: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify({maNumber: maNumber}),
+            success: function(response) {
+                console.log('삭제 성공:', response);
+            },
+            error: function(xhr, status, error) {
+                console.error('삭제 실패:', status, error);
+            }
+        }); // AJAX 호출 종료
+    }); // deleteButton 클릭 이벤트 종료
+}); // document.ready 종료
+
+</script>
+
+
+	
+	
+	
+</html>

@@ -1,0 +1,26 @@
+package kr.or.ddit.controller.community;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.community.IFeedService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 피드 댓글 수정 컨트롤러
+ * @author 임민혁
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/feed/comment")
+public class FeedCommentModifyController {
+	
+	// 본인이 작성한 댓글만 삭제가 가능하되
+	// 관리자는 모든 댓글을 삭제할 수 있도록 권한 설정(스프링 시큐리티)
+
+	@Inject
+	private IFeedService feedService;
+	
+}

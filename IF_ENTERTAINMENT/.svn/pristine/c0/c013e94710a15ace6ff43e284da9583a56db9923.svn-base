@@ -1,0 +1,15 @@
+package kr.or.ddit.service.impl.goods;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.goods.IAddressMapper;
+import kr.or.ddit.service.goods.IAddressService;
+
+@Service
+public class AddressServiceImpl implements IAddressService {
+
+	@Inject
+	private IAddressMapper addressMapper;
+}

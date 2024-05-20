@@ -1,0 +1,96 @@
+package kr.or.ddit.service.impl.goods;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.goods.IGoodsMapper;
+import kr.or.ddit.service.goods.IGoodsService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.ArtistGroupVO;
+import kr.or.ddit.vo.goods.GoodsAttachfileVO;
+import kr.or.ddit.vo.goods.GoodsCategoryVO;
+import kr.or.ddit.vo.goods.GoodsVO;
+
+@Service
+public class GoodsServiceImpl implements IGoodsService {
+	
+	@Inject
+	private IGoodsMapper goodsMapper;
+
+	@Override
+	public int selectProdListCount(PaginationInfoVO<GoodsVO> pagingVO) {
+		return goodsMapper.selectProdListCount(pagingVO);
+	}
+
+	@Override
+	public List<GoodsVO> selectProdList(PaginationInfoVO<GoodsVO> pagingVO) {
+		return goodsMapper.selectProdList(pagingVO);
+	}
+
+	@Override
+	public List<ArtistGroupVO> selectAritstList() {
+		return goodsMapper.selectAritstList();
+	}
+
+	@Override
+	public List<GoodsCategoryVO> selectCategoryList() {
+		return goodsMapper.selectCategoryList();
+	}
+
+	@Override
+	public ServiceResult insertProd(HttpServletRequest req, GoodsVO goodsVO) {
+		ServiceResult result = null;
+		
+		int status = goodsMapper.insertProd(goodsVO);
+		if (status > 0) {
+			List<GoodsAttachfileVO> prodFileList = goodsVO.getGoodsFileList();
+			
+			try {
+				prodFileUpload(prodFileList, goodsVO.getGoodsNo(), req);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	private void prodFileUpload(List<GoodsAttachfileVO> prodFileList, int goodsNo, HttpServletRequest req) throws Exception {
+		String savePath = "/resource/goods/";
+		
+		if (prodFileList != null) {
+			if (prodFileList.size() > 0) {
+				for (GoodsAttachfileVO goodsFileVO : prodFileList) {
+					String saveName = UUID.randomUUID().toString();
+					saveName += "_" + goodsFileVO.getFileName();
+					String saveLocate = req.getServletContext().getRealPath(savePath + goodsNo);
+					File file = new File(saveLocate);
+					if (!file.exists()) {
+						file.mkdirs();
+					}
+					
+					saveLocate += "/" + saveName;
+					
+					goodsFileVO.setGoodsNo(goodsNo);
+					goodsFileVO.setGaDetailimg(saveLocate);
+					goodsMapper.insertProdFile(goodsFileVO);
+					
+					File saveFile = new File(saveLocate);
+					goodsFileVO.getItem().transferTo(saveFile);
+					
+				}
+			}
+		}
+	}
+
+}

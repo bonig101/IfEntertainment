@@ -1,0 +1,134 @@
+var header = "";
+var token = "";
+header = $("meta[name='_csrf_header']").attr("content");
+token = $("meta[name='_csrf']").attr("content");
+var eventModal = $('#eventModal');
+
+var modalTitle = $('.modal-title');
+var editAllDay = $('#edit-allDay');
+var editTitle = $('#edit-title');
+var header = "";
+var token = "";
+header = $("meta[name='_csrf_header']").attr("content");
+token = $("meta[name='_csrf']").attr("content");
+
+var editStart = $('#edit-start');
+var editAgId = $('#edit-agId');
+var editEnd = $('#edit-end');
+var editUsername = $('#edit-username');
+var editType = $('#edit-type');
+var editColor = $('#edit-color');
+var editDesc = $('#edit-desc');
+
+var addBtnContainer = $('.modalBtnContainer-addEvent');
+var modifyBtnContainer = $('.modalBtnContainer-modifyEvent');
+
+
+/* ****************
+ *  새로운 일정 생성
+ * ************** */
+var newEvent = function (start, end, eventType) {
+	
+    $("#contextMenu").hide(); //메뉴 숨김
+
+    modalTitle.html('새로운 일정');
+    editType.val(eventType).prop('selected', true);
+    editTitle.val('');
+    editStart.val(start);
+    editEnd.val(end);
+    editDesc.val('');
+    
+    addBtnContainer.show();
+    modifyBtnContainer.hide();
+    eventModal.modal('show');
+
+    
+
+    //새로운 일정 저장버튼 클릭
+    $('#save-event').unbind();
+    $('#save-event').on('click', function () {
+
+        var eventData = {
+           
+            title: editTitle.val(),
+            start: editStart.val(),
+            end: editEnd.val(),
+            description: editDesc.val(),
+            type: editType.val(),
+            agId: editAgId.val(),
+            username : editUsername.val(),
+            backgroundColor: editColor.val(),
+            textColor: '#ffffff',
+            allDay: false
+        };
+        
+        console.log("데이터",eventData);
+
+        if (eventData.start > eventData.end) {
+            Swal.fire(
+			  '뒷날짜가 앞날짜 앞에 위치 할수 없습니다!',
+			  '정확히 입력해 주세요',
+			  'error'
+			)
+            return false;
+        }
+
+        if (eventData.title === '') {
+             Swal.fire(
+			  '일정명 입력은 필수입니다!',
+			  '꼭 입력하세요',
+			  'error'
+			)
+            return false;
+        }
+
+        var realEndDay;
+
+        if (editAllDay.is(':checked')) {
+            eventData.start = moment(eventData.start).format('YYYY-MM-DD');
+            //render시 날짜표기수정
+            eventData.end = moment(eventData.end).add(1, 'days').format('YYYY-MM-DD');
+            //DB에 넣을때(선택)
+            realEndDay = moment(eventData.end).format('YYYY-MM-DD');
+
+            eventData.allDay = true;
+        }
+
+        $("#calendar").fullCalendar('renderEvent', eventData, true);
+        eventModal.find('input, textarea').val('');
+        editAllDay.prop('checked', false);
+        eventModal.modal('hide');
+
+        //새로운 일정 저장
+   $.ajax({
+    type: 'POST',
+    url: '/community/artist/schedule/insert.do',
+    contentType: 'application/json',
+    beforeSend: function(xhr){
+	xhr.setRequestHeader(header, token);
+	},
+    data: JSON.stringify(eventData), // JavaScript 객체를 JSON 문자열로 변환
+    success: function(response) {
+        Swal.fire({
+            icon: "success",
+            title: "일정등록이 완료되었습니다.",
+            showConfirmButton: false,
+            timer: 1500
+        }).then(() => {
+            // 메시지가 사라진 후 페이지를 새로고침
+            window.location.reload();
+        });
+
+        // 폼 요소 초기화 코드는 새로고침으로 인해 필요 없게 될 수 있음
+    },
+    error: function(xhr, status, error) {
+        Swal.fire({
+            icon: "error",
+            title: "일정등록에 실패하였습니다.",
+            showConfirmButton: false,
+            timer: 1500
+        });
+    }
+});
+    });
+};

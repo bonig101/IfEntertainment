@@ -1,0 +1,93 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<style>
+    .pitnik-title {
+        margin-top: 40x; 
+        margin-bottom: 40px;
+        text-align: center; 
+    }
+    .c-form {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+}
+</style>
+
+<div class="col-lg-12">
+					<div class="pitnik-title">
+						<h1>🙋 1:1 문의하기 작성</h1>
+						<p>
+							※ 상담사에게 폭언, 욕설 등을 하지 말아 주세요. 답변을 받지 못하거나 사전안내 없이 삭제될 수 있습니다.
+						</p>
+					</div>
+	<div class="central-meta">
+		<span class="create-post">Create New Page</span>
+		<div class="page-createbox">
+			<form method="post" class="c-form">
+				<div class="row">
+					<div class="col-lg-12">
+						
+						<select style="display: none;">
+							<option>Select Page Category</option>
+							<option>Entertainment</option>
+							<option>Health</option>
+							<option>Technology</option>
+							<option>Celebrity</option>
+							<option>Personal</option>
+							<option>Current Affairs</option>
+						</select>
+					</div>
+					<div class="col-lg-6">
+						<input type="text" placeholder="Display Name">
+					</div>
+					<div class="col-lg-6">
+						<input type="text" placeholder="Email">
+					</div>
+					<div class="col-lg-6">
+						<input type="text" placeholder="Website">
+					</div>
+					<div class="col-lg-6">
+						<input type="text" placeholder="Phone Number">
+					</div>
+					<div class="col-lg-4">
+						<input type="text" placeholder="Country">
+					</div>
+					<div class="col-lg-4">
+						<input type="text" placeholder="State">
+					</div>
+					<div class="col-lg-4">
+						<input type="text" placeholder="City">
+					</div>
+					<div class="col-lg-12">
+						<textarea placeholder="Additional info about page"></textarea>
+					</div>
+
+					<div class="col-lg-12">
+						<div class="title1">Social Links</div>
+						<div class="social-name">
+							<label><i class="fa-brands fa-facebook"></i> Facebook</label> <input
+								type="text" placeholder="facebook.com/pitnik">
+						</div>
+						<div class="social-name">
+							<label><i class="fa-brands fa-twitter"></i> Twitter</label> <input
+								type="text" placeholder="twitter.com/pitnik">
+						</div>
+						<div class="social-name">
+							<label><i class="fa-brands fa-instagram"></i> Instagram</label> <input
+								type="text" placeholder="instagram.com/pitnik">
+						</div>
+						<div class="social-name">
+							<label><i class="fa-brands fa-youtube"></i> Youtube</label> <input
+								type="text" placeholder="youtube.com/pitnik">
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<button class="main-btn" type="submit" data-ripple="">Submit</button>
+						<button class="main-btn3" type="submit" data-ripple="">Cancel</button>
+					</div>
+				</div>
+			</form>
+
+		</div>
+	</div>
+</div>

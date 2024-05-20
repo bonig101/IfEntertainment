@@ -1,0 +1,116 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/company.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/bootstrap.min.css">
+<script src="${pageContext.request.contextPath }/resources/js1/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="gap inner-bg">
+  <div class="table-styles">
+  
+  <div class="little-heading">
+  	<h2 class="header_title" style="margin-bottom: 30px">회원 관리</h2>
+  </div>
+  
+  	<div class="gap listbar-container">
+    <div class="discount-copon list-bar list_buttons_box">
+      <div class="row">
+<!-- 		<div class="col-md-2" style="display: flex;"> -->
+<!-- 		    <button class="filter-btn btn-st filter_btn " data-feedType="1">팬</button> -->
+<!-- 		    <button class="filter-btn btn-st filter_btn" data-feedType="2">아티스트</button> -->
+<!-- 		</div> -->
+        <div class="col-md-4" style="background-color: gray;">
+			<form method="post" id="searchForm" >
+			    <input type="hidden" name="page" id="page"/>
+			    <div class="searchform-box searchform_box">
+			        <select name="searchType" class="mem_searchType">
+			            <option value="content" ${searchType eq 'content' ? 'selected' : ''}>이름</option>
+			        </select>	
+			        
+			        <input type="text" class="mem_searchWord" name="searchWord" value="${searchWord}" placeholder="검색">
+			        
+			        <button type="submit" class="mem_searchBtn">검색</button>
+			    </div>
+			</form>
+        </div>
+        <div class="col-md-3 bottons_box" style="background-color: green;">
+<!-- 			<button class="mem_edit" name="" value="">편집</button> -->
+        	<form id="deleteForm" class="delRegiForm" >
+	        	<button type="submit" class="mem_remove" style="width: 150px">선택항목 삭제하기</button>
+	        	<input type="hidden" name="selectedFeedIds" id="selectedFeedIds"/>
+        	</form>
+	        <div class="mem_artistRegister">
+	        	<button value=""><i class="fa fa-plus" aria-hidden="true"></i>아티스트 등록</button>
+	        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+    <div class="widget">
+      <table class="prj-tbl striped table-responsive">
+        <thead class="color">
+           <tr class="feedTitle">
+             <th width="10%"><i class="all-slct"></i></th>
+             <th width="10%"><em>번호</em></th>
+             <th width="10%"><em>아이디</em></th>
+             <th width="10%"><em>이름</em></th>
+             <th width="10%"><em>연락처</em></th>
+             <th width="10%"><em>이메일</em></th>
+             <th width="10%"><em>생년월일</em></th>
+             <th width="10%"><em>가입일</em></th>
+             <th width="10%"><em>정지여부</em></th>
+             <th width="10%"><em>상태</em></th>
+           </tr>
+        </thead>
+        <tbody>
+        <c:set value="${pagingVO.dataList}" var="memberList"/>
+        <c:choose>
+        	<c:when test="${empty memberList}">
+        		<tr>
+        			<td colspan="10">회원 리스트가 존재하지 않습니다.</td>
+        		</tr>
+        	</c:when>
+        	<c:otherwise>
+        		<c:forEach items="${memberList}" var="member">
+        			<tr class="feedList">
+			            <td><input type="checkbox" class="selectFeed" value="${member.userNo }"/></td>
+			            <td><span>${member.userNo}</span></td>
+			            <td><span>${member.userId}</span></td>
+			            <td><span>${member.userName}</span></td>
+			            <td><span>${member.memberTelno}</span></td>
+			            <td><span>${member.memberEmail}</span></td>
+			            <td><span><fmt:formatDate value="${member.memberBirth}" pattern="yyyy-MM-dd"/></span></td>
+			            <td><span>${member.memberRegdate}</span></td>
+			            <td><span>${member.memberStopyn}</span></td>
+			            <td>
+				            <span>
+					            <a href="#" class="delete">
+					            	<i class="fa fa-pencil" aria-hidden="true"></i>
+					            	<i class="icon-trash"></i>
+					            </a>
+				            </span>
+			            </td>
+			          </tr>
+        		</c:forEach>
+        	</c:otherwise>
+        </c:choose>
+        </tbody> 
+      </table>
+    </div>
+    
+    <div class="card-footer feed-footer clearfix" id="pagingArea">
+		${pagingVO.pagingHTML}
+	</div>
+
+  </div>
+</div>
+</body>
+</html>

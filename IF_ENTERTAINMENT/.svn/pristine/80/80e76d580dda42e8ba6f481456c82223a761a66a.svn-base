@@ -1,0 +1,54 @@
+package kr.or.ddit.controller.goods;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import kr.or.ddit.service.goods.IGoodsPurchaseService;
+import kr.or.ddit.vo.goods.CartVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 결제 API를 활용한 상품 구매 프로세스 컨트롤러
+ * @author 조재훈, 성이수
+ *
+ */
+@Controller
+@Slf4j
+@RequestMapping("/goods")
+public class GoodsPurchaseController {
+	
+	@Inject
+	private IGoodsPurchaseService goodsPurchaseService;
+	
+	// 상품 구매 시 재고 감소 시키기 (조재훈)
+	
+	@RequestMapping(value = "/goodsPurchase.do", method = RequestMethod.GET)
+	public String goodsPurchase(Model model) {
+		String userNo = "1036";
+		
+		List<CartVO> cartList = goodsPurchaseService.cartSelect(userNo);
+		List<CartVO> artistList = goodsPurchaseService.selectArtist(cartList);
+		for (int i = 0; i < cartList.size(); i++) {
+		    String goodsArtist = artistList.get(i).getGoodsArtist();
+		    cartList.get(i).setGoodsArtist(goodsArtist);
+		}
+		log.info("cartList"+ cartList);
+		model.addAttribute("cartList",cartList);
+		
+		return "goods/goodsPurchase";
+	}
+	
+	
+	
+	
+	
+	
+	// 재고 감소 후 재고를 체크해봤을 때 5개 이하라면 발주 진행(내역에 인서트 정도만)(성이수)
+	
+}

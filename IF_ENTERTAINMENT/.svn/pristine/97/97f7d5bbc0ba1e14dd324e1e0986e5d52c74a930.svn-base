@@ -1,0 +1,92 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+
+<div class="central-meta OrderIssue">
+	<h1 class="create-post">주문내역</h1>
+	<div class="cart-sec">
+		<table class="table table-responsive OrderIssue-table">
+			<tr>
+				<th>주문번호</th>
+				<th>상품</th>
+				<th>총 수량</th>
+				<th>총 결제금액</th>
+				<th>상태</th>
+			</tr>
+			<tr>
+				<td>
+					<span class="cart-prices" style="line-height: 68px"> 
+						<ins>
+							<span class="woocommerce-Price-amount amount">20240416</span>
+						</ins> 
+					</span>
+				</td>
+				<td>
+					<div class="cart-avatar issu-imgbox">
+	
+						<img src="https://cdn-contents.weverseshop.io/public/shop/f301c366c63e8e773ecc1a72e07d90a7.png?q=95&w=720" alt="">
+					</div>
+					<div class="cart-meta issue-pro-con">
+						<span class="issue-pro-artist">BTS</span>
+						<span class="issue-pro-title">Agust D (BTS) 'D-DAY' LP</span>
+						<span class="issue-pro-quan">외 n 건</span>
+					</div>
+				</td>
+				<td>
+					<span class="cart-prices" style="line-height: 68px"> 
+						<ins>
+							<span class="woocommerce-Price-amount amount">1</span>
+						</ins> 
+					</span>
+				</td>
+				<td>
+					<span class="cart-prices" style="line-height: 68px"> 
+						<ins>
+							<span class="woocommerce-Price-amount amount">25000원</span>
+						</ins> 
+					</span>
+				</td>
+				<td>
+					<span class="cart-prices" style="line-height: 68px"> 
+						<ins>
+							<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">취소</span></span>
+						</ins> 
+					</span>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="row">
+		<!-- <div class="col-lg-6">
+			<div class="amount-area">
+				<div class="total-area">
+					<ul>
+						<li>
+							<span>Cart Subtotal:</span>
+							<i>$1060.00</i>
+						</li>
+						<li>
+							<span>Shipping:</span>
+							<i>Free</i>
+						</li>
+						<li class="order-total">
+							<span>ORDER TOTAL:</span>
+							<i>$1060.00</i>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<form method="post" class="coupon-code">
+					<input type="text" placeholder="Enter your Coupon">
+					<button><i class="fa-regular fa-paper-plane"></i></button>
+			</form>
+			<div class="proceed">
+				<a href="#" title="" class="main-btn3">Update Cart</a>
+				<a href="#" title="" class="main-btn">Proceed to Checkout</a>
+			</div>
+		</div> -->
+	</div>
+</div>
+

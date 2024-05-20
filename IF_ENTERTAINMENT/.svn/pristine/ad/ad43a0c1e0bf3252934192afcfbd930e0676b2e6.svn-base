@@ -1,0 +1,101 @@
+package kr.or.ddit.service.impl.goods;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.goods.IGoodsPurchaseMapper;
+import kr.or.ddit.service.goods.IGoodsPurchaseService;
+import kr.or.ddit.vo.goods.AddressVO;
+import kr.or.ddit.vo.goods.CartVO;
+import kr.or.ddit.vo.goods.OrderVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class GoodsPurchaseServiceImpl implements IGoodsPurchaseService {
+
+	@Inject
+	private IGoodsPurchaseMapper goodsPurchaseMapper;
+
+	@Override
+	public List<CartVO> cartSelect(String userNo) {
+		return goodsPurchaseMapper.cartSelect(userNo);
+	}
+
+	@Override
+	public List<CartVO> selectArtist(List<CartVO> cartList) {
+		// artistList를 빈 리스트로 초기화
+		List<CartVO> artistList = new ArrayList<>();
+		for (CartVO cartVO : cartList) {
+			String goodsNo = cartVO.getGoodsNo();
+			CartVO goodsArtist = goodsPurchaseMapper.selectArtist(goodsNo);
+			artistList.add(goodsArtist);
+		}
+		log.info("artistList" + artistList);
+		return artistList;
+	}
+
+	@Override
+	public List<AddressVO> addressSelect(String userNo) {
+		return goodsPurchaseMapper.addressSelect(userNo);
+	}
+
+	@Override
+	public String selectUserName(String userNo) {
+		return goodsPurchaseMapper.selectUserName(userNo);
+	}
+
+	@Override
+	public int addressInsert(OrderVO orderVO) {
+		orderVO.setMaTelno(orderVO.getMaTelno1() + orderVO.getMaTelno2() + orderVO.getMaTelno3());
+		return goodsPurchaseMapper.addressInsert(orderVO);
+	}
+
+	@Override
+	public String selectMaNumber(int userNo) {
+		return goodsPurchaseMapper.selectMaNumber(userNo);
+	}
+
+	@Override
+	public int purchaseInsert(OrderVO orderVO) {
+		// 주문번호만들깅-> 오늘날짜일단 가져와서 240101 형식으로 만듦
+		int count = 0;
+		String todayStr = new SimpleDateFormat("yyMMdd").format(new Date());
+		log.info("todayStr" + todayStr);
+		String lastOrderNo = goodsPurchaseMapper.selectOrderNo(todayStr);
+		log.info("lastOrderNo" + lastOrderNo);
+
+		String newOrderNo = null;
+		if (lastOrderNo != null) {
+			// 기존에 오늘 날짜로 시작하는 order_no가 있을 경우
+			long nextSeq = Long.parseLong(lastOrderNo.substring(6)) + 1;
+			newOrderNo = todayStr + String.format("%05d", nextSeq); // 새로운 순번을 오늘 날짜에 붙여서 완성
+			// 기존에 오늘날짜 xxxxxx
+		} else {
+			newOrderNo = todayStr + "00001";
+		}
+		log.info("newOrderNo" + newOrderNo);
+		orderVO.setOrderNo(newOrderNo);
+		count = goodsPurchaseMapper.orderInsert(orderVO);
+		if(count > 0) {
+		// 뭐엿더라 .. 유저넘버로 카트에있는 정보끌어오기 .. goodsname, goods수량 , goods 가격 ,goodsno
+		List<OrderVO> orderDetailList = goodsPurchaseMapper.selectCart(orderVO);
+			for (OrderVO orderVO2 : orderDetailList) {
+				orderVO2.setOrderNo(orderVO.getOrderNo());
+			}
+			// 이제 저걸 orderdetail에 인서트해야함
+			for (OrderVO orderVO2 : orderDetailList) {
+				goodsPurchaseMapper.orderDetailInsert(orderVO2);
+			}
+		}
+		
+		return 0;
+	}
+}
+

@@ -1,0 +1,63 @@
+package kr.or.ddit.mapper.community;
+
+import java.util.List;
+
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.community.MainArtistGroupVO;
+import kr.or.ddit.vo.community.MemberNickNameVO;
+import kr.or.ddit.vo.community.CommunityVO;
+import kr.or.ddit.vo.community.FeedAttachFileVO;
+import kr.or.ddit.vo.community.FeedCommentVO;
+import kr.or.ddit.vo.community.FeedVO;
+
+public interface IFeedMapper {
+
+	public int selectFeedListCount(PaginationInfoVO<FeedVO> pagingVO);
+
+	public List<FeedVO> selectFeedList(PaginationInfoVO<FeedVO> pagingVO);
+
+	public void deleteFeed(FeedVO feedVO);
+
+	public FeedVO feedListDetail(int feedNo);
+
+	public int insertFeed(FeedVO feedVO);
+
+	public void insertFeedFile(FeedAttachFileVO feedFileVO);
+
+	public int selectCommentListCount(PaginationInfoVO<FeedCommentVO> pagingVO);
+
+	public List<FeedCommentVO> selectCommentList(PaginationInfoVO<FeedCommentVO> pagingVO);
+
+	public FeedCommentVO feedCommentListDetail(int fcNo);
+
+	public void deleteComment(FeedCommentVO commentVO);
+
+	public void updateComment(FeedCommentVO commentVO);
+
+	public List<MainArtistGroupVO> selectArtist();
+
+	public int updateFeed(FeedVO feedVO);
+
+	public FeedAttachFileVO selectFeedFile(Integer integer);
+
+	public void deleteFeedFile(Integer integer);
+
+	public List<MainArtistGroupVO> getArtistById(String agId);
+
+	public CommunityVO selectUser(CommunityVO communityVO);
+
+	public int comSignUp(CommunityVO comSignUp);
+
+	public void nicSignUp(MemberNickNameVO nickVO);
+
+	public List<FeedVO> mainFeedList(String agId);
+
+	public List<FeedCommentVO> mainCommentList(int feedNo);
+
+	public List<FeedVO> getArtistFeed(String feedNo);
+
+	public List<FeedVO> getArtistFeedComment(String feedNo);
+
+
+
+}

@@ -1,0 +1,35 @@
+package kr.or.ddit.controller.community;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.community.IFeedService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 피드 조회 컨트롤러
+ * @author 임민혁
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/feed")
+public class FeedRetrieveController {
+	
+	/* 
+	 *	모든 사용자가 볼 수 있는 피드와 멤버십 전용 피드가 전부 조회가능하되 
+	 *	멤버십에 가입되지 않은 유저는 멤버십 전용 피드는 블러처리가 된다
+	 *	(스프링 시큐리티 권한 사용)  
+	 *
+	 *	조회하는 되어야하는 내용
+	 *	1. 게시물
+	 * 	2. 해당 게시물 번호에 해당하는 댓글
+	 *  3. 해당 게시물 번호에 해당하는 좋아요
+	 *  등등
+	 */
+	
+	@Inject
+	private IFeedService feedService;
+
+}

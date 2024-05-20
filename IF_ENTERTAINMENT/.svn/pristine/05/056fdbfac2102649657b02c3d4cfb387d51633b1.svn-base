@@ -1,0 +1,69 @@
+package kr.or.ddit.controller.goods;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import kr.or.ddit.service.goods.IInquiryService;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.goods.GoodsVO;
+import kr.or.ddit.vo.goods.goodsInquiryVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 굿즈샵 1대1 문의 조회 컨트롤러(사용자/관리자)
+ * @author 성이수/서어진
+ */
+@Controller
+@Slf4j
+@RequestMapping("/goods/inquiry")
+public class InquiryRetrieveController {
+	
+	@Inject
+	private IInquiryService inquiryService;
+
+	// 사용자는 본인이 했던 질문을 조회 할 수 있어야 하며 질문 제목 끝에 답변 여부 마크가 달려있음
+	// 질문 클릭 시 디테일 내용과 답변이 모달로 뜨는게 조금 더 이쁠 것 같습니다.
+	
+	
+	
+	
+	// 관리자는 사용자들이 달아놓은 모든 질문들에 대한 리스트들을 조회한다. 
+	// 마찬가지로 미답변한 질문제목 제일 끝에 답변하기 버튼이 있어서 누르면 모달로 답변할 수 있도록 
+	
+	@RequestMapping(value = "/list.do")
+	public String InquiryList(@RequestParam(name ="page", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(required = false, defaultValue = "title") String searchType,
+			@RequestParam(required = false) String searchWord,
+			Model model) {
+		PaginationInfoVO<goodsInquiryVO> pagingVO = new PaginationInfoVO<goodsInquiryVO>();
+		
+		
+		if (StringUtils.isNotBlank(searchWord)) {
+			pagingVO.setSearchType(searchType);
+			pagingVO.setSearchWord(searchWord);
+			
+			model.addAttribute("searchType", searchType);
+			model.addAttribute("searchWord", searchWord);
+		}
+		pagingVO.setCurrentPage(currentPage);
+		int totalRecord = inquiryService.selectInquiryListCount(pagingVO);
+		pagingVO.setTotalRecord(totalRecord);
+
+		List<goodsInquiryVO> goodsInquiryList = inquiryService.selectInquiryList(pagingVO);
+		pagingVO.setDataList(goodsInquiryList);
+		
+		model.addAttribute("pagingVO", pagingVO);
+		
+		return "admin/goods/goodsInquiryIList";
+	}
+	
+	
+}

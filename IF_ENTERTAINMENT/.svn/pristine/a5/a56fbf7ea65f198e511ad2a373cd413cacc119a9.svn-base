@@ -1,0 +1,15 @@
+package kr.or.ddit.service.community;
+
+import java.util.List;
+
+import kr.or.ddit.vo.community.CalVO;
+
+public interface IArtistScheduleSerivce {
+
+	public void insert(CalVO calVO);
+
+	public List<CalVO> scList(String agId);
+
+	public int delete(String agId);
+
+}

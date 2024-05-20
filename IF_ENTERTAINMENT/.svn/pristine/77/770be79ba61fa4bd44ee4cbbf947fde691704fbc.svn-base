@@ -1,0 +1,72 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+
+.gray-bg {
+    float: left;
+    width: 100%;
+      background: none; 
+}
+
+.central-meta {
+    background: none; /* 백그라운드 컬러 없애기 */
+    border: none; /* 보더 없애기 */
+    padding:0;
+}
+
+.h2 {
+
+font-weight: none;
+line-height: none;
+
+}
+
+.profile-intro {
+    text-align: center;
+    width: 40%;
+    margin: 0 auto;
+    /* 넘치는 내용 숨김으로부터 변경 */
+    overflow-wrap: break-word; /* 단어 단위로 줄바꿈 */
+    white-space: normal; /* 내용을 필요에 따라 줄바꿈 */
+    /* text-overflow: ellipsis; 이 속성은 제거 */
+    /* 추가적인 스타일링 */
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+</style>
+</head>
+<body>
+		<div class="artname">
+			<h2>🎤 ${profile.agName }</h2>
+		</div>
+
+	<div>
+		<img
+			src="${pageContext.request.contextPath }/resources/artImg/${profile.agProfile}"
+			alt="" style="width: 760px; height: 520px; object-fit: cover; border-radius: 7px;">
+	</div>
+	<div class="profile-intro">${profile.agIntro }</div>
+	<div class="central-meta">
+		<span class="create-post">🌈 Member <a href="#" title="">See
+				All</a></span>
+		<ul class="suggested-frnd-caro invite">
+			<c:forEach var="artist" items="${artistList }">
+				<li><img src="${artist.userProfile }" alt="">
+					<div class="sugtd-frnd-meta">
+						<p>${artist.artistFakename}</p>
+						<span>${artist.artistBirth }</span>
+					</div>
+			</li>
+			</c:forEach>
+		</ul>
+	</div>
+	<!-- Invite friends -->
+</body>
+</html>

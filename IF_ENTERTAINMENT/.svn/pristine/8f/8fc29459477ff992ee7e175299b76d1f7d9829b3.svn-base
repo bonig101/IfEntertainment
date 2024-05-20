@@ -1,0 +1,11 @@
+package kr.or.ddit.mapper.entertain;
+
+import java.util.List;
+
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.CompanyNoticeVO;
+
+public interface ICompanyNewsMapper {
+
+
+}

@@ -1,0 +1,19 @@
+package kr.or.ddit.service.common;
+
+import java.util.List;
+
+import kr.or.ddit.vo.goods.goodsInquiryVO;
+import kr.or.ddit.vo.statistic.KeywordVO;
+
+public interface IAdminService {
+	public int selectTodayRegister();
+	public int selectYesterdayRegister();
+	public long selectTodaySales();
+	public long selectYesterdaySales();
+	public int selectDeliveryCount();
+	public int selectChangeCount();
+	public List<goodsInquiryVO> selectInquiryList();
+	public void setVisitTotalCount(String username);
+	public int selectInquiryCount();
+	public List<KeywordVO> getKeyword();
+}

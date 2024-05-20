@@ -1,0 +1,483 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<style>
+.gap2 {
+	padding: 0;
+	position: relative;
+}
+
+.content {
+	min-height: 100%;
+	height: 100%;
+	background: #fff;
+	position: relative;
+	z-index: 0;
+}
+
+.content h1 {
+	padding: 75px 0 30px 0;
+	text-align: center;
+	font-size: 30px;
+	line-height: 30px;
+}
+
+.content .buttons {
+	max-width: 800px;
+	margin-top: 34px;
+	text-align: center;
+}
+
+.content .buttons .button {
+	display: inline-block;
+	text-align: center;
+	text-decoration: none;
+	background: #efefef;
+	padding: 20px 25px;
+	margin: 10px;
+	border-radius: 3px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+	color: #333;
+	font-weight: bold;
+	cursor: pointer;
+	font-size: 20px;
+}
+
+.content .buttons .button:hover {
+	color: #fff;
+	background: black;
+}
+
+/* modal style */
+html.modal-active, body.modal-active {
+	overflow: hidden;
+}
+
+#modal-container {
+	position: fixed;
+	left: 0;
+	top: 0;
+	display: table;
+	height: 100%;
+	width: 100%;
+	z-index: 1;
+	/* hidden 처리 */
+	transform: scale(0);
+}
+
+#modal-container .modal-background {
+	display: table-cell;
+	background: rgba(0, 0, 0, .8);
+	text-align: center;
+	vertical-align: middle;
+}
+
+#modal-container .modal-background .modal {
+	background: #5a5a5a;
+	padding: 20px;
+	display: inline-block;
+	border-radius: 18px;
+	position: relative;
+	margin-top: 155px;
+}
+
+#modal-container .modal-background .modal h2 {
+	font-size: 25px;
+	line-height: 25px;
+	margin-bottom: 15px;
+}
+
+#modal-container .modal-background .modal p {
+	font-size: 18px;
+	line-height: 22px;
+}
+
+div#modal {
+	height: 75%;
+	width: 65%;
+}
+/*
+ * ------------------------------
+ * Unfolding Animation
+ * ------------------------------
+ */
+#modal-container.one {
+	/*transform: scaleX(0) scaleY(1);*/
+	animation: unfoldIn 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+#modal-container.one .modal-background .modal {
+	/* 초기 display: none 처럼 크기를 0 으로 하여 보여주지 않음*/
+	transform: scale(0);
+	/* 0.5 초 동안 애니메이션을 실행, 단 0.8초 지연시켜 0.8초 후에 애니메이션을 실행 */
+	animation: zoomIn .5s .8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+#modal-container.one.out {
+	transform: scale(1);
+	animation: unfoldOut 1s .3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+#modal-container.one.out .modal-background .modal {
+	animation: zoomOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+/* Dimmed showing */
+@keyframes unfoldIn {
+   0% {
+      transform: scaleX(0) scaleY(0.005);
+   }
+   50% {
+      /* 0.5 초간 세로 크기는 작은상태로 가로 너비만 확대  */
+      transform: scaleX(1) scaleY(0.005);
+   }
+   100% {
+      /* 0.5 초간 세로 크기를 확대 */
+      transform: scaleY(1) scaleX(1);
+   }
+}
+/* Show modal content  */
+@keyframes zoomIn {
+   from {
+      transform: scale(0);
+   }
+   to {
+      transform: scale(1);
+   }
+}
+/* Hide modal content */
+@keyframes zoomOut {
+   from {
+      transform: scale(1);
+   }
+   to {
+      transform: scale(0);
+   }
+}
+/* Dimmed hiding */
+@keyframes unfoldOut {
+   0% {
+      transform: scale(1)
+   }
+   50% {
+      transform: scaleX(1) scaleY(0.005);
+   }
+   100% {
+      transform: scaleX(0) scaleY(0.005);
+   }
+}
+
+div#div-header {
+	display: flex;
+	justify-content: space-between;
+}
+
+div.content-wrapper {
+	background: white;
+}
+
+.card .card-description {
+	margin-left: 3%;
+}
+
+h4.card-title {
+	margin-left: 3%;
+}
+
+div.col-lg-2 {
+	flex: 35%;
+	max-width: 35%;
+}
+
+div.col-lg-10 {
+	flex: 65%;
+	max-width: 65%;
+	margin-top: 17px;
+}
+
+p {
+	margin-bottom: 0.5rem;
+	line-height: 1.3rem;
+}
+
+.auzModal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 9999;
+	display: none;
+}
+
+.auzModal-content {
+    height: 75%;
+    width: 95%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: #fefefe;
+	padding: 20px;
+	border-radius: 10px;
+}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- 모달 창을 위한 라이브 컨테이너 -->
+<div id="modal-container">
+	<div class="modal-background">
+		<div class="modal" id="modal">
+			<div id='ifr' style="width: 100%; height: 100%;">
+				<iframe
+					src='https://www.vchatcloud.com/chat-demo/iframe/iframe_pc/v4/index.html?channelKey=vgiLRFohWk-6w8XbTbomF-20240509191107&youtubeId=72g7AIioQp4'
+					frameborder='no' scrolling='no' marginwidth='0' marginheight='0'
+					width='1216' height='691'>
+				</iframe>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 메인 이미지 -->
+<section>
+	<div class="gap no-gap">
+		<div class="featured-sec">
+			<figure>
+				<img
+					src="https://file3.instiz.net/data/cached_img/upload/2022/08/25/12/a3477dc2a4b65a016bf8ae171ab993d0.png"
+					alt="">
+			</figure>
+			<div class="featured-meta" style="z-index: 9;">
+				<ins>New Jeans x IF ent LIVE</ins>
+				<h4>Exclusive Performance</h4>
+				<p>NewJeans 2nd EP 'Get Up' THE POWERPUFF GIRLS X NJ Box ver</p>
+				<span id="one" class="button live"> <i class="fa-regular fa-circle-play"></i> Start
+					Live Stream
+				</span>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- 지난 라이브 슬라이드 -->
+<section>
+	<div class="gap" style="padding: 55px 0;">
+		<div class="head-title" style="margin-bottom: 20px;">
+			<h4 style="margin-left: 5px;">🎬 지난 라이브</h4>
+			<a style="margin-left: 5px;" href="#" title="">지난 라이브 다시보기</a>
+		</div>
+		<div class="container" style="position: relative; padding-bottom: 10%; height: 0;">
+			<ul class="contributorz">
+				<li><iframe width="960" height="324"
+						src="https://www.youtube.com/embed/_5FSlPjSb1U?autoplay=1&mute=1&controls=0&loop=1&playlist=_5FSlPjSb1U"
+						title="it&#39;s MY birthday 🌬️🎂❤️‍🔥 #aespa #에스파 #KARINA #카리나 #HappyKARINADay #shorts"
+						frameborder="0"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+						referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+					<span>aespa KARINA</span>
+					<p>카리나 생일🍒🍰</p></li>
+				<li><iframe width="960" height="324"
+						src="https://www.youtube.com/embed/fVG-XZgTDo0?autoplay=1&mute=1&controls=0&loop=1&playlist=fVG-XZgTDo0"
+						title="이 빛을 내 숨을 다 쏟아내면 #DOYOUNG #도영 #반딧불 #YOUTHFUL #청춘의포말 #DOYOUNG_청춘의포말#DOYOUNG_청춘의포말_YOUTH #shorts"
+						frameborder="0"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+						referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+					<span>NCT Dream</span>
+					<p>이 빛을 내 숨을 다 쏟아내면🙄</p></li>
+				<li><iframe width="960" height="324"
+						src="https://www.youtube.com/embed/NLq_LVKkKQc?autoplay=1&mute=1&controls=0&loop=1&playlist=NLq_LVKkKQc"
+						title="&#39;lock / unlock (with benny blanco, Nile Rodgers)&#39; Dance Video🕺 #HOPE_ON_THE_STREET #EP3_Highlight"
+						frameborder="0"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+						referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+					<span>BTS DANCE LIVE</span>
+					<p>unlock 잘 다녀오겠습니다!</p></li>
+				<li><iframe width="960" height="324"
+						src="https://www.youtube.com/embed/0w8DbXzBrdE?autoplay=1&mute=1&controls=0&loop=1&playlist=0w8DbXzBrdE"
+						title="Chaewon" frameborder="0"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+						referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+					<span>LE SSERAFIM</span>
+					<p>피어나 고마워요❤️</p></li>
+				<li><iframe width="960" height="324"
+						src="https://www.youtube.com/embed/zvr4dWApT0s?autoplay=1&mute=1&controls=0&loop=1&playlist=zvr4dWApT0s"
+						title="productive baby 👼 #NewJeans #뉴진스#NewJeans_is_Everywhere"
+						frameborder="0"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+						referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+					<span>NewJeans</span>
+					<p>Ditto HOLIDAY BAND LIVE🎄</p></li>
+				<li><iframe width="960" height="324"
+						src="https://www.youtube.com/embed/EoHF5h07DD0?autoplay=1&mute=1&controls=0&loop=1&playlist=EoHF5h07DD0"
+						title="[it’s Live] BABYMONSTER - “SHEESH” 미방분 1인캠 아현 ver. #itsLive #BABYMONSTER #SHEESH #KPOP #잇츠라이브"
+						frameborder="0"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+						referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+					<span>BABYMONSTER</span>
+					<p>무대 장악력 미쳤다🔥 SHEESH LIVE</p></li>
+				<li><iframe width="960" height="324"
+						src="https://www.youtube.com/embed/jFJzCODStOQ?autoplay=1&mute=1&controls=0&loop=1&playlist=jFJzCODStOQ"
+						title="JENNIE - ‘You &amp; Me’ DANCE PERFORMANCE VIDEO HIGHLIGHT CLIP"
+						frameborder="0"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+						referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+					<span>BLACKPINK</span>
+					<p>JENNIE ‘You &amp; Me’</p></li>
+				<li><iframe width="960" height="324"
+						src="https://www.youtube.com/embed/Y2K964zyau8?autoplay=1&mute=1&controls=0&loop=1&playlist=Y2K964zyau8"
+						title="워녕이의 OTT 들으면서 TURN 🧚‍♀ #IVE #아이브 #JANGWONYOUNG #장원영 #장원영턴 #IVE_OTT #OTT #Shorts"
+						frameborder="0"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+						referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+					<span>IVE 원영</span>
+					<p>워녕이의 OTT 들으면서 TURN 🧚‍♀</p></li>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<!-- 마지막 메타버스 모달 창 -->
+<div id="auzModal" class="auzModal">
+	<div class="auzModal-content">
+		<span class="close">&times;</span>
+		<iframe id="auzIfr" style="width: 100%; height: 95%;"
+			src='https://www.metaville.co.kr/vgw/tkwpMVZTYF-RnsvGwjse4-20240423124553'
+			allow="camera *;microphone *;display-capture *" frameborder='no'
+			scrolling='no' marginwidth='0' marginheight='0' width='100%'
+			height='100%'> </iframe>
+	</div>
+</div>
+
+<section class="metaverse">
+	<div class="gap blackish low-opacity">
+		<div class="parallax"
+			style="background: url(https://www.bolnews.com/wp-content/uploads/2021/05/ButterVideoTeaser.jpg);"
+			data-velocity="-.2"></div>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="banner">
+						<h2>
+							If entertainment <span>🎮 Metaverse 🕶️</span>
+						</h2>
+						<p style="text-align: center;"></p>
+						<a
+							href="https://www.metaville.co.kr/vgw/tkwpMVZTYF-RnsvGwjse4-20240423124553"
+							title="" class="main-btn fromdown" data-ripple=""
+							onclick="openInNewTab('https://www.metaville.co.kr/vgw/tkwpMVZTYF-RnsvGwjse4-20240423124553'); return false;">
+							<span>메타버스 입장하기</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@mojs/core"></script>
+<script type="text/javascript">
+	// 전역
+	const metaBtn = document.querySelector("#metaBtn"); // metaBtn
+	const ing = document.querySelector(".ing");
+	const end = document.querySelector(".end");
+
+	$(document).ready(function() {
+		$("#ifr").css('display', 'none');
+	});
+	// JavaScript 스크립트 모달과 버튼들 간의 상호작용 구현 스크립트
+	var $button = $('.button'); // 버튼들을 jQuery 선택자로 가져옴
+	var $button_meta = $('.button').eq(1); // 버튼들을 jQuery 선택자로 가져옴
+	var $modalContainer = $('#modal-container'); // 모달 컨테이너를 jQuery 선택자로 가져옴
+	console.log("체에킁:", $modalContainer)
+
+	var $body = $('body'); // body 요소를 jQuery 선택자로 가져옴
+	var $content = $('.content'); // 컨텐츠를 jQuery 선택자로 가져옴
+	var btnId;
+
+ 	// 버튼 클릭 이벤트 핸들러
+	$button.on('click', function() {
+		$(".featured-meta").css("z-index", "0");
+		$(".contributorz").css("z-index", "0");
+		$(".metaverse").css("z-index", "0");
+		$("#ifr").css('display', 'block');
+		btnId = $(this).attr('id'); // 클릭된 버튼의 id를 가져옴
+		$modalContainer.removeAttr('class').addClass(btnId);
+		; // 모달 컨테이너의 클래스를 버튼의 id로 변경하여 해당 애니메이션을 적용
+		$content.removeAttr('class').addClass('content'); // 컨텐츠의 클래스를 초기화
+		$body.eq(0).addClass('modal-active'); // body에 'modal-active' 클래스 추가하여 모달이 나타남
+
+	});
+
+	// 모달 및 모달 배경 클릭 이벤트 핸들러
+	$modalContainer.on('click', function() {
+		$(this).addClass('out'); // 모달 컨테이너에 'out' 클래스 추가하여 모달을 사라지게 함
+		$body.removeClass('modal-active'); // body에서 'modal-active' 클래스 제거하여 모달이 사라짐
+		if ($(this).hasClass(btnId)) {
+			$content.addClass('out'); // 컨텐츠에 'out' 클래스 추가하여 애니메이션 효과 적용
+		}
+		$("#ifr").css('display', 'none');
+	});
+	
+	/*
+	// a 링크를 클릭했을 때 작은 창으로 열리도록하는 함수
+	function openInNewTab(url) {
+		var win = window.open(url, '_blank', 'width=1600 ,height=900 ');
+		if (win) {
+			// 새 창이 열렸을 때
+			var screenWidth = window.screen.width;
+			var screenHeight = window.screen.height;
+			var windowWidth = 1600; // 새 창의 가로 길이
+			var windowHeight = 900; // 새 창의 세로 길이
+			var left = (screenWidth - windowWidth) / 2;
+			var top = (screenHeight - windowHeight) / 2;
+			// 화면 중앙에 위치하도록 설정
+			win.moveTo(left, top);
+			win.focus();
+		} else {
+			// 새 창이 차단되었을 때
+			alert('팝업 차단이 감지되었습니다. 팝업 차단을 해제하고 다시 시도하세요.');
+		}
+	} */
+	
+	// 모달 창 관련 요소 가져오기
+	var modal = document.getElementById("auzModal");
+	var iframe = document.getElementById("auzIfr");
+
+	// 모달 열기 버튼 클릭 이벤트 핸들러
+	$button_meta.on('click', function(event) {
+	  event.preventDefault(); // 기본 이벤트(새 창 열기) 방지
+	  var url = $(this).attr('href');
+	  openInNewTab(url); // 새 창 대신 모달로 열기
+	});
+
+	// a 링크를 클릭했을 때 작은 창으로 열리도록하는 함수
+	function openInNewTab(url) {
+	  var modal = document.getElementById("auzModal");
+	  var iframe = document.getElementById("auzIfr");
+	  
+	  // 모달 내부 iframe의 src를 설정하여 내용을 로드
+	  iframe.src = url;
+	  
+	  // 모달 창을 화면에 표시
+	  modal.style.display = "block";
+	}
+
+	// 모달 닫기 버튼 클릭 이벤트 핸들러
+	var span = document.getElementsByClassName("close")[0];
+	span.onclick = function() {
+	  var modal = document.getElementById("auzModal");
+	  modal.style.display = "none";
+	}
+
+	// 모달 외부를 클릭하여 모달을 닫는 이벤트 핸들러
+	window.onclick = function(event) {
+	  var modal = document.getElementById("auzModal");
+	  if (event.target == modal) {
+	    modal.style.display = "none";
+	  }
+	}
+
+	
+</script>

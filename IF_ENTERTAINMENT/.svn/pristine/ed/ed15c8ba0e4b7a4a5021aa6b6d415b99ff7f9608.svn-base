@@ -1,0 +1,142 @@
+package kr.or.ddit.service.impl.entertain;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.entertain.IIRMapper;
+import kr.or.ddit.service.entertain.IIRService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.IREventVO;
+import kr.or.ddit.vo.entertain.IRFileAttachVO;
+import kr.or.ddit.vo.entertain.IRFileVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class IRServiceImpl implements IIRService {
+
+	@Inject
+	private IIRMapper irMapper;
+
+	@Override
+	public ServiceResult insertIREvent(HttpServletRequest req, IREventVO ireventVO) {
+		ServiceResult result = null;
+		ireventVO.setIrSchedule(ireventVO.getIrSchedule().replace(",", " "));
+		int status = irMapper.insertIREvent(ireventVO);
+		if(status > 0) { 	// 등록 처리가 완료되었을 때
+			irMapper.insertIREventDetail(ireventVO);
+			
+			result = ServiceResult.OK;
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public int selectIREventCount(PaginationInfoVO<IREventVO> pagingVO) {
+		return irMapper.selectIREventCount(pagingVO);
+	}
+
+	@Override
+	public List<IREventVO> selectIREventList(PaginationInfoVO<IREventVO> pagingVO) {
+		return irMapper.selectIREventList(pagingVO);
+	}
+
+	@Override
+	public IREventVO selectIREvent(int bfNo) {
+		return irMapper.selectIREvent(bfNo); 
+	}
+
+
+	
+	// IR 파일
+	@Override
+	public int selectFileCount(PaginationInfoVO<IRFileVO> pagingVO) {
+		return irMapper.selectFileCount(pagingVO);
+	}
+
+	/**
+	 * @author 홍진영
+	 * 페이징 포함된 IR 자료실 리스트 조회
+	 */
+	@Override
+	public List<IRFileVO> selectIRFileList(PaginationInfoVO<IRFileVO> pagingVO) {
+		return irMapper.selectIRFileList(pagingVO);
+	}
+
+
+	/**
+	 * @author 홍진영
+	 * IR 자료실 글 등록 (글 등록 시 파일도 함께 등록되도록)
+	 */
+	@Override
+	public ServiceResult insertIRFile(HttpServletRequest req, IRFileVO irFileVO) {
+		ServiceResult result = null;
+		
+		// IR File 자료실 글 등록
+		int status = irMapper.insertIRFile(irFileVO);
+		
+		// 작업이 성공적으로 처리 되었을 경우 파일도 함께 insert
+		if(status > 0) {
+			 List<IRFileAttachVO> fileList = irFileVO.getAttachFileList();
+			 
+			 try {
+				 irFileUpload(fileList, irFileVO.getBfNo(), req);
+			 } catch (Exception e) {
+				 e.printStackTrace();
+			 }
+			 
+			 result = ServiceResult.OK;
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	// ir 파일 업로드 메서드
+	private void irFileUpload(List<IRFileAttachVO> fileList, int bfNo, HttpServletRequest req) throws IOException {
+		String savePath = "/resources/irFile/";
+		
+		if(fileList != null && fileList.size() > 0) {
+			for (IRFileAttachVO irFileAttachVO : fileList) {
+				String savedName = UUID.randomUUID().toString();
+				savedName += "_" + irFileAttachVO.getBaName();
+				String saveLocate = req.getServletContext().getRealPath(savePath);
+				File file = new File(saveLocate);
+				if(!file.exists()) {	// 업로드를 하기 위한 폴더 구조가 존재하지 않을 때
+					file.mkdirs(); 		// 폴더 생성
+				}
+				
+				saveLocate += savedName; // 실제 업로드할 경로
+				
+				irFileAttachVO.setBfNo(bfNo);
+//				irFileAttachVO.setBaSavepath(saveLocate);
+				irFileAttachVO.setBaSavepath(savedName);
+				irMapper.insertIRAttachFile(irFileAttachVO); // 파일 테이블 insert
+				
+				File saveFile = new File(saveLocate);
+				irFileAttachVO.getItem().transferTo(saveFile);
+				
+			}
+		}
+	}
+
+	@Override
+	public IRFileVO selectIRFile(int bfNo) {
+		return irMapper.selectIRFile(bfNo);
+	}
+
+	@Override
+	public List<IRFileAttachVO> getAttachFile(int bfNo) {
+		return irMapper.getAttachFile(bfNo);
+	}
+}

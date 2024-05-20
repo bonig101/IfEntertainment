@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.entertain.IArtistMapper">
+	
+	<resultMap id="trackMap" type="trackListVO">
+    <id property="trackNo" column="track_no"/>
+    <result property="trackName" column="track_name"/>
+    <result property="trackTitle" column="track_title"/>
+    <result property="trackDelyn" column="track_delyn"/>
+    <result property="alNo" column="al_no"/>
+	</resultMap>
+	
+	<resultMap id="artistGroupMap" type="artistGroupVO">
+    <id property="agId" column="ag_id"/>
+    <result property="agName" column="ag_name"/>
+    <result property="agDate" column="ag_date"/>
+    <result property="agIntro" column="ag_intro"/>
+    <result property="agProfile" column="ag_profile"/>
+    <result property="agDelyn" column="ag_delyn"/>
+    <result property="agNo" column="ag_no"/>
+    <result property="artistCount" column="artistCount"/>
+    <collection property="artistList" resultMap="artistMap"/>
+	</resultMap>
+	
+	
+	<resultMap id="artistMap" type="artistVO">
+    <id property="userNo" column="USER_NO"/>
+    <result property="artistBirth" column="ARTIST_BIRTH"/>
+    <result property="artistIntro" column="ARTIST_INTRO"/>
+    <result property="artistFakename" column="ARTIST_FAKENAME"/>
+    <result property="artistDelyn" column="ARTIST_DELYN"/>
+    <result property="agId" column="AG_ID"/>
+    <result property="userName" column="USER_NAME"/>
+    <result property="userId" column="USER_ID"/>
+    <result property="userPw" column="USER_PW"/>
+    <result property="userType" column="USER_TYPE"/>
+    <result property="userProfile" column="USER_PROFILE"/>
+    <result property="enabled" column="ENABLED"/>
+	</resultMap>
+	
+	<select id="albumList" resultType="albumVO">
+		select * from artist_album
+		where ag_id = #{agId} and al_delyn = 'N'
+	</select>
+	
+	<!-- alNo써서 TrackList정보를 조회하는 쿼리 -->
+ 	<select id="selectAlbum" parameterType="int" resultMap="trackMap">
+	    SELECT 
+	        t.track_no, 
+	        t.track_name, 
+	        t.track_title, 
+	        t.track_delyn, 
+	        t.al_no
+	    FROM 
+	        artist_album a
+	    JOIN 
+	        TrackList t ON a.al_no = t.al_no
+	    WHERE 
+	        a.al_no = #{alNo}
+	</select>
+	
+	<sql id="artistSearch">
+		<if test="searchWord != null and searchWord != ''">
+			and ag_id like UPPER('%'||#{searchWord}||'%')
+		</if>
+	</sql>
+
+	
+	<!-- 앨범 상세 페이지 -->
+	<select id="albumDetail" resultType="albumVO">
+		select * from artist_album
+		where al_no = #{alNo}
+	</select>	
+	
+	<select id="profileList" resultType="artistGroupVO">
+		select * from artist_group
+		where ag_id = #{agId}
+	</select>
+	
+	<select id="artistSelect"  resultType="artistVO">
+		 SELECT 
+        A.USER_NO, 
+        A.ARTIST_BIRTH, 
+        A.ARTIST_INTRO, 
+        A.ARTIST_FAKENAME, 
+        A.ARTIST_DELYN, 
+        A.AG_ID,
+        U.USER_NO AS "userNo",
+        U.USER_NAME AS "userName",
+        U.USER_ID AS "userId",
+        U.USER_PW AS "userPw",
+        U.USER_TYPE AS "userType",
+        U.USER_PROFILE AS "userProfile",
+        U.ENABLED AS "enabled",
+        AG.*
+    FROM ARTIST A
+    LEFT JOIN "USER" U ON A.USER_NO = U.USER_NO
+    JOIN ARTIST_GROUP AG ON A.AG_ID = AG.AG_ID
+    WHERE AG.AG_ID = #{agId} and artist_delyn = 'N'
+	</select> 
+	
+	
+	<select id="artistList" resultType="artistGroupVO">
+		select * from artist_group
+		ORDER BY CASE WHEN ag_id = 'BLACKPINK' THEN 0 ELSE 1 END, ag_id
+	</select>
+	
+<!-- 	<select id="adminList" resultType="artistGroupVO" resultMap="artistGroupMap"> -->
+<!-- 		SELECT ag.ag_id,ag.ag_profile, ag.ag_date,a.artist_fakename -->
+<!-- 		FROM artist_group ag -->
+<!-- 		JOIN artist a ON ag.ag_id = a.AG_ID -->
+<!-- 	</select> -->
+	
+	
+	<select id="selectArtistListCount" parameterType="pagingVO" resultType="int" >
+		select count(ag_id)
+		from artist_group
+		where 1=1
+		<include refid="artistSearch"></include>
+	</select>
+	
+	<select id="adminList" parameterType="pagingVO" resultType="artistGroupVO" resultMap="artistGroupMap">
+		SELECT
+			    b.*
+			FROM (
+			    SELECT 
+			        a.*, 
+			        row_number() OVER (ORDER BY a.ag_no ASC) AS rnum
+			    FROM (    
+			        SELECT 
+			            ag.ag_id, 
+			            ag.ag_profile, 
+			            ag.ag_date, 
+			            ag.ag_no,
+			            (
+			                SELECT COUNT(*)
+			                FROM artist artist
+			                WHERE artist.ag_id = ag.ag_id
+			            ) AS artistCount
+			        FROM artist_group ag
+			        where ag_delyn = 'N'
+			        
+			        <include refid="artistSearch"></include>
+			    ) a
+			) b
+		<![CDATA[
+		where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+	
+	<update id="deleteArtist" parameterType="String">
+		update artist_group
+		set ag_delyn = 'Y'
+		where ag_id = #{agId}
+	</update>
+	
+<!-- 	 <insert id="insert" parameterType="list" > -->
+<!--         INSERT INTO artist (artist_fakename, artist_birth, artist_intro, user_profile) -->
+<!--         VALUES -->
+<!--         <foreach collection="list" item="artist" separator=","> -->
+<!--             (#{artist.artistFakename}, #{artist.artistBirth}, #{artist.artistIntro}, #{artist.userProfileBytes}) -->
+<!--         </foreach> -->
+<!--     </insert> -->
+	<select id="aritstListForm" resultType="userVO">
+		SELECT 
+		    u.user_no, 
+		    u.user_name, 
+		    u.user_id
+		FROM 
+		    "USER" u
+		WHERE 
+		    u.user_type = 3
+		    AND NOT EXISTS (
+		        SELECT 1 
+		        FROM artist a 
+		        WHERE a.user_no = u.user_no 
+		    )
+	</select>
+	<insert id="groupInsert" parameterType="artistGroupVO" >
+        INSERT INTO artist_group (ag_id, ag_name, ag_date, ag_intro, ag_profile, ag_delyn)
+        VALUES(#{agId}, #{agName}, #{agDate}, #{agIntro}, #{agProfile}, 'N')
+    </insert>
+    
+ <insert id="insert" parameterType="list">
+    INSERT ALL
+    <foreach collection="list" item="artist" separator=" ">
+        INTO artist (ag_id, artist_fakename, artist_birth, artist_intro, user_no,artist_delyn) VALUES (#{artist.agId}, #{artist.artistFakename}, #{artist.artistBirth}, #{artist.artistIntro} ,#{artist.userNo},'N')
+    </foreach>
+    SELECT * FROM dual
+</insert>
+
+	<select id="artistGroupSelect" resultType="artistGroupVO">
+		select * from artist_group
+		where ag_id = #{agId} AND ag_delyn = 'N'
+		
+	</select>
+	
+	<select id="artistMemberSelect" resultType="artistVO">
+		 SELECT 
+        A.USER_NO, 
+        A.ARTIST_BIRTH, 
+        A.ARTIST_INTRO, 
+        A.ARTIST_FAKENAME, 
+        A.ARTIST_DELYN, 
+        A.AG_ID,
+        U.USER_NO AS "userNo",
+        U.USER_NAME AS "userName",
+        U.USER_ID AS "userId",
+        U.USER_PW AS "userPw",
+        U.USER_TYPE AS "userType",
+        U.USER_PROFILE AS "userProfile",
+        U.ENABLED AS "enabled",
+        AG.*
+    FROM ARTIST A
+    LEFT JOIN "USER" U ON A.USER_NO = U.USER_NO
+    JOIN ARTIST_GROUP AG ON A.AG_ID = AG.AG_ID
+    WHERE AG.AG_ID = #{agId} AND A.ARTIST_DELYN = 'N'
+	</select>
+	
+	<!-- 수정폼에서 멤버추가하는 쿼리 -->
+	<insert id="memberInsert" parameterType="artistVO">
+		insert into artist
+		(
+		user_no, artist_fakename, artist_birth, artist_intro, ag_id, artist_delyn
+		)
+		values(
+		#{userNo},#{artistFakename},#{artistBirth},#{artistIntro},#{agId}, 'N'
+		)	
+		
+	</insert>
+	
+	<!-- 수정폼에서 멤버삭제 쿼리 -->
+	<update id="memberDelete" parameterType="artistVO">
+		update artist
+		set artist_delyn = 'Y'
+		where user_no = #{userNo}
+	</update>
+	
+	<delete id="artistDelete" parameterType="artistVO">
+		delete artist
+		where user_no = #{userNo}
+	</delete>
+	<!-- 수정폼에서 그룹 업데이트 하기 -->
+	<update id="groupUpdate" parameterType="artistGroupVO">
+	    UPDATE artist_group
+	        SET
+	            ag_name = #{agName},
+	            ag_date = #{agDate},
+	            ag_intro = #{agIntro}, 
+	            ag_profile = COALESCE(#{agProfile,jdbcType=VARCHAR}, ag_profile) 
+	    WHERE ag_id = #{agId}
+	</update>
+
+	<!-- 수정폼에서 멤버 업데이트 하기 -->
+	
+<update id="memberUpdate" parameterType="artistVO">
+    UPDATE artist
+    SET
+        artist_fakename = #{artistFakename},
+        artist_birth = #{artistBirth},
+        artist_intro = #{artistIntro}
+    WHERE user_no = #{userNo}
+</update>
+
+<update id="userProfileUpdate" parameterType="artistVO">
+    UPDATE "USER"
+    SET  user_profile = COALESCE(#{userProfile,jdbcType=VARCHAR}, user_profile) 
+    WHERE user_no = #{userNo}
+</update>
+
+<!--  관리자 앨범 수정하기 -->
+<update id="albumUpdate" parameterType="albumVO">
+	UPDATE ARTIST_ALBUM
+	SET 
+	al_name = #{alName},
+	al_date = #{alDate},
+	al_intro = #{alIntro},
+	al_photo = #{alPhoto},
+	al_url = #{alUrl}
+	where al_no = #{alNo}
+</update>
+<insert id="albumInsert" parameterType="albumVO" useGeneratedKeys="true">
+	<selectKey keyProperty="alNo" resultType="int" order="BEFORE">
+		select SEQ_ARTIST_ALBUM.NEXTVAL from dual
+	</selectKey>
+	insert into artist_album (
+		ag_id,
+		al_name, 
+	    al_url,
+	    al_date,
+	    al_intro,
+	    al_photo,
+	    al_no,
+	    al_delyn
+	)values(
+		#{agId},
+		#{alName}, 
+	    #{alUrl},
+	    #{alDate},
+	    #{alIntro},
+	    #{alPhoto},
+		#{alNo}, 
+	    'N'
+	)
+
+	
+	
+</insert>
+
+ <insert id="trackInsert" parameterType="TrackListVO">
+    INSERT
+        INTO TRACKLIST (track_no, track_name, track_title, track_delyn, al_no) VALUES 
+        (SEQ_TRACKLIST.NEXTVAL, #{trackName}, 
+        #{trackTitle}, 'N', #{alNo})
+	</insert>
+	
+	<delete id="albumDelete" parameterType="int">
+		update artist_album
+		set al_delyn = 'Y'
+		where al_no = #{alNo}
+	</delete>
+</mapper>

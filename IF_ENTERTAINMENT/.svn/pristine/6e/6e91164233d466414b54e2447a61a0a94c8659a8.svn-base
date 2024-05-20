@@ -1,0 +1,542 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+   pageEncoding="UTF-8"%>
+<%-- 
+나중에 연결 일단 주석 파일들 커밋 안해놈 일단 화면단
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/livecss/reset.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/livecss/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/livecss/toastr.css">
+<script src="${pageContext.request.contextPath }/resources/livejs/*"></script>
+ --%>
+<style>
+img.slide {
+   height: 280px;
+   border-radius: 25px;
+}
+
+.content {
+   min-height: 100%;
+   height: 100%;
+   background: #fff;
+   position: relative;
+   z-index: 0;
+}
+.content h1 {
+   padding: 75px 0 30px 0;
+   text-align: center;
+   font-size: 30px;
+   line-height: 30px;
+}
+.content .buttons {
+   max-width: 800px;
+    margin-top: 34px;
+    text-align: center;
+}
+.content .buttons .button {
+   display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    background: #efefef;
+    padding: 20px 25px;
+    margin: 10px;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 20px;
+}
+.content .buttons .button:hover {
+   color: #fff;
+   background: black;
+}
+
+/* modal style */
+html.modal-active,
+body.modal-active {
+   overflow: hidden;
+}
+#modal-container {
+   position: fixed;
+   left: 0;
+   top: 0;
+   display: table;
+   height: 100%;
+   width: 100%;
+   z-index: 1;
+   /* hidden 처리 */
+   transform: scale(0);
+}
+#modal-container .modal-background {
+   display: table-cell;
+   background: rgba(0, 0, 0, .8);
+   text-align: center;
+   vertical-align: middle;
+}
+#modal-container .modal-background .modal {
+   background: #5a5a5a;
+    padding: 100px;
+    display: inline-block;
+    border-radius: 18px;
+    position: relative;
+}
+#modal-container .modal-background .modal h2 {
+   font-size: 25px;
+   line-height: 25px;
+   margin-bottom: 15px;
+   
+}
+#modal-container .modal-background .modal p {
+   font-size: 18px;
+   line-height: 22px;
+}
+div#modal{
+   height: 90%;
+   width: 65%;
+}
+/*
+ * ------------------------------
+ * Unfolding Animation
+ * ------------------------------
+ */
+#modal-container.one {
+   /*transform: scaleX(0) scaleY(1);*/
+   animation: unfoldIn 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.one .modal-background .modal {
+   /* 초기 display: none 처럼 크기를 0 으로 하여 보여주지 않음*/
+   transform: scale(0);
+   /* 0.5 초 동안 애니메이션을 실행, 단 0.8초 지연시켜 0.8초 후에 애니메이션을 실행 */
+   animation: zoomIn .5s .8s  cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.one.out {
+   transform: scale(1);
+   animation: unfoldOut 1s .3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.one.out .modal-background .modal {
+   animation: zoomOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+/* Dimmed showing */
+@keyframes unfoldIn {
+   0% {
+      transform: scaleX(0) scaleY(0.005);
+   }
+   50% {
+      /* 0.5 초간 세로 크기는 작은상태로 가로 너비만 확대  */
+      transform: scaleX(1) scaleY(0.005);
+   }
+   100% {
+      /* 0.5 초간 세로 크기를 확대 */
+      transform: scaleY(1) scaleX(1);
+   }
+}
+/* Show modal content  */
+@keyframes zoomIn {
+   from {
+      transform: scale(0);
+   }
+   to {
+      transform: scale(1);
+   }
+}
+/* Hide modal content */
+@keyframes zoomOut {
+   from {
+      transform: scale(1);
+   }
+   to {
+      transform: scale(0);
+   }
+}
+/* Dimmed hiding */
+@keyframes unfoldOut {
+   0% {
+      transform: scale(1)
+   }
+   50% {
+      transform: scaleX(1) scaleY(0.005);
+   }
+   100% {
+      transform: scaleX(0) scaleY(0.005);
+   }
+}
+div#div-header{
+   display: flex;
+   justify-content: space-between;
+}
+
+div.content-wrapper{
+   background: white;
+}
+.card .card-description {
+   margin-left: 3%;
+}
+h4.card-title{
+   margin-left: 3%;
+}
+div.col-lg-2{
+    flex: 35%;
+    max-width: 35%;
+}
+div.col-lg-10{
+    flex: 65%;
+    max-width: 65%;
+    margin-top: 17px;
+}
+p {
+    margin-bottom: 0.5rem;
+    line-height: 1.3rem;
+}
+
+.sidebar {
+    position: fixed;
+    width: 300px;
+    height: 100vh;
+    background: #f8f8f8;
+    padding: 20px;
+    z-index: 2;
+    
+
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- 모달 창을 위한 컨테이너 -->
+<div id="modal-container">
+	<div class="modal-background">
+		<div class="modal" id="modal">
+			<div id='ifr' style="width: 100%; height: 100%;">
+				<iframe
+					src='https://www.vchatcloud.com/chat-demo/iframe/iframe_pc/v4/index.html?channelKey=JTeqSUcGty-5xiVOTpXrD-20240416164446&youtubeId=4rbosp3gHOc'
+					frameborder='no' scrolling='no' marginwidth='0' marginheight='0'
+					width='1216' height='691'>
+				</iframe>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="modal-container">
+	<div class="modal-background">
+		<div class="modal" id="modal">
+			<div id='ifr' style="width: 100%; height: 100%;">
+				<!-- 메타버스 세미나 형 -->
+				<iframe
+					src='https://www.metaville.co.kr/vgw/tkwpMVZTYF-RnsvGwjse4-20240423124553'
+					allow="camera *;microphone *;display-capture *" frameborder='no'
+					scrolling='no' marginwidth='0' marginheight='0' width='100%'
+					height='100%'></iframe>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="col-lg-12">
+	<div class="central-meta">
+		<span class="create-post">Contributors</span>
+		<div class="col-lg-12 grid-margin stretch-card">
+			<div class="card">
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table" style="margin: auto;">
+							<tr>
+								<th style="padding: 5px;">
+									<div id="div-head">
+										<div>
+											<ul class="nav nav-tabs">
+												<li class="nav-item "><a class="nav-link ing active"
+													href="#" onclick="fprgevt()">진행중인 이벤트</a></li>
+												<li class="nav-item"><a class="nav-link end" href="#"
+													onclick="fendevt()">종료된 이벤트</a></li>
+											</ul>
+										</div>
+									</div>
+								</th>
+							</tr>
+							<tr id="prgevt">
+								<td>
+									<div style="display: flex;">
+										<div class="col-lg-2">
+											<img
+												src="https://cdn.mediatoday.co.kr/news/photo/202311/313885_438531_4716.jpg"
+												alt="이미지"
+												style="width: 100%; height: 100%; border-radius: 0%;" />
+										</div>
+										<div class="col-lg-10">
+											<p>403호와 함께하는 랜선 만남</p>
+											<p>아티스트 : 뉴진스</p>
+											<p>일시 : 2024-04-16 09:00 ~ 2024-04-17 18:00</p>
+											<p>참여인원 : 28명</p>
+											<p>버니즈 모여라!</p>
+										</div>
+										<%-- 라이브 호출 --%>
+										<div class="content">
+											<div class="buttons">
+												<span id="one" class="button">입 장</span>
+											</div>
+										</div>
+										<%-- 라이브 호출  --%>
+									</div>
+								</td>
+							</tr>
+							<tr class="endevt" style="display: none;">
+								<td>
+									<div style="display: flex;">
+										<div class="col-lg-2">
+											<img
+												src="https://i.namu.wiki/i/UIigOQVjNtD76N9GmEdI3CCjfgBOvXXwJxYlIYQ64ibrMm0m2b3UtnvUmOf0i15j8-Fn7xMd9cPaDHIt95gbug.webp"
+												alt="이미지"
+												style="width: 100%; height: 100%; border-radius: 0%;" />
+										</div>
+										<div class="col-lg-10">
+											<p>르세라핌 함께하는 랜선 팬사인회</p>
+											<p>아티스트 : 르세라핌</p>
+											<p>일시 : 2024-07-07 19:00 ~ 20:00</p>
+											<p>참여인원 : 30명</p>
+											<p>르세라핌 랜선 팬사인회</p>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr class="endevt" style="display: none;">
+								<td>
+									<div style="display: flex;">
+										<div class="col-lg-2">
+											<img
+												src="https://file2.nocutnews.co.kr/newsroom/image/2023/10/09/202310090151273044_0.jpg"
+												alt="이미지"
+												style="width: 100%; height: 100%; border-radius: 0%;" />
+										</div>
+										<div class="col-lg-10">
+											<p>아이브와 함께하는 랜선 팬사인회</p>
+											<p>아티스트 : 아이브</p>
+											<p>일시 : 2024-07-13 12:00 ~ 15:00</p>
+											<p>참여인원 : 30명</p>
+											<p>러브다이브 라이브 랜선 팬사인회</p>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr class="endevt" style="display: none;">
+								<td>
+									<div style="display: flex;">
+										<div class="col-lg-2">
+											<img
+												src="https://i.ytimg.com/vi/NehbrPJof-Q/maxresdefault.jpg"
+												alt="이미지"
+												style="width: 100%; height: 100%; border-radius: 0%;" />
+										</div>
+										<div class="col-lg-10">
+											<p>권은비와 함께하는 얼빡직캠 랜선방송</p>
+											<p>아티스트 : 권은비</p>
+											<p>일시 : 2024-07-20 13:00 ~ 17:00</p>
+											<p>참여인원 : 30명</p>
+											<p>직캠여신 권은비와 함께하는 랜선 팬사인회</p>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="col-lg-12">
+	<div class="central-meta">
+		<span class="create-post">Contributors</span>
+		<div style="display: flex;">
+			<div class="col-lg-2">
+				<img
+					src="https://cdn.mediatoday.co.kr/news/photo/202311/313885_438531_4716.jpg"
+					alt="이미지" style="width: 100%; height: 100%; border-radius: 0%;" />
+			</div>
+			<div class="col-lg-10">
+				<p>403호와 함께하는 랜선 만남</p>
+				<p>아티스트 : 뉴진스</p>
+				<p>일시 : 2024-04-16 09:00 ~ 2024-04-17 18:00</p>
+				<p>참여인원 : 28명</p>
+				<p>버니즈 모여라!</p>
+			</div>
+			<%-- 메타버스 호출 --%>
+			
+<div class="content">
+<!-- 두 번째 버튼 -->
+<div class="buttons">
+    <span id="two" class="button1">입 장</span>
+</div>
+
+<!-- 두 번째 모달 -->
+<div id="modal-container2">
+    <div class="modal-background">
+        <div class="modal" id="modal2">
+            <div id='ifr2' style="width: 100%; height: 100%;">
+                <!-- 메타버스 세미나 형 -->
+                <iframe src='https://www.metaville.co.kr/vgw/tkwpMVZTYF-RnsvGwjse4-20240423124553'
+                    allow="camera *;microphone *;display-capture *" frameborder='no' scrolling='no'
+                    marginwidth='0' marginheight='0' width='100%' height='100%'></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+			
+		</div>
+	</div>
+</div>
+
+<div class="col-lg-12">
+	<div class="central-meta">
+		<span class="create-post">지난 라이브🎬</span>
+		<ul class="contributorz">
+			<li><iframe width="624" height="351"
+					src="https://www.youtube.com/embed/_5FSlPjSb1U?autoplay=1&mute=1&controls=0&loop=1&playlist=_5FSlPjSb1U"
+					title="it&#39;s MY birthday 🌬️🎂❤️‍🔥 #aespa #에스파 #KARINA #카리나 #HappyKARINADay #shorts"
+					frameborder="0"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+					referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+				<span>aespa KARINA</span>
+				<p>카리나 생일🍒🍰</p></li>
+			<li><iframe width="624" height="351"
+					src="https://www.youtube.com/embed/fVG-XZgTDo0?autoplay=1&mute=1&controls=0&loop=1&playlist=fVG-XZgTDo0"
+					title="이 빛을 내 숨을 다 쏟아내면 #DOYOUNG #도영 #반딧불 #YOUTHFUL #청춘의포말 #DOYOUNG_청춘의포말#DOYOUNG_청춘의포말_YOUTH #shorts"
+					frameborder="0"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+					referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+				<span>NCT Dream</span>
+				<p>이 빛을 내 숨을 다 쏟아내면🙄</p></li>
+			<li><iframe width="624" height="351"
+					src="https://www.youtube.com/embed/NLq_LVKkKQc?autoplay=1&mute=1&controls=0&loop=1&playlist=NLq_LVKkKQc"
+					title="&#39;lock / unlock (with benny blanco, Nile Rodgers)&#39; Dance Video🕺 #HOPE_ON_THE_STREET #EP3_Highlight"
+					frameborder="0"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+					referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+				<span>BTS DANCE LIVE</span>
+				<p>unlock 잘 다녀오겠습니다!</p></li>
+			<li><iframe width="624" height="351"
+					src="https://www.youtube.com/embed/0w8DbXzBrdE?autoplay=1&mute=1&controls=0&loop=1&playlist=0w8DbXzBrdE"
+					title="Chaewon" frameborder="0"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+					referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+				<span>LE SSERAFIM</span>
+				<p>피어나 고마워요❤️</p></li>
+			<li><iframe width="624" height="351"
+					src="https://www.youtube.com/embed/zvr4dWApT0s?autoplay=1&mute=1&controls=0&loop=1&playlist=zvr4dWApT0s"
+					title="productive baby 👼 #NewJeans #뉴진스#NewJeans_is_Everywhere"
+					frameborder="0"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+					referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+				<span>NewJeans</span>
+				<p>Ditto HOLIDAY BAND LIVE🎄</p></li>
+			<li><iframe width="624" height="351"
+					src="https://www.youtube.com/embed/EoHF5h07DD0?autoplay=1&mute=1&controls=0&loop=1&playlist=EoHF5h07DD0"
+					title="[it’s Live] BABYMONSTER - “SHEESH” 미방분 1인캠 아현 ver. #itsLive #BABYMONSTER #SHEESH #KPOP #잇츠라이브"
+					frameborder="0"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+					referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+				<span>BABYMONSTER</span>
+				<p>무대 장악력 미쳤다🔥 SHEESH LIVE</p></li>
+			<li><iframe width="624" height="351"
+					src="https://www.youtube.com/embed/jFJzCODStOQ?autoplay=1&mute=1&controls=0&loop=1&playlist=jFJzCODStOQ"
+					title="JENNIE - ‘You &amp; Me’ DANCE PERFORMANCE VIDEO HIGHLIGHT CLIP"
+					frameborder="0"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+					referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+				<span>BLACKPINK</span>
+				<p>JENNIE ‘You &amp; Me’</p></li>
+			<li><iframe width="624" height="351"
+					src="https://www.youtube.com/embed/Y2K964zyau8?autoplay=1&mute=1&controls=0&loop=1&playlist=Y2K964zyau8"
+					title="워녕이의 OTT 들으면서 TURN 🧚‍♀ #IVE #아이브 #JANGWONYOUNG #장원영 #장원영턴 #IVE_OTT #OTT #Shorts"
+					frameborder="0"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+					referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+				<span>IVE 원영</span>
+				<p>워녕이의 OTT 들으면서 TURN 🧚‍♀</p></li>
+		</ul>
+	</div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script type="text/javascript">
+   const prgevt = document.querySelector("#prgevt");         // 진행중인 이벤트
+   const endevt = document.querySelectorAll(".endevt");         // 종료된 이벤트
+   const endevts = document.querySelectorAll(".endevt");         // 종료된 이벤트
+   const aTag = document.querySelectorAll(".nav-link");   // 이벤트 탭
+   const metaBtn = document.querySelector("#metaBtn");     // metaBtn
+   const ing = document.querySelector(".ing");
+   const end = document.querySelector(".end");
+   
+   function fprgevt(){
+       event.preventDefault();
+       ing.classList.add("active");
+      end.classList.remove("active");
+       
+       /* searchMeta.style.display = 'none'; */
+       for (const endevt of endevts){
+           endevt.style.display = 'none';
+       }
+       prgevt.style.display = 'block';
+   }
+   
+   function fendevt(){
+       event.preventDefault();
+       end.classList.add("active");
+       ing.classList.remove("active");
+       /* searchMeta.style.display = 'block'; */
+       for (const endevt of endevts){
+           endevt.style.display = 'block';
+       }
+       prgevt.style.display = 'none';
+   }
+   
+$(document).ready(function () {
+   $("#ifr").css('display', 'none');
+});
+   // JavaScript 스크립트
+   // 해당 부분은 모달과 버튼들 간의 상호작용을 구현하는 스크립트입니다.
+   var $button = $('.button'); // 버튼들을 jQuery 선택자로 가져옴
+   var $button1 = $('.button1'); // 버튼들을 jQuery 선택자로 가져옴
+   var $modalContainer = $('#modal-container'); // 모달 컨테이너를 jQuery 선택자로 가져옴
+   var $body = $('body'); // body 요소를 jQuery 선택자로 가져옴
+   var $content = $('.content'); // 컨텐츠를 jQuery 선택자로 가져옴
+   var btnId;
+    
+   // 버튼 클릭 이벤트 핸들러
+   $button.on('click', function() {
+		
+      $("#ifr").css('display', 'block');
+      btnId = $(this).attr('id'); // 클릭된 버튼의 id를 가져옴
+      $modalContainer.removeAttr('class').addClass(btnId);
+      ; // 모달 컨테이너의 클래스를 버튼의 id로 변경하여 해당 애니메이션을 적용
+      $content.removeAttr('class').addClass('content'); // 컨텐츠의 클래스를 초기화
+
+      $body.addClass('modal-active'); // body에 'modal-active' 클래스 추가하여 모달이 나타남
+
+   });
+   
+// 두 번째 버튼 클릭 이벤트 핸들러
+$('#two').on('click', function() {
+    $("#ifr2").css('display', 'block');
+    btnId = $(this).attr('id'); // 클릭된 버튼의 id를 가져옴
+    $modalContainer.removeAttr('class').addClass(btnId);
+    ; // 모달 컨테이너의 클래스를 버튼의 id로 변경하여 해당 애니메이션을 적용
+    $content.removeAttr('class').addClass('content'); // 컨텐츠의 클래스를 초기화
+
+    $body.addClass('modal-active'); // body에 'modal-active' 클래스 추가하여 모달이 나타남
+});
+
+
+   // 모달 및 모달 배경 클릭 이벤트 핸들러
+   $modalContainer.on('click', function() {
+      $(this).addClass('out'); // 모달 컨테이너에 'out' 클래스 추가하여 모달을 사라지게 함
+      $body.removeClass('modal-active'); // body에서 'modal-active' 클래스 제거하여 모달이 사라짐
+      if ($(this).hasClass(btnId)) {
+         $content.addClass('out'); // 컨텐츠에 'out' 클래스 추가하여 애니메이션 효과 적용
+      }
+      $("#ifr").css('display', 'none');
+   });
+   
+</script>

@@ -1,0 +1,16 @@
+package kr.or.ddit.service.impl.community;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.community.IMemberManageMapper;
+import kr.or.ddit.service.community.IMemberManageService;
+
+@Service
+public class MemberManageServiceImpl implements IMemberManageService {
+	
+	@Inject
+	private IMemberManageMapper memberManageMapper;
+
+}

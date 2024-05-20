@@ -1,0 +1,10 @@
+package kr.or.ddit.service.common;
+
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.NotificationVO;
+
+public interface IWebSocketSevice {
+
+	public ServiceResult insertInquiry(NotificationVO notificationVO);
+
+}

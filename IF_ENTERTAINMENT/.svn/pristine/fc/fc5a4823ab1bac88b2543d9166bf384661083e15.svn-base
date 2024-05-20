@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.community.IMemberManageMapper">
+
+	<sql id="listSearch">
+		<if test="searchType != null and searchWord == 'writer'">
+			and(user_no like '%' || #{searchWord} || '%')
+		</if>
+	</sql>
+
+	<select id="selectMemberCount" parameterType="pagingVO" resultType="int" >
+		select count(user_no)
+		from "USER"
+		<include refid="listSearch"/>
+	</select>
+	
+	
+	<select id="memberList" parameterType="pagingVO" resultType="userVO">
+		select
+	    b.*
+		from (
+		    select
+		        a.*
+		        , row_number() over (order by user_no desc) rnum
+		    from (
+		        select
+			        u.user_no,
+			        u.user_name,
+			        u.user_id,
+			        u.user_type
+			    from
+			        "USER" u
+			        
+			        where user_type = '3'
+			        <include refid="listSearch"/>
+		    ) a
+		) b
+		<![CDATA[
+		where
+		    b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+	
+	<insert id="artistInsert" parameterType="userVO" useGeneratedKeys="true">
+		<selectKey keyProperty="userNo" resultType="int" order="BEFORE">
+			select seq_user.nextval from dual
+		</selectKey>
+		insert into "USER"(
+			user_no
+			, user_id
+			, user_pw
+			, user_name
+			, user_profile
+			, user_type
+			, enabled
+		)values(
+			#{userNo}
+			, #{userId}
+			, #{userPw}
+			, #{userName}
+			, #{userProfile}
+			, #{userType}
+			, '1'
+		)
+	
+	</insert>
+	
+	<insert id="artistAuthInsert" >
+		insert into user_auth(
+			user_no, auth
+		)values(
+			#{userNo}, 'ROLE_ARTIST'		
+		)
+	
+	</insert>
+	
+	<select id="selectFeedReportCount" parameterType="pagingVO" resultType="int">
+		select count(report_no)
+		from report
+		<include refid="listSearch"/>
+	</select>
+	
+	<select id="feedReportList" parameterType="pagingVO" resultType="feedReportVO">
+		select
+		b.*
+		from(
+			select
+				a.*
+				, row_number() over(order by report_no desc) rnum
+			from(
+				select 
+					r.report_no
+					, report_gubun
+					, report_date
+					, report_type
+					, report_reason
+					, f.feed_content
+					, f.feed_no
+					, f.user_no
+					, user_id
+				from  
+				    report r
+				    , feed f
+				    , "USER" u  
+				    where r.feed_no = f.feed_no
+				    and f.user_no = u.user_no
+					<include refid="listSearch"/>
+			)a
+		)b
+		<![CDATA[
+		where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+	
+	<update id="reportState" parameterType="feedReportVO">
+		update feed
+		set
+			feed_delyn = 'Y'
+		where feed_no = #{feedNo}
+	</update>
+	
+	<update id="reportUserStop" parameterType="feedReportVO">
+		update member
+		set
+			member_stopyn = 'Y'
+		where user_no = #{userNo}
+	</update>
+	
+	<select id="reportUpdate" parameterType="feedReportVO" resultType="feedReportVO">
+		select f.user_no
+		    from feed f
+		    left join member m on f.user_no = m.user_no
+		    where 
+		    f.feed_no = #{feedNo}
+	</select>
+	
+	
+
+
+</mapper>

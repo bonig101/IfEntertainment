@@ -1,0 +1,41 @@
+package kr.or.ddit.vo.goods;
+
+import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.web.multipart.MultipartFile;
+
+import lombok.Data;
+
+@Data
+public class GoodsNoticeVO {
+	
+	private int bfNo;
+	
+	@NotBlank(message = "제목을 입력해주세요.")
+	private String bfTitle;
+	@NotBlank(message = "내용을 입력해주세요.")
+	private String bfContent;
+	private int bfHit;
+	private String bfRegdate;
+	private String bfDelyn;
+	private String bfDisplay;
+	private int userNo;
+	private int btNo;
+	private int btId;
+	
+	//goodsNotice에서 작성자를 담기위한 필드
+	private String userName;
+	private String baSavepath;
+
+	private GoodsNoticeAttachFileVO goodsNoticeThumbnail; 
+	
+	@NotBlank(message = "썸네일을 등록해주세요.")
+	private MultipartFile goodsNoticeThumb;
+	
+	public void setGoodsNoticeThumb(MultipartFile goodsNoticeThumb) { 
+	    this.goodsNoticeThumb = goodsNoticeThumb;
+	    if (goodsNoticeThumb != null) {
+	        goodsNoticeThumb.getOriginalFilename();
+	        this.goodsNoticeThumbnail = new GoodsNoticeAttachFileVO(goodsNoticeThumb);
+	    }
+	}
+}

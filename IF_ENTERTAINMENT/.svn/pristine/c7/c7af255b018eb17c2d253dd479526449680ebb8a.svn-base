@@ -1,0 +1,50 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+
+<!-- side header -->
+<div class="topbar">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-lg-2">
+				<div class="logo">
+					<a href="index.html" title=""><img src="" alt=""></a>
+				</div>
+			</div>
+			<div class="col-lg-9">
+				<ul class="notify-area">
+				</ul>
+				<ul class="seting-area">
+					<li class="langages"><a href="#" title=""> <span>관리할
+								카테고리</span> <i class="fa-solid fa-caret-down"></i>
+					</a>
+						<ul class="drop language">
+							<!-- <li class="lang-selected"><a href=""><i class="fa fa-check"></i> Eng</a></li> -->
+							<li><a href="">엔터테인먼트</a></li>
+							<li><a href="">커뮤니티</a></li>
+							<li><a href="">굿즈샵</a></li>
+						</ul></li>
+					<li class="setting-panel"><a href="#" title=""> <span>사이트
+								바로가기</span> <i class="fa fa-external-link" aria-hidden="true"></i>
+					</a></li>
+				</ul>
+			</div>
+			<div class="col-lg-1">
+				<div class="user-head">
+					<div class="admin">
+						<span>YISOO723</span>
+						<div class="admin-avatar">
+							<i class="online"></i>
+						</div>
+					</div>
+					<div class="drop setting">
+						<span class="drop-bottom">
+							<a href="#" title="">
+								<i class="fa fa-sign-out"></i>log Out
+							</a>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

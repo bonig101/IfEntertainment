@@ -1,0 +1,105 @@
+package kr.or.ddit.service.impl.goods;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.or.ddit.mapper.goods.IOrderMapper;
+import kr.or.ddit.service.goods.IOrderService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.goods.OrderDetailVO;
+import kr.or.ddit.vo.goods.OrderIssueVO;
+import kr.or.ddit.vo.goods.OrderVO;
+
+@Service
+public class OrderServiceImpl implements IOrderService {
+
+	@Inject
+	private IOrderMapper orderMapper;
+
+	@Override
+	public int selectOrderListCount(PaginationInfoVO<OrderVO> pagingVO) {
+		return orderMapper.selectOrderListCount(pagingVO);
+	}
+
+	@Override
+	public List<OrderVO> selectOrderList(PaginationInfoVO<OrderVO> pagingVO) {
+		return orderMapper.selectOrderList(pagingVO);
+	}
+
+	@Override
+	public List<OrderDetailVO> selectOrderDetailList(OrderDetailVO orderDetailVO) {
+		return orderMapper.selectOrderDetailList(orderDetailVO);
+	}
+
+	@Override
+	public ServiceResult insertGoodsIssue(OrderIssueVO orderIssueVO) {
+		ServiceResult result = null;
+
+		int status = orderMapper.insertGoodsIssue(orderIssueVO);
+		if (status > 0) {
+			result = ServiceResult.OK;
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public ServiceResult insertIssueChange(HttpServletRequest req, OrderIssueVO orderIssueVO) {
+		ServiceResult result = null;
+		
+		String IssueImg = null;
+		
+		try {
+			IssueImg = issueFileUpload(orderIssueVO.getOrderIssuefile(), orderIssueVO, req);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		orderIssueVO.setGuiSavepath(IssueImg);
+		
+		int status = orderMapper.insertIssueChange(orderIssueVO);
+		if (status > 0) {
+			orderMapper.updateOrderStatus(orderIssueVO.getOdNo());
+			result = ServiceResult.OK;
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	private String issueFileUpload(MultipartFile orderIssuefile, OrderIssueVO orderIssueVO, HttpServletRequest req) throws Exception {
+		String savePath = "/resources/goodsissue/";
+		
+		String saveLocate = null;
+		if (orderIssuefile != null) {
+			String saveName = UUID.randomUUID().toString();
+			saveName += "_" + orderIssueVO.getOrderIssuefile().getOriginalFilename();
+			
+			saveLocate = req.getServletContext().getRealPath(savePath);
+			
+			File file = new File(saveLocate);
+			if (!file.exists()) {
+				file.mkdirs();
+			}
+			
+			saveLocate += saveName;
+			
+			File saveFile = new File(saveLocate);
+			orderIssueVO.getOrderIssuefile().transferTo(saveFile);
+			
+			savePath += saveName;
+		}
+		return savePath;
+	}
+
+}

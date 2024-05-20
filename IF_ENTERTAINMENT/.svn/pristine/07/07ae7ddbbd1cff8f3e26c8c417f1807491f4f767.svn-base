@@ -1,0 +1,30 @@
+package kr.or.ddit.service.impl.entertain;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.entertain.IAuditionMapper;
+import kr.or.ddit.service.entertain.IAuditionService;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.AuditionBoardVO;
+
+@Service
+public class AuditionServiceImpl implements IAuditionService {
+
+	@Inject
+	private IAuditionMapper auditionMapper;
+
+	@Override
+	public int selectNoticeCount(PaginationInfoVO<AuditionBoardVO> paginationInfoVO) {
+		return auditionMapper.selectNoticeCount(paginationInfoVO);
+	}
+
+	@Override
+	public List<AuditionBoardVO> auditionScheduleList(PaginationInfoVO<AuditionBoardVO> paginationInfoVO) {
+		return auditionMapper.auditionScheduleList(paginationInfoVO);
+	}
+
+}

@@ -1,0 +1,28 @@
+package kr.or.ddit.vo.entertain;
+
+import java.time.LocalDate;
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class AuditionBoardVO {
+	
+	private int bfNo;
+	private String bfTitle;
+	private String bfContent;
+	private String bfWriter;
+	private int bfHit;
+	private Date bfRegdate;
+	private String bfDelyn;
+	private String bfDisplay;
+	private int userNo;
+	private int btNo;
+	private int btId;
+	private String field;
+	
+	private String btName;
+	
+	
+	
+}

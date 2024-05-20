@@ -1,0 +1,19 @@
+package kr.or.ddit.vo.entertain;
+
+import lombok.Data;
+
+@Data
+public class CalVO {
+
+	
+	private String agId;
+	private String asNo;
+    private String asTitle;
+    private String asStart;
+    private String asEnd;
+    private String asDescription;
+    private String asType;
+    private String asBackgroundColor;
+    private String asTextColor;
+    private String asAllDay;
+}

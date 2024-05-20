@@ -1,0 +1,23 @@
+package kr.or.ddit.vo.common;
+
+import java.time.LocalDate;
+
+import lombok.Data;
+
+@Data
+public class MemberVO {
+	private int userNo;
+	private String memberTelno;
+	private String memberEmail;
+	private String memberBirth;
+	private String memberGender;
+	private String memberPostcode;
+	private String memberAddress1;
+	private String memberAddress2;
+	private LocalDate memberRegdate;
+	private String memberNotification;
+	private String memberStopyn;
+	private String memberDelyn;
+	private String memberLgnpath;
+	private String field;
+}

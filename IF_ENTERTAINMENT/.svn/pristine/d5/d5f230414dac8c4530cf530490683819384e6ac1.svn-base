@@ -1,0 +1,14 @@
+package kr.or.ddit.vo.statistic;
+
+import lombok.Data;
+
+/**
+ * 성별 & 연령별 비율 결과를 담기 위한 VO 
+ * @author 홍진영
+ */
+@Data
+public class MemberRateVO {
+	private String ageGroup;
+	private int femaleCount;
+	private int maleCount;
+}

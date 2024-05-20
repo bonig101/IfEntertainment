@@ -1,0 +1,456 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/nice-select.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<script src="${pageContext.request.contextPath }/resources/sweetAlertCustom/sweetAlertCustom.js"></script>
+<style>
+
+</style>
+
+<div class="gap no-gap">
+	<c:set value="등록" var="name"/>
+	<c:if test="${status eq 'u' }">
+		<c:set value="수정" var="name"/>
+	</c:if>
+    <div class="inner-bg">
+        <div class="element-title">
+            <h2>상품${name }</h2>
+        </div>
+        <div class="add-prod-from">
+            <form method="post" action="/goods/insert.do" id="prodForm" enctype="multipart/form-data">
+                <c:if test="${status eq 'u' }">
+                	<input type="hidden" name="goodsNo" value="${prod.goodsNo }">
+                </c:if>
+                <div class="row row-addproduct" style="width: 1030px; margin: 0 auto;">
+                	
+                	<!-- 자동입력버튼 -->
+                	<div class="buttonz addpro_buttonz">
+				    	<button type="button" id="autobutton" style="position: absolute;">자동입력 버튼</button>
+				    </div>
+                	
+                
+                    <div class="col-md-5">
+                        <div class="addproduct-title">
+                            <span>카테고리 (대분류)</span>
+                        </div>
+                       <select name="goodsArtist" id="goodsArtist" class="selectpicker">
+						    <option value="">아티스트 선택</option>
+						    <c:choose>
+						        <c:when test="${status eq 'u' }">
+						            <c:forEach items="${artistgroup}" var="artist">
+						                <option value="${artist.agId}" <c:if test="${prod.goodsArtist eq artist.agId}">selected</c:if>>${artist.agName}</option>
+						            </c:forEach>
+						        </c:when>
+						        <c:otherwise>
+						            <c:forEach items="${artistgroup}" var="artist">
+						                <option value="${artist.agId}">${artist.agName}</option>
+						            </c:forEach>
+						        </c:otherwise>
+						    </c:choose>
+						</select>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="addproduct-title">
+                            <span>카테고리 (중분류)</span>
+                        </div>
+                        <select name="gcId" id="gcId" class="selectpicker">
+                        	<option value="">카테고리 선택</option>
+						    <c:choose>
+						        <c:when test="${status eq 'u' }">
+						            <c:forEach items="${category}" var="cate">
+						                <option value="${cate.gcId}" <c:if test="${prod.gcId eq cate.gcId}">selected</c:if>>${cate.gcId}</option>
+						            </c:forEach>
+						        </c:when>
+						        <c:otherwise>
+						            <c:forEach items="${category}" var="cate">
+						                <option value="${cate.gcId}">${cate.gcId}</option>
+						            </c:forEach>
+						        </c:otherwise>
+						    </c:choose>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-10">
+                        <div class="addproduct-title">
+                            <span>상품명</span>
+                        </div>
+                        <input type="text" id="goodsName" name="goodsName" value="${prod.goodsName}">
+                    </div>
+                    <div class="col-md-5">
+                        <div class="addproduct-title">
+                            <span>가격</span>
+                        </div>
+                        <input class="form-control" id="goodsPrice" name="goodsPrice" type="text"  value="${prod.goodsPrice}">
+                    </div>
+                    
+                    <div class="col-md-5">
+                        <div class="addproduct-title">
+                            <span>수량</span>
+                        </div>
+                        <input class="form-control" id="goodsQuantity" name="goodsQuantity" type="text" value="${prod.goodsQuantity }">
+                    </div>
+                             
+                    <div class="col-md-5">
+                        <div class="addproduct-title">
+                            <span>상품 태그</span>
+                        </div>
+                        
+                        <div class="tag-box">
+                            <div class="tag-checkbox">
+                                <span>신상품</span>
+                                <input type="checkbox" id="new" name="goodsTag" value="new" <c:if test="${fn:contains(gtName, 'new')}">checked</c:if>>
+                            </div>
+                            <div class="tag-checkbox">
+                                <span>단독판매</span>
+                                <input type="checkbox" id="only" name="goodsTag" value="only" <c:if test="${fn:contains(gtName, 'only')}">checked</c:if>>
+                            </div>
+                            <div class="tag-checkbox">
+                                <span>예약판매</span>
+                                <input type="checkbox" id="reservation" name="goodsTag" value="reservation" <c:if test="${fn:contains(gtName, 'reservation')}">checked</c:if>>
+                            </div>
+                            <div class="tag-checkbox">
+                                <span>멤버십 전용</span>
+                                <input type="checkbox" id="membership" name="goodsTag" value="membership" <c:if test="${fn:contains(gtName, 'membership')}">checked</c:if>> 
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="col-md-5 approv-reject">
+                        <div class="addproduct-title">
+                            <span>진열 여부</span>
+                        </div>
+                        <a id="display" class="approve active" href="#" >진열</a>
+                        <a id="nondisplay" class="rejected " href="#">미진열</a>
+                        <c:if test="${prod.goodsDisplay eq 'N' }">
+                        <a id="display" class="approve" href="#" >진열</a>
+                       		<a id="nondisplay" class="rejected active" href="#">미진열</a>
+                        </c:if>
+                    </div>
+					<input id="goodsDisplay" name="goodsDisplay" type="hidden" value="">
+					
+                    <div class="col-md-5">
+                        <div class="addproduct-title">
+                            <span>구매 제한</span>
+                        </div>
+                        
+                        <div class="form-balju">
+                            <p style="display: inline">1인 당</p>
+                            <input class="form-control" id="goodsLimit" name="goodsLimit" style="width: 20%" type="text" value="${prod.goodsLimit }">
+                            <p style="display: inline">개</p>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="addproduct-title">
+                            <span>자동발주</span>
+                        </div>
+                        <div class="form-balju">
+                            <input class="form-control" id="goodsAutocndtn" name="goodsAutocndtn" style="width: 20%" type="text" value="${prod.goodsAutocndtn }">
+                            <p style="display: inline">개 이하일때</p>
+                            <input class="form-control" id="goodsAutobuycount" name="goodsAutobuycount" style="width: 20%" type="text" value="${prod.goodsAutobuycount }">
+                            <p style="display: inline">개 주문</p>
+                        </div>
+                    </div>
+
+					<!-- 썸네일 -->
+                    <div class="col-md-10">
+                        <div class="addproduct-title">
+                            <span>제품 썸네일</span>
+                        </div>
+                        <label class="fileContainer"> <span>찾아보기</span>
+                            <input type="file" id="goodsThumb" name="goodsThumb" />
+                        </label>
+                        <div class="prodthumimg-box">
+               				<img id=thumimg src="${prod.goodsThumbnail }" alt="" >
+               			</div>
+                    </div>
+
+					<!-- 상세페이지 -->
+                    <div class="col-md-10">
+                        <div class="addproduct-title">
+                            <span>제품 상세 이미지</span>
+                        </div>
+                        <label class="fileContainer"> <span>찾아보기</span>
+                        	<input type="file" id="goodsFile" name="goodsFile" multiple="multiple" />
+                        </label>
+	                     <div id="proddetailimg-container">
+	                     	<c:choose>
+	                     		<c:when test="${status ne 'u' }">
+	                     			<%-- <div class="proddetailimg-box">
+                        				<a class="detailfile_del" href="#" id="a_${prodFile.gaNo }">
+                        					<i class="fa-solid fa-xmark"></i>
+                        				</a>
+			                        	<img class="detailimg" alt="" src="${prodFile.gaDetailimg }">
+			                        </div> --%>
+	                     		</c:when>
+	                     		<c:otherwise>
+		                        	<c:if test="${not empty prod.goodsFileList }">
+		                        		<c:forEach items="${prod.goodsFileList }" var="prodFile">
+		                        			<div class="proddetailimg-box">
+		                        				<a class="detailfile_del" href="#" id="a_${prodFile.gaNo }">
+		                        					<i class="fa-solid fa-xmark"></i>
+		                        				</a>
+					                        	<img class="detailimg" alt="" src="${prodFile.gaDetailimg }">
+					                        </div>
+		                        		</c:forEach>
+		                        	</c:if>
+	                     		</c:otherwise>
+	                     	</c:choose>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="buttonz addpro_buttonz">
+                            <button type="button" id="addBtn" value="${name }">${name }</button>
+                            <c:if test="${status ne 'u' }">
+                           		<button type="button" id="listBtn">목록</button>
+                            </c:if>
+                            <c:if test="${status eq 'u' }">
+                            	<button type="button" id="cancelBtn">취소</button>
+                            </c:if>
+                        </div>
+                    </div>
+                </div>
+                <sec:csrfInput/>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="${pageContext.request.contextPath }/resources/js1/nice-select.js"></script> 
+<script type="text/javascript">
+	$(function () {
+		
+		var file = null;
+		
+		var addBtn = $("#addBtn");
+		var goodsThumb = $("#goodsThumb");
+		var goodsFile = $("#goodsFile");
+		var displayBtn = $("#display");
+		var nondisplayBtn = $("#nondisplay");
+		var flag_display = true;
+		var prodForm = $("#prodForm");
+		var proddetailimgContainer = $("#proddetailimg-container");
+		var cancelBtn = $("#cancelBtn");
+		var listBtn = $("#listBtn");
+		
+		listBtn.on("click", function () {
+			location.href = "/goods/list.do";
+		})
+		
+		cancelBtn.on("click", function () {
+			location.href = "/goods/list.do";	
+		});
+		
+		proddetailimgContainer.on("click", "a", function (event) {
+			event.preventDefault();
+			
+			var id = $(this).prop("id");
+			var idx = id.indexOf("_");
+			var gaFileNo = id.substring(idx+1);
+			var ptrn = "<input type='hidden' name='delProdNo' value='%V'/>";
+			prodForm.append(ptrn.replace("%V", gaFileNo));
+			$(this).parents("div:first").hide();
+		});
+		
+		if (addBtn.val() == "등록") {
+			$(".prodthumimg-box").css("display", "none");
+			$(".proddetailimg-box").css("display", "none");
+			goodsThumb.on("change", function (event) {
+				var file = event.target.files[0];
+				if (isimgFile(file)) {
+					$(".prodthumimg-box").css("display", "block");
+				}
+			});
+			/* goodsFile.on("change", function (event) {
+				$(".proddetailimg-box").css("display", "block");
+			}); */
+		}
+		
+		
+		addBtn.on("click", function name() {
+			var goodsArtist = $("#goodsArtist").val();
+			var gcId = $("#gcId").val();
+			var goodsName = $("#goodsName").val();
+			var goodsPrice = $("#goodsPrice").val();
+			var goodsQuantity = $("#goodsQuantity").val();
+			var goodsLimit = $("#goodsLimit").val();
+			var goodsAutocndtn = $("#goodsAutocndtn").val();
+			var goodsAutobuycount = $("#goodsAutobuycount").val();
+			var goodsThumb = $("#goodsThumb").val();
+			var goodsFile = $("#goodsFile").val();
+			
+			if (goodsArtist == null || goodsArtist =="") {
+				Swal.fire(
+				  '아티스트 카테고리를 선택해주세요.',
+				  '',
+				  'warning'
+				)
+				$("#goodsArtist").focus();
+				return false;
+			}
+			if (gcId == null || gcId =="") {
+				Swal.fire(
+				  '카테고리(중분류)를 선택해주세요.',
+				  '',
+				  'warning'
+				)
+				$("#gcId").focus();
+				return false;
+			}
+			if (goodsName == null || goodsName =="") {
+				Swal.fire(
+				  '제품명을 입력해주세요.',
+				  '',
+				  'warning'
+				)
+				$("#goodsName").focus();
+				return false;
+			}
+			if (goodsPrice == null || goodsPrice =="") {
+				Swal.fire(
+				  '가격을 입력해주세요.',
+				  '',
+				  'warning'
+				)
+				$("#goodsPrice").focus();
+				return false;
+			}
+			if (goodsQuantity == null || goodsQuantity =="") {
+				Swal.fire(
+				  '수량을 입력해주세요.',
+				  '',
+				  'warning'
+				)
+				$("#goodsQuantity").focus();
+				return false;
+			}
+			if (goodsLimit == null || goodsLimit =="") {
+				Swal.fire(
+				  '1인당 구매 제한 수량을 입력해주세요.',
+				  '',
+				  'warning'
+				)
+				$("#goodsLimit").focus();
+				return false;
+			}
+			if (goodsAutocndtn == null || goodsAutocndtn =="") {
+				Swal.fire(
+				  '발주할 최소 수량을 입력해주세요.',
+				  '',
+				  'warning'
+				)
+				$("#goodsAutocndtn").focus();
+				return false;
+			}
+			if (goodsAutobuycount == null || goodsAutobuycount =="") {
+				Swal.fire(
+				  '발주 수량을 입력해주세요.',
+				  '',
+				  'warning'
+				)
+				$("#goodsAutobuycount").focus();
+				return false;
+			}
+			if ($(this).val() == "등록") {
+				if (goodsThumb == null || goodsThumb =="") {
+					Swal.fire(
+					  '썸네일을 등록해주세요.',
+					  '',
+					  'warning'
+					)
+					$("#goodsThumb").focus();
+					return false;
+				}
+				if (goodsFile == null || goodsFile =="") {
+					Swal.fire(
+						  '상세이미지를 등록해주세요.',
+						  '',
+						  'warning'
+					)
+					$("#goodsFile").focus();
+					return false;
+				}
+			}	
+			
+			if ($(this).val() == "수정") {
+				prodForm.attr("action", "/goods/update.do");
+			}
+			prodForm.submit();
+		});
+	
+		displayBtn.on("click", function (event) {
+			event.preventDefault();
+			flag_display = true;
+		});
+		
+		nondisplayBtn.on("click", function (event) {
+			event.preventDefault();
+			flag_display = false;
+		});
+		
+		goodsThumb.on("change", function (event) {
+			file = event.target.files[0];
+			
+			if(isimgFile(file)){
+				var reader = new FileReader();
+				reader.onload = function (e) {
+					$("#thumimg").attr("src", e.target.result);
+				}
+				reader.readAsDataURL(file);
+			}else {
+				Swal.fire(
+				  '이미지 파일만 등록 가능합니다.',
+				  '',
+				  'warning'
+				)
+				$("#thumimg").attr("src", "");
+			}
+		});
+		
+		goodsFile.on("change", function (event) {
+			var files = event.target.files;
+			console.log(files);
+			for (var i = 0; i < files.length; i++) {
+				var file = files[i]; 
+				
+				if(isimgFile(file)){
+					var reader = new FileReader();
+					reader.onload = function (e) {
+						var html = "";
+							html += "<div class='proddetailimg-box'>";
+		                    html += "<img class='detailimg' alt='' src='" + e.target.result + "'>";
+		                    html += "</div>";
+		                    $("#proddetailimg-container").append(html);
+					}
+					reader.readAsDataURL(file);
+				}else {
+					Swal.fire(
+					  '이미지 파일만 등록 가능합니다.',
+					  '',
+					  'warning'
+					)
+				}
+			}
+		}); 
+
+		function isimgFile(file) {
+			var ext = file.name.split(".").pop().toLowerCase(); // 파일명에서 확장자를 가져온다.
+			return ($.inArray(ext,["jpg","jpeg","png", "gif"]) === -1) ? false : true;
+		}
+		
+		$("#autobutton").on("click", function () {
+			$("#goodsArtist option:eq(0)").prop("selected", true);
+			$("#gcId option:eq(0)").prop("selected", true);
+			$("#goodsName").val("[ON-OFF 22-23] FILM PHOTO SET (10% off ver.)");
+			$("#goodsPrice").val("13000");
+			$("#goodsQuantity").val("50");
+			$("#goodsLimit").val("3");
+			$("#goodsAutocndtn").val("5");
+			$("#goodsAutobuycount").val("30");
+		});
+		
+	});
+</script>

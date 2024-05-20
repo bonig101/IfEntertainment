@@ -1,0 +1,23 @@
+package kr.or.ddit.controller.entertain;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.entertain.ICompanyNewsService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 기업공지 조회 컨트롤러(사용자/관리자)
+ * @author 서어진
+ */
+@Controller
+@Slf4j
+@RequestMapping("/entertain/company/notice")
+public class CompanyNoticeRetrieveController {
+	
+	@Inject
+	private ICompanyNewsService companyNewsService;
+	
+}

@@ -1,0 +1,28 @@
+package kr.or.ddit.service.impl.common;
+
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.common.IMypageMapper;
+import kr.or.ddit.service.common.IMypageService;
+import kr.or.ddit.vo.common.UserVO;
+
+@Service
+public class MypageServiceImpl implements IMypageService {
+
+	@Inject
+	private IMypageMapper mypageMapper;
+
+	@Override
+	public void updateProfile(Map<String, Object> map) {
+		mypageMapper.updateProfile(map);
+	}
+
+	@Override
+	public UserVO selectUserMypage(int userNo) {
+		return mypageMapper.selectUserMypage(userNo);
+	}
+}

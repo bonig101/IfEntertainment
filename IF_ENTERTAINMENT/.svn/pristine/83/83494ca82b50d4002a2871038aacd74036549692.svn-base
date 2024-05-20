@@ -1,0 +1,65 @@
+package kr.or.ddit.service.impl.entertain;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.entertain.IIRMapper;
+import kr.or.ddit.service.entertain.IIRService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.IREventVO;
+import kr.or.ddit.vo.entertain.IRFileVO;
+
+@Service
+public class IRServiceImpl implements IIRService {
+
+	@Inject
+	private IIRMapper irMapper;
+
+	@Override
+	public ServiceResult insertIREvent(HttpServletRequest req, IREventVO ireventVO) {
+		ServiceResult result = null;
+		int status = irMapper.insertIREvent(ireventVO);
+		if(status > 0) { 	// 등록 처리가 완료되었을 때
+			
+			irMapper.insertIREventDetail(ireventVO);
+			
+			result = ServiceResult.OK;
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public int selectIREventCount(PaginationInfoVO<IREventVO> pagingVO) {
+		return irMapper.selectIREventCount(pagingVO);
+	}
+
+	@Override
+	public List<IREventVO> selectIREventList(PaginationInfoVO<IREventVO> pagingVO) {
+		return irMapper.selectIREventList(pagingVO);
+	}
+
+	@Override
+	public IREventVO selectIREvent(int bfNo) {
+		return irMapper.selectIREvent(bfNo); 
+	}
+
+
+	
+	// IR 파일
+	@Override
+	public int selectFileCount(PaginationInfoVO<IRFileVO> pagingVO) {
+		return irMapper.selectFileCount(pagingVO);
+	}
+
+	@Override
+	public List<IRFileVO> selectIRFileList(PaginationInfoVO<IRFileVO> pagingVO) {
+		return irMapper.selectIRFileList(pagingVO);
+	}
+}

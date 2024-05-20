@@ -1,0 +1,40 @@
+package kr.or.ddit.security;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import kr.or.ddit.mapper.common.ISignMapper;
+import kr.or.ddit.vo.common.CustomUser;
+import kr.or.ddit.vo.common.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class CustomUserDetailsService implements UserDetailsService {
+	
+	
+	@Inject
+	private ISignMapper signMapper;
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		
+		// 인증된 사용자 정보를 담을 공간 선언
+		UserVO user;
+		
+		try {
+//			user = signMapper.readByUserId(username);
+//			log.info("queried by member mapper : {}", user);
+//			return user == null ? null : new CustomUser(user);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+}

@@ -1,0 +1,49 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+  .profile-intro {
+    text-align: center;
+    width: 40%;
+    margin: 0 auto;
+    /* 넘치는 내용 숨김으로부터 변경 */
+    overflow-wrap: break-word; /* 단어 단위로 줄바꿈 */
+    white-space: normal; /* 내용을 필요에 따라 줄바꿈 */
+    /* text-overflow: ellipsis; 이 속성은 제거 */
+    /* 추가적인 스타일링 */
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+</style>
+</head>
+<body>
+								<div >
+									<img src="${profile.agProfile }" alt="" 
+									style="width: 1200px">
+								</div>
+								<div class ="profile-intro">
+									${profile.agIntro }
+								</div>
+								<div class="central-meta">
+									<span class="create-post">Invites <a href="#" title="">See All</a></span>
+									<ul class="suggested-frnd-caro invite">
+										<c:forEach var="artist" items="${artistList }">
+										<li>
+											<img src="${artist.userProfile }" alt="">
+											<div class="sugtd-frnd-meta">
+												<p>${artist.artistFakename}</p>
+												<span>${artist.artistBirth }</span>
+												<a href="#" title="" class="send-invitation" data-ripple="">Invite</a>
+											</div>
+											</c:forEach>
+										</li>
+									</ul>
+								</div><!-- Invite friends -->
+</body>
+</html>

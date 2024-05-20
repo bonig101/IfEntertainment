@@ -1,0 +1,139 @@
+package kr.or.ddit.controller.entertain;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.or.ddit.service.entertain.IArtistService;
+import kr.or.ddit.vo.common.UserVO;
+import kr.or.ddit.vo.entertain.ArtistGroupVO;
+import kr.or.ddit.vo.entertain.ArtistVO;
+import lombok.extern.slf4j.Slf4j;	
+
+/**
+ * 아티스트 프로필 등록 컨트롤러 
+ * @author 조재훈
+ */
+
+@Controller
+@Slf4j
+@RequestMapping("/entertain/artist/profile")
+public class ArtistProfileInsertController {
+	// 그룹 등록하면서 속한 멤버까지 함께 등록될 수 있도록(트랜잭션)
+	
+	@Inject
+	private IArtistService artistService;
+	
+	
+	
+	
+	@RequestMapping(value = "/form.do")
+	public String goodsinsertform(Model model) {
+		
+		 List<UserVO> userList = artistService.aritstListForm();
+//		 log.info("userasd+ " + userList);
+		 model.addAttribute("userList", userList);
+		 
+		
+		return "admin/entertain/artistInsertForm";
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/getArtistList.do", method = RequestMethod.GET)
+	public ResponseEntity<List<UserVO>> goodsinsertform() {
+		
+		 List<UserVO> userList = artistService.aritstListForm();
+		 log.info("userasd+ " + userList);
+		 return new ResponseEntity<List<UserVO>>(userList, HttpStatus.OK);
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PostMapping("/insert.do")
+	public String addMembers(
+			
+				@RequestParam("artistFakename[]") List<String> artistFakenames,
+	            @RequestParam("artistBirth[]") List<String> artistBirths,
+	            @RequestParam("artistIntro[]") List<String> artistIntros,
+	            @RequestParam("userNo[]") List<String> userNos,
+	            @RequestParam("agId") String agId,
+	            @RequestParam("agName") String agName,
+	            @RequestParam("agDate") String agDate,
+	            @RequestParam("agIntro") String agIntro,
+	            @RequestParam("agPhoto") MultipartFile agPhoto,
+	            HttpServletRequest req
+			) {
+		
+		  for (String name : artistFakenames) {
+	            System.out.println("Artist Fakename: " + name);
+	        }
+		  
+	        // 아티스트 생년월일 출력
+	        for (String birth : artistBirths) {
+	            System.out.println("Artist Birth: " + birth);
+	        }
+
+	        // 아티스트 소개 출력
+	        for (String intro : artistIntros) {
+	        	System.out.println("Artist Intro: " + intro);
+	        }
+	        for (String no : userNos) {
+	        	System.out.println("User No: " + no);
+	        }
+
+	       
+
+	        // ag 관련 정보 출력
+	        System.out.println("AG ID: " + agId);
+	        System.out.println("AG Date: " + agDate);
+	        System.out.println("AG Intro: " + agIntro);
+	        System.out.println("AG Profile: " + agPhoto);
+	        
+	        
+	        ArtistGroupVO artistGroupVO1 = new ArtistGroupVO(agPhoto);
+	        
+	        // 파라미터 값을 ArtistGroupVO 객체에 설정
+	        artistGroupVO1.setAgId(agId);
+	        artistGroupVO1.setAgName(agName);
+	        artistGroupVO1.setAgDate(agDate);
+	        artistGroupVO1.setAgIntro(agIntro);
+	        artistGroupVO1.setAgPhoto(agPhoto);
+	        
+	        log.info("artistGroupVO1 == " + artistGroupVO1);
+	        
+	        
+	        artistService.groupInsert(artistGroupVO1,req);
+		
+	    List<ArtistVO> artistList = new ArrayList<>();
+	    
+	    for (int i = 0; i < artistFakenames.size(); i++) {
+	    	ArtistVO artistVO = new ArtistVO();
+	    	artistVO.setArtistFakename(artistFakenames.get(i));
+	    	artistVO.setArtistBirth(artistBirths.get(i));
+	    	artistVO.setArtistIntro(artistIntros.get(i));
+	    	artistVO.setUserNo(Integer.parseInt(userNos.get(i)));
+	    	artistVO.setAgId(agId);
+	    	
+	    	log.info("agId 나오냐 ?" + artistVO);
+
+	  
+	        artistList.add(artistVO);
+	    }
+
+       
+        artistService.insert(artistList);
+	    return "admin/entertain/artistInsertForm";
+	}
+}

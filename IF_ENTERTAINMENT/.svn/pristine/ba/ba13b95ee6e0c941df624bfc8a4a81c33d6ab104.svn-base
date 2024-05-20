@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 카멜케이스 자동변환 -->
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+	
+	<!-- 자주 사용하는 타입의 별칭을 셋팅 -->
+	<typeAliases>
+		<typeAlias type="kr.or.ddit.vo.common.UserVO" alias="userVO"/> 
+		<typeAlias type="kr.or.ddit.vo.common.UserAuthVO" alias="userAuthVO"/> 
+		<typeAlias type="kr.or.ddit.vo.common.MemberVO" alias="memberVO"/> 
+		<typeAlias type="kr.or.ddit.vo.common.Noti_SettingVO" alias="notiSettionVO"/> 
+		<typeAlias type="kr.or.ddit.vo.common.Noti_TypeVO" alias="notiTypeVO"/> 
+		<typeAlias type="kr.or.ddit.vo.entertain.FinanceExcelVO" alias="financeExcelVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.AuditionBoardVO" alias="auditionBoardVO"/>
+		<typeAlias type="kr.or.ddit.vo.common.PaginationInfoVO" alias="pagingVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.AlbumVO" alias="albumVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.TrackListVO" alias="trackListVO"/>
+		<typeAlias type="kr.or.ddit.vo.goods.GoodsVO" alias="goodsVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.ArtistGroupVO" alias="artistgroupVO"/>
+		<typeAlias type="kr.or.ddit.vo.goods.GoodsCategoryVO" alias="categoryVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.IREventVO" alias="IREventVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.IRFileVO" alias="IRFileVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.AuditionBoardVO" alias="auditionBoardVO"/>
+		<typeAlias type="kr.or.ddit.vo.goods.GoodsTagVO" alias="goodsTagVO"/>
+		<typeAlias type="kr.or.ddit.vo.goods.GoodsAttachfileVO" alias="goodsFileVO"/>
+		<typeAlias type="kr.or.ddit.vo.entertain.ArtistVO" alias="artistVO"/>
+	</typeAliases>
+
+</configuration>

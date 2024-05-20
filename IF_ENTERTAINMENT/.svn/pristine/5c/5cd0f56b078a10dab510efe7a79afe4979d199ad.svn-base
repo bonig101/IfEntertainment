@@ -1,0 +1,18 @@
+package kr.or.ddit.service.goods;
+
+import java.util.List;
+
+import kr.or.ddit.vo.goods.AddressVO;
+import kr.or.ddit.vo.goods.CartVO;
+
+public interface IGoodsPurchaseService {
+
+	public List<CartVO> cartSelect(String userNo);
+
+	public List<CartVO> selectArtist(List<CartVO> cartList);
+
+	public List<AddressVO> addressSelect(String userNo);
+
+	public String selectUserName(String userNo);
+
+}

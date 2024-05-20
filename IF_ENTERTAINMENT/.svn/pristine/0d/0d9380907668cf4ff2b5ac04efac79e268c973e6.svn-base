@@ -1,0 +1,52 @@
+package kr.or.ddit.service.impl.common;
+
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.common.IMypageMapper;
+import kr.or.ddit.service.common.IMypageService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.UserVO;
+
+@Service
+public class MypageServiceImpl implements IMypageService {
+
+	@Inject
+	private IMypageMapper mypageMapper;
+
+	@Override
+	public void updateProfile(Map<String, Object> map) {
+		mypageMapper.updateProfile(map);
+	}
+
+	@Override
+	public UserVO selectUserMypage(int userNo) {
+		return mypageMapper.selectUserMypage(userNo);
+	}
+
+	@Override
+	public ServiceResult myPagePasswordUpdate(HttpServletRequest req, UserVO userVO) {
+		ServiceResult result = null;
+		int status = mypageMapper.myPagePasswordUpdate(userVO);
+		if (status > 0) {	// 수정 성공
+			// 수정 성공시 알림 설정도 업데이트
+			mypageMapper.myPageNoticeSettingUpdate(userVO);
+			mypageMapper.myPagememberNotificationUpdate(userVO);
+			// 수정 성공시 알림 수신여부도 업데이트
+			result = ServiceResult.OK;
+		} else {			// 수정 실패
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public ServiceResult deleteMyForm(UserVO userNo) {
+		return mypageMapper.deleteMyForm(userNo);
+	}
+
+}

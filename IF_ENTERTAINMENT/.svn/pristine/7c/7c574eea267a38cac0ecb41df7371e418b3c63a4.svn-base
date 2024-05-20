@@ -1,0 +1,84 @@
+package kr.or.ddit.controller.entertain;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import kr.or.ddit.service.entertain.IArtistService;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.AlbumVO;
+import kr.or.ddit.vo.entertain.ArtistGroupVO;
+import kr.or.ddit.vo.entertain.ArtistVO;
+import kr.or.ddit.vo.entertain.TrackListVO;
+import kr.or.ddit.vo.goods.GoodsVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 아티스트 앨범 조회 컨트롤러
+ * @author 조재훈
+ */
+@Controller
+@Slf4j
+@RequestMapping("/entertain/artist/album")
+public class ArtistAlbumRetrieveController {
+	// 앨범 테이블과 수록곡 테이블 조인 해서 동시에 정보 뿌리기 (쿼리에 ResultMap 사용) 
+	
+	
+	@Inject
+	private IArtistService artistService;
+	
+	@RequestMapping(value = "/list.do", method = RequestMethod.GET)
+	private String AlbumList(Model model, String agId) {
+		List<AlbumVO> list = artistService.albumList(agId);
+		model.addAttribute("list", list);
+		model.addAttribute("agId", agId);
+		return "entertain/album";
+	}
+	
+	@RequestMapping(value="/detail.do", method = RequestMethod.GET)
+	public String noticeDetail(int alNo, Model model, String agId) {
+		List<TrackListVO> trackList = artistService.selectAlbum(alNo);
+		AlbumVO albumVO = artistService.albumDetail(alNo);
+		log.info("trackList ==? " + trackList);
+		log.info("list == ? " + albumVO);
+		model.addAttribute("albumVO", albumVO);
+		model.addAttribute("trackList", trackList);
+		return "entertain/albumDetail";
+	}
+	
+	
+	@RequestMapping(value = "/adminList.do")
+	private String adminList(
+			@RequestParam(name ="page", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(required = false) String searchWord,
+			Model model
+			
+			) { 
+		PaginationInfoVO<ArtistGroupVO> pagingVO = new PaginationInfoVO<ArtistGroupVO>(5, 5);
+		
+		if (StringUtils.isNotBlank(searchWord)) {
+			pagingVO.setSearchWord(searchWord);
+			
+			model.addAttribute("searchWord", searchWord);
+		}
+		
+		pagingVO.setCurrentPage(currentPage);
+		int totalRecord = artistService.selectArtistListCount(pagingVO);
+		pagingVO.setTotalRecord(totalRecord);
+		
+		List<ArtistGroupVO> adminList = artistService.adminList(pagingVO);
+		pagingVO.setDataList(adminList);
+		log.info("adminList --- > " + adminList);
+		model.addAttribute("pagingVO", pagingVO);
+		
+		return "admin/entertain/artistList";
+	}
+	
+}

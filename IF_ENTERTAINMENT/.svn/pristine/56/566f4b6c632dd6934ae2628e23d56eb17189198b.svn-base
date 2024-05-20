@@ -1,0 +1,94 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+<%-- <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/font-awesome.min.css"> --%>
+<%-- <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/themify-icons.css"> --%>
+<%-- <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/line-icons.css"> --%>
+<%-- <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/bootstrap.min.css"> --%>
+<%-- <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/animate.min.css"> --%>
+<%-- <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/perfect-scrollbar.min.css"> --%>
+<%-- <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/jquery.datepicker.min.css"> --%>
+
+<script src="${pageContext.request.contextPath }/resources/js1/jquery.js"></script> 
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/bootstrap.min.js"></script>  --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/perfect-scrollbar.jquery.min.js"></script>  --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/chart.min.js"></script>  --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/echart.min.js"></script>  --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/jquery.sparkline.min.js"></script>  --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/custom2.js"></script>  --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/flatweather.min.js"></script>  --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/html5lightbox.js"></script>  --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/custom.js"></script> --%>
+
+<!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
+<!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+
+            
+<div class="inner-bg">
+  <div class="gap no-top">
+    <div class="element-title">
+      <div class="accordians-style">
+         <div class="row">
+           <div class="col-md-12">
+             <div class="toggle toggle-style1" id="toggle">
+               <h4 class="wdg-tl">FAQ 관리</h4>
+               <table>
+               		<tr>
+	               		<th>번호</th>
+	               		<th>제목</th>
+	               		<th>작성일</th>
+	               		<th>작성자</th>
+	               		<th>상태</th>
+               		</tr>
+               		<tr>
+               			<td></td>
+               			<td></td>
+               			<td></td>
+               			<td></td>
+               			<td>
+               				<span class="delete state_icon">
+					            <a href="#">
+					            	<i class="fa fa-pencil" aria-hidden="true"></i>
+					            </a>
+					            <a href="# "><i class="icon-trash"></i></a>
+				            </span>
+               			</td>
+               		</tr>
+               </table>
+               <div class="toggle-item brd-5 activate">
+                 <h3 class="active">Using This Dedicated Purpose Theme? <span><i class="fa fa-angle-up"></i></span></h3>
+                 <div class="content">
+                   <div class="simple-text">
+                     <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.</p>
+                   </div>
+                 </div>
+               </div>
+               <div class="toggle-item brd-5">
+                 <h3 class="">Creative And Corporate Industries? <span><i class="fa fa-angle-up"></i></span></h3>
+                 <div class="content">
+                   <div class="simple-text">
+                     <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.</p>
+                   </div>
+                 </div>
+               </div>
+               <div class="toggle-item brd-5">
+                 <h3 class="">Business Niche Or Creative Style? <span><i class="fa fa-angle-up"></i></span></h3>
+                 <div class="content">
+                   <div class="simple-text">
+                     <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.</p>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+      </div>
+    </div>
+  </div>
+</div>

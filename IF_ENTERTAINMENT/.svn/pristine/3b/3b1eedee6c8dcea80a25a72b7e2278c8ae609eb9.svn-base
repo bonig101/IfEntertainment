@@ -1,0 +1,201 @@
+package kr.or.ddit.service.impl.entertain;
+
+import java.io.File;
+import java.util.List;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.or.ddit.mapper.entertain.IAuditionMapper;
+import kr.or.ddit.service.entertain.IAuditionService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.AuditionBoardVO;
+import kr.or.ddit.vo.entertain.AuditionRegisterVO;
+import kr.or.ddit.vo.entertain.NationVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class AuditionServiceImpl implements IAuditionService {
+
+	@Inject
+	private IAuditionMapper auditionMapper;
+
+	@Override
+	public int selectNoticeCount(PaginationInfoVO<AuditionBoardVO> pagingVO) {
+		return auditionMapper.selectNoticeCount(pagingVO);
+	}
+
+	@Override
+	public List<AuditionBoardVO> auditionScheduleList(PaginationInfoVO<AuditionBoardVO> pagingVO) {
+		
+//		log.info("pagingVO.getStartRow()"+pagingVO.getStartRow());
+//		log.info("##########"+pagingVO.getEndRow());
+		return auditionMapper.auditionScheduleList(pagingVO);
+	}
+
+	@Override
+	public AuditionBoardVO auditionScheduleDetail(int bfNo) {
+		return auditionMapper.auditionScheduleDetail(bfNo);
+	}
+
+	@Override
+	public List<NationVO> nationList() {
+		return auditionMapper.nationList();
+	}
+
+	@Override
+	public ServiceResult auditionSupportRegister(HttpServletRequest req, AuditionRegisterVO auditionRegisterVO) {
+		ServiceResult result = null;
+		
+		try {
+			auditionPhotoFileUpload(auditionRegisterVO.getAuditionPhotoFile(),auditionRegisterVO, auditionRegisterVO.getAuditionVideoFile(), req);
+			
+			auditionRegisterVO.setArCancel("N");
+			auditionMapper.auditionSupportRegister(auditionRegisterVO);
+			result = ServiceResult.OK;
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+	
+	@Override
+	public ServiceResult updateSupport(HttpServletRequest req, AuditionRegisterVO auditionRegisterVO) {
+		ServiceResult result = null;
+		
+		try {
+			auditionPhotoFileUpload(auditionRegisterVO.getAuditionPhotoFile(),auditionRegisterVO, auditionRegisterVO.getAuditionVideoFile(), req);
+			
+//			auditionRegisterVO.setArCancel("N");
+			auditionMapper.updateSupport(auditionRegisterVO);
+			result = ServiceResult.OK;
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	private void auditionPhotoFileUpload(MultipartFile auditionPhotoFile, AuditionRegisterVO auditionRegisterVO,
+			MultipartFile auditionVideoFile, HttpServletRequest req) throws Exception {
+		
+		String savePath = "/resources/upload/audition/photo/";
+		String savePath1 = "/resources/upload/audition/video/";
+		
+		String saveLocate = null;
+		String saveLocate1 = null;
+		
+		if(auditionPhotoFile != null && auditionVideoFile != null) {
+			String saveName = UUID.randomUUID().toString();
+			String saveName1 = UUID.randomUUID().toString();
+			
+			
+			saveName += "_" + auditionRegisterVO.getAuditionPhotoFile().getOriginalFilename();
+			saveName1 += "_" + auditionRegisterVO.getAuditionVideoFile().getOriginalFilename();
+			
+			saveLocate = req.getServletContext().getRealPath(savePath);
+			saveLocate1 = req.getServletContext().getRealPath(savePath1);
+			
+			File file = new File(saveLocate);
+			if(!file.exists()) {
+				file.mkdirs();
+			}
+			
+			File file1 = new File(saveLocate1);
+			if(!file1.exists()) {
+				file1.mkdirs();
+			}
+			
+			saveName = saveName.replaceAll(" ", "_");
+			saveName1 = saveName1.replaceAll(" ", "_");
+			
+			saveLocate += saveName;
+			saveLocate1 += saveName1;
+			
+			File saveFile = new File(saveLocate);
+			File saveFile1 = new File(saveLocate1);
+//			log.info("saveFile 들어왔나?? {}", saveFile);
+			auditionRegisterVO.getAuditionPhotoFile().transferTo(saveFile);
+			auditionRegisterVO.getAuditionVideoFile().transferTo(saveFile1);
+			
+			savePath += saveName;
+//			log.info("saveNamesaveNamesaveName"+saveName);
+//			log.info("savePathsavePath"+savePath);
+			
+//			log.info("##############################savePath"+savePath);
+			
+			auditionRegisterVO.setArPhoto(saveName);
+			auditionRegisterVO.setArVideo(saveName1);
+			
+		}
+	}
+
+	@Override
+	public List<AuditionRegisterVO> auditionSupportList() {
+		return auditionMapper.auditionRegisterList();
+	}
+
+	@Override
+	public AuditionRegisterVO selectSupport(int arNo) {
+		return auditionMapper.selectSupport(arNo);
+	}
+
+	@Override
+	public void cancelSupport(AuditionRegisterVO auditionRegisterVO) {
+		auditionMapper.cancelSupport(auditionRegisterVO);
+	}
+
+//	@Override
+//	public ServiceResult updateSupport1(HttpServletRequest req, AuditionRegisterVO auditionRegisterVO) {
+//		ServiceResult result = null;
+//		
+//		//file 두개 업로드 기능
+//		// 제목 arphoto 
+//		//auditionRegisterVO.set(),auditionRegisterVO.set()
+//		
+//		
+//		int status = auditionMapper.updateSupport(auditionRegisterVO);
+////		int status = auditionMapper.updateSupport(auditionRegisterVO);
+//		
+//		if(status > 0) {
+//			
+//			if(StringUtils.isBlank(auditionRegisterVO.getAuditionPhotoFile().getOriginalFilename())
+//					|| StringUtils.isBlank(auditionRegisterVO.getAuditionVideoFile().getOriginalFilename())
+//					) {
+//				return ServiceResult.OK;
+//			}else {
+//				
+//				try {
+//					
+//					auditionMapper.deleteAuditionFile(auditionRegisterVO.getArNo());
+//					File file = new File(req.getServletContext().getRealPath("/resources/upload/audition/photo/"));
+//					file.delete();
+//					
+//					File file1 = new File(req.getServletContext().getRealPath("/resources/upload/audition/video/"));
+//					file1.delete();
+//					
+//					auditionPhotoFileUpload(auditionRegisterVO.getAuditionPhotoFile(),auditionRegisterVO, auditionRegisterVO.getAuditionVideoFile(), req);
+//					
+//				}catch(Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			result = ServiceResult.OK;
+//		}else {
+//			result = ServiceResult.FAILED;
+//		}
+//		return result;
+//	}
+
+	
+}

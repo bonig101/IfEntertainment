@@ -1,0 +1,105 @@
+package kr.or.ddit.controller.goods;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import kr.or.ddit.service.goods.IGoodsService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.entertain.ArtistGroupVO;
+import kr.or.ddit.vo.goods.GoodsCategoryVO;
+import kr.or.ddit.vo.goods.GoodsVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 상품 등록 컨트롤러
+ * @author 성이수
+ */
+@Controller
+@Slf4j
+@RequestMapping("/goods")
+public class GoodsInsertController {
+	@Inject
+	private IGoodsService goodsService;
+	
+	@RequestMapping(value = "/form.do", method = RequestMethod.GET)
+	public String goodsinsertform(Model model) {
+		
+		 List<ArtistGroupVO> artistgroupVO = goodsService.selectAritstList();
+		 List<GoodsCategoryVO>categoryVO = goodsService.selectCategoryList();
+		 
+		 model.addAttribute("artistgroup", artistgroupVO);
+		 model.addAttribute("category", categoryVO);
+		
+		return "admin/goods/addProduct";
+	}
+	
+	@RequestMapping(value = "/insert.do", method = RequestMethod.POST)
+	public String goodsinsert(
+			HttpServletRequest req,
+			GoodsVO goodsVO, Model model,
+			RedirectAttributes ra) {
+		
+		String goPage = "";
+		
+		Map<String, String> errors = new HashMap<String, String>();
+		
+		if (StringUtils.isBlank(goodsVO.getGoodsArtist())) {
+			errors.put("goodsArtist", "아티스트 카테고리(대분류)를 입력해주세요.");
+		}
+		if (StringUtils.isBlank(goodsVO.getGcId())) {
+			errors.put("gcId", "제품 카테고리(중분류)를 입력해주세요.");
+		}
+		if (StringUtils.isBlank(goodsVO.getGoodsName())) {
+			errors.put("goodsName", "제품명을 입력해주세요");
+		}
+		if (goodsVO.getGoodsPrice() == null) {
+		    errors.put("goodsPrice", "제품가격을 입력해주세요");
+		}
+		if (goodsVO.getGoodsQuantity() == null) {
+		    errors.put("goodsQuantity", "제품수량을 입력해주세요");
+		}
+		if (goodsVO.getGoodsLimit() == null) {
+		    errors.put("goodsLimit", "1인당 구매 제한 수량을입력해주세요");
+		}
+		if (goodsVO.getGoodsAutocndtn() == null) {
+			errors.put("goodsAutocndtn", "발주 시 최소 기준을 입력해주세요");
+		}
+		if (goodsVO.getGoodsAutobuycount() == null) {
+			errors.put("goodsAutobuycount", "발주 수량을 입력해주세요");
+		}
+		if (StringUtils.isBlank(goodsVO.getGoodsThumbnail())) {
+			errors.put("goodsThumbnail", "썸네일을 등록해주세요");
+		}
+		if (goodsVO.getGoodsFileList() == null) {
+			errors.put("goodsFileList", "상세이미지를 등록해주세요");
+		}
+		
+		
+		if (errors.size() > 0) {
+			model.addAttribute("errors", errors);
+			model.addAttribute("GoodsVO", goodsVO);
+			goPage = "goods/addProduct";
+		}else {
+			ServiceResult result = goodsService.insertProd(req, goodsVO);
+			if (result.equals(ServiceResult.OK)) {
+				ra.addFlashAttribute("message", "게시글 등록이 성공했습니다.");
+				goPage = "redirect:/goods/detail.do?goodsNo=" + goodsVO.getGoodsNo();
+			}else {
+				model.addAttribute("message", "서버에러! 다시 시도해주세요!");
+				goPage = "goods/form";
+			}
+		}
+		return goPage;
+	}
+}

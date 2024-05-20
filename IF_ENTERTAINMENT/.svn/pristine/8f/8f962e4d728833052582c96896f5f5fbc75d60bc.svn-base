@@ -1,0 +1,67 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+    <title>Artist Group Information</title>
+    <!-- CSS 스타일링 -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Artist Group Information</h2>
+        <table>
+            <tr>
+                <th>Artist Group ID</th>
+                <th>Artist Group Name</th>
+                <th>Artist Group Introduction</th>
+                <th>Artist ID</th>
+                <th>Artist Name</th>
+                <th>Artist Introduction</th>
+            </tr>
+			<c:forEach items="${artistGroup}" var="group">
+			    <tr>
+			        <td>${group.agId}</td>
+			        <td>${group.agName}</td>
+			        <td>${group.agIntro}</td>
+			    </tr>
+			    <c:forEach items="${group.artistList}" var="artist">
+			        <tr>
+			            <td>${artist.agId}</td>
+			            <td>${artist.userNo}</td>
+			            <td>${artist.artistBirth}</td>
+			            <td>${artist.artistFakename}</td>
+			            <td>${artist.artistIntro}</td>
+			        </tr>
+			    </c:forEach>
+			</c:forEach>
+
+
+        </table>
+    </div>

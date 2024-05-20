@@ -1,0 +1,115 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<title>Web Admin panel</title>
+<link rel="icon" type="image/png" href="images/fav.png">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/font-awesome.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/bootstrap.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/animate.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/color.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/responsive.css">
+</head>
+<body>
+<!-- Start Page Loading -->
+    <div id="loader-wrapper">
+      <div id="loader"></div>
+      <div class="loader-section section-left"></div>
+      <div class="loader-section section-right"></div>
+    </div>
+<div class="panel-layout">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="admin-lock vh100"> 
+          <div class="admin-form">
+            <div class="logo"><img src="images/logo2.png" alt=""></div>
+            <h4>Forgot Id </h4>
+            <form method="post">
+
+              <label><i class="fa fa-envelope"></i></label>
+              <input type="text" id="userName" name="userName" placeholder="Name" style="text-transform: none;">
+              <label><i class="fa fa-envelope"></i></label>
+              <input type="text" id="memberTelno" name="memberTelno" placeholder="TelNo" style="text-transform: none;">
+              <input type="button" id="idfindBtn" value="아이디 찾기" style="margin-top: 30px; background-color: aquamarine">
+            </form>
+            <span> 
+				<a href="/signin.do" title="" style="position: relative;top: 15px;">go login</a>
+			</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="${pageContext.request.contextPath }/resources/js1/jquery.js"></script> 
+<script src="${pageContext.request.contextPath }/resources/js1/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath }/resources/js1/custom.js"></script>
+<script type="text/javascript">
+$(function(){
+	var idfindBtn =$("#idfindBtn");
+	
+	idfindBtn.on("click",function(){
+		var userName=$("#userName").val();
+		var memberTelno=$("#memberTelno").val();
+		
+		if(userName == null || userName == ""){
+			Swal.fire({
+				  icon: "error",
+				  title: "이름을 입력해주세요",
+				  showConfirmButton: false,
+				  timer: 1500
+				});
+			$("#userName").focus();
+			return false;
+		}
+		if(memberTelno == null || memberTelno == ""){
+			Swal.fire({
+				  icon: "error",
+				  title: "전화 번호를 입력해 주세요",
+				  showConfirmButton: false,
+				  timer: 1500
+				});
+			$("#memberTelno").focus();
+			return false;
+		}
+		
+		$.ajax({
+			url:'idfind.do',
+			type: 'POST',
+			data:JSON.stringify({
+				userName : userName,
+				memberTelno : memberTelno
+			}),
+			contentType : "application/json;charset=utf-8",
+			error : function() {
+				$("#resultId").text("일치하는 정보가 없습니다!");
+			},
+			success: function(res) {
+// 			    $("#resultId").text("회원님의 아이디는 [" + res + "] 입니다.");
+				Swal.fire({
+					  icon: "success",
+					  title: "회원님의 아이디는 [" + res + "] 입니다.",
+					  showConfirmButton: false,
+					  timer: 2500
+					});
+	            setTimeout(function() {
+	                location.href = "/signin.do";
+	            }, 3500);
+			}
+		});
+		
+	});
+});
+</script>
+
+</body>
+</html>

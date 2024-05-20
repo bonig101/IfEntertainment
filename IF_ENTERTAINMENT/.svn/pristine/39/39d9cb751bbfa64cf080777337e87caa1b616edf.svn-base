@@ -1,0 +1,7 @@
+package kr.or.ddit.mapper.common;
+
+import kr.or.ddit.vo.common.NotificationVO;
+
+public interface IWebSocketMapper {
+	public int insertInquiry(NotificationVO notificationVO);
+}

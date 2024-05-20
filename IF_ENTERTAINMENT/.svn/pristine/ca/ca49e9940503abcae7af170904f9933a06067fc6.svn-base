@@ -1,0 +1,29 @@
+package kr.or.ddit.service.impl.goods;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.goods.IGoodsNoticeMapper;
+import kr.or.ddit.service.goods.IGoodsNoticeService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.goods.GoodsNoticeVO;
+
+@Service
+public class GoodsNoticeServiceImpl implements IGoodsNoticeService {
+	
+	@Inject
+	private IGoodsNoticeMapper goodsNoticeMapper;
+
+	@Override
+	public ServiceResult insertgoodsNotice(HttpServletRequest req, GoodsNoticeVO goodsNoticeVO) {
+		ServiceResult result = null;
+		
+		
+		String thumbnail = null;
+		
+		return null;
+	}
+
+}

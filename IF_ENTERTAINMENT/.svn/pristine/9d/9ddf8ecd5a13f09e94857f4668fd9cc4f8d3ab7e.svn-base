@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="blank">
+<!-- 	<resultMap id="calResultMap" type="CalVO"> -->
+<!--     <result property="_id" column="as_no"/> -->
+<!--     <result property="title" column="as_title"/> 컬럼명 startt 매핑 -->
+<!--     <result property="start" column="as_start"/> -->
+<!--     <result property="end" column="as_end"/> -->
+<!--     <result property="description" column="as_desc"/> -->
+<!--     <result property="type" column="as_type"/> -->
+<!--     <result property="username" column="as_username"/> -->
+<!--     <result property="backgroundColor" column="as_backgroundcolor"/> -->
+<!--     <result property="textColor" column="as_textcolor"/> -->
+<!--     <result property="allDay" column="as_allday"/> -->
+<!--     <result property="agId" column="ag_id"/> -->
+<!-- </resultMap> -->
+
+
+<!-- 	<insert id="insert" parameterType="calVO" > -->
+<!-- 		insert into artist_schedule ( -->
+<!-- 			as_no, as_title, as_start, as_end, as_desc,as_type,as_username,as_backgroundcolor,as_textcolor,as_allday,ag_id -->
+<!-- 		) VALUES ( -->
+<!--     SEQ_ARTIST_SCHEDULE.NEXTVAL, #{title}, TO_DATE(#{start}, 'YYYY-MM-DD HH24:MI'), TO_DATE(#{end}, 'YYYY-MM-DD HH24:MI'), #{description}, #{type}, #{username}, #{backgroundColor}, #{textColor}, #{allDay}, #{agId} -->
+<!-- ) -->
+<!-- 	</insert> -->
+	
+<!-- 	<select id="scList" parameterType="string" resultMap="calResultMap"> -->
+<!-- 		 SELECT * FROM artist_schedule -->
+<!-- 		 where ag_id = #{agId} -->
+<!-- 	</select> -->
+	
+<!-- 	<delete id="delete"> -->
+<!-- 		delete * from artist_schedule -->
+<!-- 		where asNo = #{asNo} -->
+	
+<!-- 	</delete> -->
+	
+	<update id="update" parameterType="calVO">
+	    UPDATE artist_schedule
+		    SET
+		    as_title = #{title},
+		    as_start = TO_DATE(#{start}, 'YYYY-MM-DD HH24:MI'),
+		    as_end = TO_DATE(#{end}, 'YYYY-MM-DD HH24:MI'),
+		    as_desc = #{description},
+		    as_type = #{type},
+		    as_username = #{username},
+		    as_backgroundcolor = #{backgroundColor},
+		    as_textcolor = #{textColor},
+		    as_allday = #{allDay},
+		    ag_id = #{agId}
+		    WHERE as_no = #{_id}
+		
+	</update>
+	<select id="userList" resultMap="calResultMap">
+		select user_name, user_profile
+		from "USER"
+	</select>
+	
+	<update id="sizeUpdate" parameterType="calVO">
+		update artist_schedule 
+		set
+		as_start = TO_DATE(#{start}, 'YYYY-MM-DD HH24:MI'),
+		as_end = TO_DATE(#{end}, 'YYYY-MM-DD HH24:MI')
+		where as_no = #{_id}
+	</update>
+	
+	<update id="dragUpdate" parameterType="calVO">
+	 	update artist_schedule 
+		set
+		as_start = TO_DATE(#{start}, 'YYYY-MM-DD HH24:MI'),
+		as_end = TO_DATE(#{end}, 'YYYY-MM-DD HH24:MI')
+		where as_no = #{_id}
+	</update>
+</mapper>

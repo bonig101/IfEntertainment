@@ -1,0 +1,311 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script
+	src="${pageContext.request.contextPath }/resources/js/main.min.js"></script>
+<script src="${pageContext.request.contextPath }/resources/js/script.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath }/resources/css/main.min.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath }/resources/css/style.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath }/resources/css/color.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath }/resources/css/responsive.css">
+<link rel="icon"
+	href="${pageContext.request.contextPath }/resources/images/fav.png"
+	type="image/png" sizes="16x16">
+<title>회원정보 수정하기</title>
+<style type="text/css">
+@font-face {
+	font-family: 'LOTTERIACHAB';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/LOTTERIACHAB.woff2')
+		format('woff2');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'GmarketSansMedium';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
+		format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+body {
+	font-family: 'GmarketSansMedium', sans-serif;
+}
+
+.medium-opacity:before {
+	-webkit-opacity: .3;
+	-moz-opacity: .3;
+	-ms-opacity: .3;
+	-o-opacity: .3;
+	opacity: .3;
+}
+
+.radio {
+	display: flex;
+	flex-direction: row;
+}
+
+.frame {
+	width: 90%;
+	margin: 40px auto;
+	text-align: center;
+}
+
+.custom-btn {
+	width: 130px;
+	height: 40px;
+	color: #fff;
+	border-radius: 5px;
+	padding: 10px 25px;
+	font-weight: 500;
+	background: transparent;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	position: relative;
+	display: inline-block;
+	box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5), 7px 7px 20px
+		0px rgba(0, 0, 0, .1), 4px 4px 5px 0px rgba(0, 0, 0, .1);
+	outline: none;
+}
+
+.btn-16 {
+	border: none;
+}
+
+.btn-16:after {
+	position: absolute;
+	content: "";
+	width: 0;
+	height: 100%;
+	top: 0;
+	left: 0;
+	direction: rtl;
+	z-index: -1;
+	box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9, 7px 7px
+		20px 0px #0002, 4px 4px 5px 0px #0001;
+	transition: all 0.3s ease;
+}
+
+.btn-16:hover {
+	color: #fff;
+	background: #6f42c1;
+}
+
+.btn-16:hover:after {
+	left: auto;
+	right: 0;
+	width: 100%;
+	border-radius: 7px;
+}
+
+.btn-16:active {
+	top: 2px;
+}
+
+.big-ad>figure {
+	margin-bottom: 0;
+}
+</style>
+</head>
+<body>
+	<div class="www-layout">
+		<section>
+			<div class="gap no-gap signin whitish medium-opacity register">
+				<div class="bg-image"
+					style="background-image: url(https://incheontimes.co.kr/boardImage/incheontimes/20230118/MC4wMDQ2NDQwMCAxNjczOTQwNjk5.jpg)">
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-3">
+							<div class="big-ad" style="text-align: center;">
+
+								<div class="profile-author-thumb">
+									<img alt="author"
+										src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQM2mREKz1urWee-ILbLV141aEot77-pty0Y2BL7Xf2cw&s"
+										style="width: 150px; height: 150px;">
+									<div class="edit-dp">
+										<label class="fileContainer"> <i class="fa fa-camera"></i>
+											<input type="file">
+										</label>
+									</div>
+								</div>
+								<figure
+									style="font-family: 'LOTTERIACHAB'; font-size: 30px; padding: 10px; color: white;">
+									If entertainment
+									<br/>Fan 홍진영님
+									<i class="fa-brands fa-waze"></i>
+								</figure>
+								
+								<div>
+ <button class="custom-btn btn-16">탈퇴하기</button>
+ <button class="custom-btn btn-16">뒤로가기</button>
+							</div>
+							
+							</div>
+
+						</div>
+						<div class="col-lg-9">
+							<div class="reg-from" style="margin-top: 100px;">
+								<span>🛠️회원정보 수정하기</span>
+								<p>회원님의 소중한 정보를 안전하게 관리하세요 ❗</p>
+
+								<form class="c-form" mthoed="post">
+									<div class="row merged10">
+										<div class="col-lg-6 col-md-6 col-sm-6">
+											<label>🆔 아이디</label> <input class="mb-2" type="text"
+												placeholder="ID">
+										</div>
+										<div class="col-lg-6 col-md-6 col-sm-6">
+											<label>👑 이름</label> <input class="mb-2" type="text"
+												placeholder="Name">
+										</div>
+										
+										<div class="col-lg-12 col-md-12 col-sm-12">
+										<span><br></span>
+										</div>
+										
+										<div class="col-lg-6 col-md-6 col-sm-6">
+											<label>🔐 새 비밀번호</label> <input class="mb-2" type="password"
+												placeholder="Retype Password">
+										</div>
+										<div class="col-lg-6 col-md-6 col-sm-6">
+											<label>🔐 새 비밀번호 확인</label> <input class="mb-2" type="password"
+												placeholder="Retype Password">
+										</div>
+										
+										<div class="col-lg-12 col-md-12 col-sm-12">
+										<span><br></span>
+										</div>
+										
+										<div class="col-lg-2 col-md-2 col-sm-2">
+												<label>👫 성별</label>
+												<input class="mb-2" type="text"
+												placeholder="Gender">
+										</div>
+										
+										<div class="col-lg-4 col-md-4 col-sm-4">
+											<label>📅 생년월일</label> <input class="mb-2" type="text"
+												placeholder="Date">
+										</div>
+										<div class="col-lg-6 col-md-6 col-sm-6">
+											<label>📱 전화번호</label> <input class="mb-2" type="text"
+												placeholder="Phone">
+										</div>
+										
+										<div class="col-lg-12 col-md-12 col-sm-12">
+										<span><br></span>
+										</div>
+										
+										<div class="col-lg-12 col-md-12 col-sm-12">
+										<span><br></span>
+										</div>
+										
+										<div class="col-lg-12 col-md-12 col-sm-12">
+											<label>💌 이메일</label> <input class="mb-2" type="text"
+												placeholder="Email">
+										</div>
+										
+										<div class="col-lg-12 col-md-12 col-sm-12">
+										<span><br></span>
+										</div>
+										
+										<div class="col-lg-2 col-md-2 col-sm-2">
+											<label>📫 우편번호</label> <input class="mb-2" type="postcode"
+												placeholder="postcode">
+										</div>
+										<div class="col-lg-5 col-md-5 col-sm-5">
+											<label>🚩 주소</label> <input class="mb-2" type="address1"
+												placeholder="address1">
+										</div>
+										<div class="col-lg-5 col-md-5 col-sm-5">
+											<label>상세주소</label> <input class="mb-2" type="address2"
+												placeholder="address2">
+										</div>
+										
+										<div class="col-lg-12 col-md-12 col-sm-12">
+										<span><br></span>
+										</div>
+										
+										<div class="col-lg-5 col-md-5 col-sm-5">
+											<div class="gender mb-2">
+												<label>💡 알림수신 여부</label>
+												<div class="form-radio">
+													<div class="radio"
+														style="border: none; background: none; display: flex;">
+														<label style="width: 250px;"> <input type="radio"
+															name="receive_option" checked="checked"><i
+															class="check-box"></i>동의
+														</label> <label> <input type="radio" name="receive_option"><i
+															class="check-box"></i> 비동의
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-lg-7 col-md-7 col-sm-7">
+											<div class="gender mb-2">
+												<label>🚀 알림수신 채널 선택</label>
+												<div class="form-radio">
+													<div class="radio"
+														style="border: none; background: none; display: flex;">
+														<label> <input type="radio" name="channel_option"
+															checked="checked"><i class="check-box"></i>전체동의
+														</label> <label> <input type="radio" name="channel_option"
+															checked="checked"><i class="check-box"></i>커뮤니티
+														</label> <label> <input type="radio" name="channel_option"><i
+															class="check-box"></i>굿즈샵
+														</label> <label> <input type="radio" name="channel_option"><i
+															class="check-box"></i>이벤트
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-lg-12 col-md-12 col-sm-12 mb-2">
+											<div class="checkbox mb-1">
+												<label> <input type="checkbox" checked="checked"><i
+													class="check-box"></i> 서비스·이벤트 정보 수신에 동의합니다.
+												</label>
+											</div>
+										</div>
+										<div class="col-lg-8 col-md-6 mt-2">
+											<span class="reg-with">Register With</span>
+											<ul class="social-reg">
+												<li><a class="facebook" href="#" title=""
+													data-ripple="">굿즈샵 이용</a></li>
+												<li><a class="twitter" href="#" title="" data-ripple="">IF
+														커뮤니티</a></li>
+											</ul>
+										</div>
+										<div class="col-lg-4 col-md-6 mt-2">
+											<button type="submit">회원정보 수정하기</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</body>
+
+<script type="text/javascript">
+	
+</script>

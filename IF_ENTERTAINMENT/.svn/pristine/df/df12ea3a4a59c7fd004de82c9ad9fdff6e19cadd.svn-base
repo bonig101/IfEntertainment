@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.goods.IOrderMapper">
+
+	<select id="selectOrderListcount" parameterType="pagingVO">
+		select count(order_no)
+		from order
+	</select>
+
+	<select id="selectOrderList" parameterType="pagingVO" resultType="orderVO">
+		SELECT 
+		    ORDER_NO, ORDER_TOTALPRICE, ORDER_DELIVERY, USER_NO, GOODS_THUMBNAIL, GOODS_NAME, GOODS_ARTIST, orderCount
+		FROM (
+		    SELECT 
+		        O.ORDER_NO, O.ORDER_TOTALPRICE, O.ORDER_DELIVERY, O.USER_NO, G.GOODS_THUMBNAIL,
+		        G.GOODS_NAME, G.GOODS_ARTIST, ROW_NUMBER() OVER (ORDER BY O.ORDER_NO) AS rn,
+		        (select count(*) from order_detail where od.order_no = order_no) as orderCount
+		    FROM 
+		        "ORDER" O 
+		    LEFT OUTER JOIN 
+		        "USER" U ON (O.USER_NO = U.USER_NO)
+		    LEFT OUTER JOIN
+		        ORDER_DETAIL OD ON (O.ORDER_NO = OD.ORDER_NO)
+		    LEFT OUTER JOIN
+		        GOODS G ON (OD.GOODS_NO = G.GOODS_NO)
+		    LEFT OUTER JOIN
+		        ORDER_ISSUE OI ON(O.ORDER_NO = OI.ORDER_NO)
+		    WHERE 
+		        O.USER_NO = #{userNo}
+		) t
+		WHERE rn = 1
+	</select>
+
+
+</mapper>

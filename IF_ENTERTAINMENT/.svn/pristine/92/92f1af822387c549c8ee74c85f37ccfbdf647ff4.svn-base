@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.entertain.IArtistMapper">
+	
+	<resultMap id="trackMap" type="trackListVO">
+    <id property="trackNo" column="track_no"/>
+    <result property="trackName" column="track_name"/>
+    <result property="trackTitle" column="track_title"/>
+    <result property="trackDelyn" column="track_delyn"/>
+    <result property="alNo" column="al_no"/>
+	</resultMap>
+	
+	<select id="albumList" resultType="albumVO">
+		select * from artist_album
+		where ag_id = 'PROMIS_9'
+	</select>
+	
+	<!-- alNo써서 TrackList정보를 조회하는 쿼리 -->
+ 	<select id="selectAlbum" parameterType="int" resultMap="trackMap">
+	    SELECT 
+	        t.track_no, 
+	        t.track_name, 
+	        t.track_title, 
+	        t.track_delyn, 
+	        t.al_no
+	    FROM 
+	        artist_album a
+	    JOIN 
+	        TrackList t ON a.al_no = t.al_no
+	    WHERE 
+	        a.al_no = #{alNo}
+	</select>
+	
+	
+	
+	
+	<select id="albumDetail" resultType="albumVO">
+		select * from artist_album
+		where al_no = #{alNo}
+	</select>	
+	
+	
+</mapper>

@@ -1,0 +1,237 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/company.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/bootstrap.min.css">
+<script src="${pageContext.request.contextPath }/resources/js1/bootstrap.min.js"></script>
+
+<%-- <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/main.min.css"> --%>
+<%-- <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/style.css"> --%>
+<%-- <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/color.css"> --%>
+<%-- <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/responsive.css"> --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js/main.min.js"></script> --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js/script.js"></script> --%>
+</head>
+<body>
+<div class="gap inner-bg">
+  <div class="table-styles">
+  
+  <div class="little-heading">
+  	<h2 class="header_title top_title">신고 관리</h2>
+  	<h4 class="top_title_icon"><i class="fa fa-chevron-right" aria-hidden="true"></i></h4>
+  	<h4 class="top_title_end">게시물 신고 관리</h4>
+  </div>
+  
+  	<div class="gap listbar-container">
+    <div class="discount-copon list-bar list_buttons_box">
+      <div class="row">
+<!-- 		<div class="col-md-2" style="display: flex;"> -->
+<!-- 		    <button class="filter-btn btn-st filter_btn " data-feedType="1">팬</button> -->
+<!-- 		    <button class="filter-btn btn-st filter_btn" data-feedType="2">아티스트</button> -->
+<!-- 		</div> -->
+        <div class="col-md-4">
+			<form method="post" id="searchForm" >
+			    <input type="hidden" name="page" id="page"/>
+			    <div class="searchform-box searchform_box">
+			        <select name="searchType" class="mem_searchType">
+			            <option value="content" ${searchType eq 'content' ? 'selected' : ''}>내용</option>
+			        </select>	
+			        <input type="text" class="mem_searchWord" name="searchWord" value="${searchWord}" placeholder="검색">
+			        <button type="submit" class="mem_searchBtn">검색</button>
+			    </div>
+			</form>
+        </div>
+        <div class="col-md-2 bottons_box">
+<!-- 			<button class="mem_edit" name="" value="">편집</button> -->
+        	<form id="deleteForm" class="delRegiForm" >
+	        	<button type="button" class="feed_state" style="width: 180px;">선택 게시물 비공개처리</button>
+	        	<input type="hidden" name="selectFeedState" id="selectFeedState"/>
+        	</form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+    <div class="widget">
+      <table class="prj-tbl striped table-responsive">
+        <thead class="color">
+           <tr class="feedTitle">
+             <th width="10%"><i class="all-slct"></i></th>
+             <th width="10%"><em>번호</em></th>
+             <th width="16.5%"><em>게시물 내용</em></th>
+             <th width="16%"><em>신고 내용</em></th>
+             <th width="12.5%"><em>신고한 아이디</em></th>
+             <th width="12.5%"><em>신고사유</em></th>
+             <th width="12.5%"><em>신고일</em></th>
+             <th width="10%"><em>처리여부</em></th>
+           </tr>
+        </thead>
+        <tbody>
+        <c:set value="${pagingVO.dataList}" var="boardList"/>
+        <c:choose>
+        	<c:when test="${empty boardList}">
+        		<tr>
+        			<td colspan="8">회원 리스트가 존재하지 않습니다.</td>
+        		</tr>
+        	</c:when>
+        	<c:otherwise>
+        		<c:forEach items="${boardList}" var="board">
+        			<tr class="feedList reportList" data-feedNo="${board.feedNo}" data-feedType="${board.feedType}">
+			            <td><input type="checkbox" class="selectFeed" value="${board.reportNo }"/></td>
+			            <td><span>${board.reportNo}</span></td>
+			            <td><span>${board.feedContent}</span></td>
+			            <td><span>${board.reportReason}</span></td>
+			            <td><span>${board.userId}</span></td>
+			            <td><span>${board.reportType}</span></td>
+			            <td><span><fmt:formatDate value="${board.reportDate}" pattern="yyyy-MM-dd"/></span></td>
+			            <td><span class="feed_state ">처리전 </span></td>
+			          </tr>
+        		</c:forEach>
+        	</c:otherwise>
+        </c:choose>
+        </tbody> 
+      </table>
+    </div>
+    
+    <div class="card-footer feed-footer clearfix" id="pagingArea">
+		${pagingVO.pagingHTML}
+	</div>
+
+	<!--   modal 시작 -->
+	<div id="myModal" class="modal_box">
+	  <div class="modal_content">
+	    <span class="modal_close_btn">&times;</span>
+	    <table>
+	        <tr>
+	            <td>게시물내용</td>
+	            <td>${board.feedContent}</td>
+	        </tr>
+	        <tr>
+	            <td>신고사유</td>
+	            <td>${board.reportType}</td>
+	        </tr>
+	        <tr>
+	            <td>신고내용</td>
+	            <td>${board.reportReason}</td>
+	        </tr>
+	        <tr>
+	            <td>신고일</td>
+	            <td>${board.reportDate}</td>
+	        </tr>
+	    </table>
+	    <!-- 정보 확인 버튼 -->
+	    <button id="confirmButton">확인</button>
+	  </div>
+	</div>
+
+<!--   modal 끝 -->
+  </div>
+</div>
+<script type="text/javascript">
+$(function(){
+    var searchForm = $("#searchForm");
+    var pagingArea = $("#pagingArea");
+
+    pagingArea.on("click", "a", function(event){
+        event.preventDefault();
+        var pageNo = $(this).data("page");
+        searchForm.find("#page").val(pageNo);
+        searchForm.submit();
+        alert("페이징클릭!!");
+    });
+    
+  	
+    
+    // "선택 게시물 비공개처리" 버튼 클릭 이벤트 처리
+    $(".feed_state").on("click", function() {
+        // 선택된 체크박스들을 가져오기 위한 배열
+        var selectedValues = [];
+
+        // 각 체크박스를 순회하며 선택된 값들을 배열에 추가
+        $(".selectFeed:checked").each(function() {
+            var feedContent = $(this).closest('tr').find('td:nth-child(3)').text();
+            var reportType = $(this).closest('tr').find('td:nth-child(6)').text();
+            var reportReason = $(this).closest('tr').find('td:nth-child(7)').text();
+            var reportDate = $(this).closest('tr').find('td:nth-child(8)').text();
+
+            // 선택된 값들을 객체로 생성하여 배열에 추가
+            selectedValues.push({
+                feedContent: feedContent,
+                reportType: reportType,
+                reportReason: reportReason,
+                reportDate: reportDate
+            });
+        });
+
+        // 선택된 값들을 콘솔에 출력하여 확인
+        console.log(selectedValues);
+
+        // 모달에 선택된 값들을 표시
+        showSelectedValuesInModal(selectedValues);
+    });
+
+    // 모달에 선택된 값들을 표시하는 함수
+    function showSelectedValuesInModal(selectedValues) {
+        // 모달의 테이블 내용을 비움
+        $("#myModal table").empty();
+
+        // 선택된 값들을 모달에 추가
+        selectedValues.forEach(function(value) {
+            var tableRow = "<tr>" +
+                                "<td>게시물내용</td>" +
+                                "<td>" + value.feedContent + "</td>" +
+                            "</tr>" +
+                            "<tr>" +
+                                "<td>신고사유</td>" +
+                                "<td>" + value.reportType + "</td>" +
+                            "</tr>" +
+                            "<tr>" +
+                                "<td>신고내용</td>" +
+                                "<td>" + value.reportReason + "</td>" +
+                            "</tr>" +
+                            "<tr>" +
+                                "<td>신고일</td>" +
+                                "<td>" + value.reportDate + "</td>" +
+                            "</tr>";
+
+            // 생성한 테이블 행을 모달에 추가
+            $("#myModal table").append(tableRow);
+        });
+
+        // 모달 표시
+        showModal();
+    }
+
+    // 모달 가져오기
+    var modal = document.getElementById("myModal");
+
+    // 닫기 버튼 가져오기
+    var closeBtn = document.getElementsByClassName("close")[0];
+
+    // 모달 표시 함수
+    function showModal() {
+        modal.style.display = "block";
+    }
+
+    // 모달 숨기는 함수
+    function closeModal() {
+        modal.style.display = "none";
+    }
+
+    // 닫기 버튼에 이벤트 리스너 추가
+    closeBtn.addEventListener("click", closeModal);
+
+});
+
+
+</script>
+</body>
+</html>

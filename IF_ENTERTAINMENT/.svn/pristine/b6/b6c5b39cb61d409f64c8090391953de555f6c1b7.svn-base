@@ -1,0 +1,16 @@
+package kr.or.ddit.vo.entertain;
+
+import java.util.List;
+
+import lombok.Data;
+
+@Data
+public class ArtistGroupVO {
+	 private String agId;
+	 private String agName;
+	 private String agDate;
+	 private String agIntro;
+	 private String agProfile;
+	 private String agDelyn;
+	 private List<ArtistVO> artistList;
+}

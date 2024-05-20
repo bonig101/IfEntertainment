@@ -1,0 +1,87 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta id="_csrf" name="_csrf" content=${_csrf.token }>
+<meta id="_csrf_header" name="_csrf_header" content=${_csrf.headerName }>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<title>Web Admin panel</title>
+<link rel="icon" type="image/png" href="${pageContext.request.contextPath }/resources/images1/fav.png">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/font-awesome.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/themify-icons.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/line-icons.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/bootstrap.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/animate.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/color.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/responsive.css">
+</head>
+<body>
+<!-- Start Page Loading -->
+<div id="loader-wrapper">
+    <div id="loader"></div>
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="admin-lock vh100"> 
+                <div class="admin-form">
+                    <div class="logo"><img src="images/logo2.png" alt=""></div>
+                    <h4>커뮤니티 가입</h4>
+                    <span>닉네임을 설정해주세요.</span>
+                    <c:if test="${not empty error}">
+				        <div style="color:red;">${error}</div>
+				    </c:if>
+                    <form action="${pageContext.request.contextPath}/community/communitySignUp" id="comForm" method="post">
+                        <input type="hidden" name="agId" value="${artistGroup[0].agId}" />
+                        <input type="hidden" name="userInfo" value="${userInfo}" />
+                        <label><i class="fa fa-user-circle-o"></i></label>
+                        <input type="text" id="mnNickname" name="mnNickname" placeholder="Complete Name">
+                        <label for="checkbox">I accept the <a href="#" title="">terms & Conditions</a></label>
+                        <button type="submit" id="comBtn">가입</button>
+                   <sec:csrfInput/>
+                    </form>
+                     <span> 
+						<a href="/community/main.do" title="" style="position: relative;top: 5px;">Main</a>
+					</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${pageContext.request.contextPath }/resources/js1/jquery.js"></script> 
+<script src="${pageContext.request.contextPath }/resources/js1/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath }/resources/js1/custom.js"></script>
+<script type="text/javascript">
+	    var mnNickname =$("#mnNickname");
+		var comBtn=$("#comBtn");
+	    var comForm=$("#comForm");
+	    
+	    comBtn.on("click",function(){
+	        var artistGroup = "${artistGroup}";
+	        var userInfo = "${userInfo}";
+	        var mnNick =$("#mnNickname").val();
+	        console.log("userInfouserInfo",userInfo);
+	        console.log("artistGroupartistGroup",artistGroup);
+	        console.log("mnNickmnNick",mnNick);
+	        
+	        comForm.submit();
+	   
+	   
+  
+   });
+   
+
+
+</script>
+</body>
+</html>

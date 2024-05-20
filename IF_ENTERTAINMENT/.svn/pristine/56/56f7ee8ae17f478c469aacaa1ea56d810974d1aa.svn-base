@@ -1,0 +1,25 @@
+package kr.or.ddit.vo.goods;
+
+import lombok.Data;
+
+@Data
+public class OrderVO {
+	 private String orderNo;
+	 private int orderTotalprice;
+	 private String orderPay;
+	 private String orderDate;
+	 private String orderDelivery;
+	 private String orderStatus;
+	 private int userNo;
+	 
+	 //굿즈넘버
+	 private int goodsNo;
+	 //주문내역 조회시 상품이미지를 불러오기 위한 필드
+	 private String goodsThumbnail;
+	 //주문내역 조회시 아티스트 이름을 불러오기 위한 필드
+	 private String goodsArtist;
+	 //주문내역 조회시 제품 이름을 불러오기 위한 필드
+	 private String goodsName;
+	 //주문내역 조회시 총 주문수량을 불러오기 위한 필드
+	 private int orderCount;
+}

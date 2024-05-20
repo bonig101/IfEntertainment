@@ -1,0 +1,12 @@
+package kr.or.ddit.vo.goods;
+
+import lombok.Data;
+
+@Data
+public class goodsBuyVO {
+	 private int gbNo;
+	 private int gbPrice;
+	 private int gbQuantity;
+	 private String gbDate;
+	 private int goodsNo;
+}

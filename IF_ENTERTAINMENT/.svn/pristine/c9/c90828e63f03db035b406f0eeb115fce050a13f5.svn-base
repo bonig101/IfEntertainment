@@ -1,0 +1,468 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
+<style type="text/css">
+	@font-face {
+	    font-family: 'LOTTERIACHAB';
+	    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/LOTTERIACHAB.woff2') format('woff2');
+	    font-weight: normal;
+	    font-style: normal;
+	}
+	
+	@font-face {
+	    font-family: 'GmarketSansMedium';
+	    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+	    font-weight: normal;
+	    font-style: normal;
+	}
+	
+	body {
+		font-family: 'GmarketSansMedium', sans-serif;
+	}
+	/*-- header dock style ---*/
+
+.slide-out .menu-item-has-children::before {
+  display: none;
+}
+
+.side-menus .slide-out nav > ul > li > a > span {
+  display: none;
+}
+
+.side-menus .logo {
+  display: none;
+}
+
+.side-menus .slide-out nav > ul > li {
+  text-align: right;
+}
+
+.side-menus .slide-out nav > ul > li > a {
+  padding-right: 15px;
+}
+
+.side-menus .slide-out .logo {
+  -webkit-opacity: 0;
+  -moz-opacity: 0;
+  -ms-opacity: 0;
+  -o-opacity: 0;
+  opacity: 0;
+  -webkit-transform: scale(0);
+  -moz-transform: scale(0);
+  -ms-transform: scale(0);
+  -o-transform: scale(0);
+  transform: scale(0);
+  -webkit-transition: all 0.3s linear 0s;
+  -moz-transition: all 0.3s linear 0s;
+  -ms-transition: all 0.3s linear 0s;
+  -o-transition: all 0.3s linear 0s;
+  transition: all 0.3s linear 0s;
+  visibility: hidden;
+  padding: 20px 15px;
+}
+
+.side-menus .slide-out:hover .logo {
+  visibility: visible;
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  -o-transform: scale(1);
+  transform: scale(1);
+  -webkit-opacity: 1;
+  -moz-opacity: 1;
+  -ms-opacity: 1;
+  -o-opacity: 1;
+  opacity: 1;
+}
+
+.side-menus .slide-out .logo a {
+  display: block;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.side-menus .slide-out .logo img {
+  left: 175px;
+  position: relative;
+}
+.slide-menu {
+	border-bottom: 1px solid #eee;
+}
+.slide-menu > span {
+  border-bottom: 1px solid #eee;
+  float: left;
+  font-size: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  padding-left: 25px;
+  text-transform: uppercase;
+  width: 100%;
+  padding-right: 20px;
+}
+
+.slide-menu > span i {
+  float: right;
+  font-size: 14px;
+}
+
+/*-- slide menu hover ---*/
+
+.side-header.slide-out:hover {
+  left: 0;
+}
+
+.side-header.slide-out:hover .slide-menu > ul li a i {
+  font-size: 14px;
+}
+
+.side-menus .slide-out:hover .logo,
+.main-page.style1 .side-menus .slide-out .logo {
+  float: left;
+  padding-right: inherit;
+  width: 100%;
+}
+
+.side-menus .slide-out:hover .logo img,
+.main-page.style1 .side-menus .slide-out .logo img {
+  position: unset;
+  -webkit-transform: initial;
+  -moz-transform: initial;
+  -ms-transform: initial;
+  -o-transform: initial;
+  transform: initial;
+}
+
+.side-menus .slide-out:hover nav > ul > li > a > span,
+.main-page.style1 .side-menus .slide-out nav > ul > li > a > span {
+  display: inline-block;
+}
+
+.side-menus .slide-out:hover nav > ul > li > a,
+.main-page.style1 .side-menus .slide-out nav > ul > li > a {
+  padding-right: 30px;
+}
+
+.slide-out:hover .menu-item-has-children::before,
+.main-page.style1 .slide-out .menu-item-has-children::before {
+  display: block;
+}
+
+.side-menus .slide-out:hover nav > ul > li,
+.main-page.style1 .side-menus .slide-out nav > ul > li {
+  text-align: left;
+}
+
+.side-menus .slide-out nav > ul > li.menu-item-has-children > ul {
+  position: absolute;
+  -webkit-opacity: 0;
+  -moz-opacity: 0;
+  -ms-opacity: 0;
+  -o-opacity: 0;
+  opacity: 0;
+}
+
+.side-menus .slide-out:hover nav > ul > li.menu-item-has-children > ul,
+.main-page.style1 .side-menus .slide-out nav > ul > li.menu-item-has-children > ul {
+  position: static;
+  -webkit-opacity: 1;
+  -moz-opacity: 1;
+  -ms-opacity: 1;
+  -o-opacity: 1;
+  opacity: 1;
+}
+.side-menus nav > ul > li.menu-item-has-children > ul > li > ul > li > a{
+	float: left;
+    font-family: lato;
+    font-size: 13px;
+    padding: 5px 30px 5px 60px;
+    position: relative;
+    width: 100%;
+    text-transform: capitalize;
+}
+.side-menus nav > ul > li.menu-item-has-children > ul > li > ul > li > a:before{
+	background: #686d86 none repeat scroll 0 0;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    border-radius: 50%;
+    content: "";
+    height: 5px;
+    left: 45px;
+    position: absolute;
+    top: 10px;
+    width: 5px;
+}
+.middle-cate {
+	position: relative;
+}
+
+.middle-cate:after{
+	content: "\f107";
+    font-family: fontawesome;
+    position: absolute;
+    right: 30px;
+    top: 3px;
+    z-index: 0;
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+.small-cate{
+	display: none;
+}
+.middle-cate.active {
+    background: #f4f8ff;
+}
+.parent-tab {
+	font-size : 20px;
+	font-weight: 600;
+	padding: 10px 27px;
+	background: rgba(0, 0, 0, 0) linear-gradient(-135deg, #1de9b6 0%, #1dc4e9 100%) repeat scroll 0 0;
+	color: #fff;	
+}
+a {
+	color: black !important;
+}
+</style>
+<!-- community side-bar -->
+<header>
+<div class="side-menus">
+		<div class="side-header">
+		    <div class="logo">
+		        <a title="" href="index.html"><img alt="" src="images/logo2.png"></a>
+		    </div>
+		    <sec:authorize access="hasRole('ROLE_COMMUNITY')">
+		    <nav class="slide-menu">
+		    	<div class="community parent-tab">
+		    		<i class="fa-regular fa-comments"></i>
+		    		<span>커뮤니티</span>
+		    	</div>
+		        <ul class="parent-menu">
+		        	<li class="menu-item-has-children">
+		                <a onclick="javascript:location.href='/community/memManage/admin/memberList.do'" title="">
+		                    <span>회원관리</span>
+		                </a>
+		            </li>
+		            <li class="menu-item-has-children">
+		                <a href="" title="">
+		                    <span>피드관리</span>
+		                </a>
+		                <ul class="mega">
+		               		<li><a href="/community/feed/admin/list.do" title="">피드 리스트</a></li>
+		                    <li><a href="/community/feed/admin/comList.do" title="">댓글 리스트</a></li>
+		                </ul>
+		            </li>
+		            <li class="menu-item-has-children">
+		                <a onclick="javascript:location.href='/community/memManage/admin/feedReportList.do'" title="">
+		                    <span>신고 관리</span>
+		                </a>
+		            </li>
+		            <li class="menu-item-has-children">
+		                <a onclick="javascript:location.href='/community/survey/list.do'" title="">
+		                    <span>설문조사 관리</span>
+		                </a>
+		            </li>
+		        </ul>
+		    </nav>
+		    </sec:authorize>
+		    <sec:authorize access="hasRole('ROLE_ENTERTAIN')">
+		    <nav class="slide-menu">
+		    	<div class="community parent-tab">
+		    		<i class="fa-brands fa-artstation"></i>
+		    		<span>엔터테인먼트</span>
+		    	</div>
+		        <ul class="parent-menu">
+		        	<li class="menu-item-has-children">
+		                <a href="" title="">
+		                    <span>아티스트메뉴관리</span>
+		                </a>
+		                <ul class="mega">
+		               		<li><a href="/entertain/artist/album/adminList.do?#1" title="">아티스트 일정</a></li>
+		                    <li><a href="/entertain/artist/album/adminList.do?#2" title="">아티스트 프로필</a></li>
+		                    <li><a href="/entertain/artist/album/adminList.do?#3" title="">아티스트 앨범</a></li>
+		                </ul>
+		            </li>
+		            <li class="menu-item-has-children">
+		                <a href="" title="">
+		                    <span>투자정보 관리</span>
+		                </a>
+		                <ul class="mega">
+		               		<li><a href="/entertain/irFile/admin/IRFileList.do" title="">IR자료실 관리</a></li>
+		                    <li><a href="/entertain/ir/list.do" title="">IR행사일정 관리</a></li>
+		                    <li><a href="/entertain/finance/update.do" title="">재무정보 관리</a></li>
+		                </ul>
+		            </li>
+		            <li class="menu-item-has-children">
+		                <a onclick="javascript:location.href='/entertain/company/notice/list.do'" title="">
+		                    <span>공지 관리</span>
+		                </a>
+		            </li>
+		            <li class="menu-item-has-children">
+		                <a onclick="javascript:location.href='/entertain/company/news/list.do'" title="">
+		                    <span>기업 소식</span>
+		                </a>
+		            </li>
+		            <!-- 기업소식  -->
+		            <li class="menu-item-has-children">
+		                <a href="" title="">
+		                    <span>오디션 관리</span>
+		                </a>
+		                <ul class="mega">
+		               		<li><a href="/entertain/audition/admin/scheduleList.do" title="">오디션 관리</a></li>
+		                    <li><a href="index-boxed.html" title="">오디션 신청 현황</a></li>
+		                    <!-- 오디션 신청 현황? -->
+		                </ul>
+		            </li>
+		        </ul>
+		    </nav>
+		    </sec:authorize>
+		    <sec:authorize access="hasRole('ROLE_GOODS')">
+		    <nav class="slide-menu">
+		    	<div class="community parent-tab">
+		    		<i class="fa-regular fa-credit-card"></i>
+		    		<span>굿즈샵</span>
+		    	</div>
+		        <ul class="parent-menu">
+		        	<li class="menu-item-has-children">
+		                <a onclick="javascript:location.href='/goods/list.do'" title="">
+		                    <span>상품 관리</span>
+		                </a>
+		            </li>
+		        	<li class="menu-item-has-children">
+		                <a href="" title="">
+		                    <span>주문/배송</span>
+		                </a>
+		                <ul class="mega">
+		               		<li><a href="/goods/order/adminDeliveryBeforeList.do" title="">배송 전 관리</a></li>
+		               		<li><a href="/goods/order/adminDeliveryAfterList.do" title="">배송 후 관리</a></li>
+		                    <li><a href="/goods/order/adminChangelist.do" title="">상품 교환 관리</a></li>
+		                    <li><a href="/goods/order/adminCancellist.do" title="">상품 취소 관리</a></li>
+		                </ul>
+		            </li>
+		            <li class="menu-item-has-children">
+		                <a href="/goods/autoOrderList.do" title="">
+		                    <span>발주내역 확인</span>
+		                </a>
+		            </li>
+		            <li class="menu-item-has-children">
+		                <a onclick="javascript:location.href='/goods/inquiry/list.do'" title="">
+		                    <span>1:1 문의 관리</span>
+		                </a>
+		            </li>
+		             <li class="menu-item-has-children">
+		                <a onclick="javascript:location.href='/goods/notice/list.do'" title="">
+		                    <span>공지사항 관리</span>
+		                </a>
+		            </li>
+		             <li class="menu-item-has-children">
+		                <a onclick="javascript:location.href='/goods/faq/admin/list.do'" title="">
+		                    <span>FAQ 관리</span>
+		                </a>
+		            </li>
+		        </ul>
+		    </nav>
+		    </sec:authorize>
+		    <nav class="slide-menu">
+		    	<div class="community parent-tab">
+		    		<i class="fa-regular fa-credit-card"></i>
+		    		<span>통계</span>
+		    	</div>
+		        <ul class="parent-menu">
+		        	<li class="menu-item-has-children">
+		                <a onclick="javascript:location.href='/admin/statistics/community.do'" title="">
+		                    <span>커뮤니티 통계</span>
+		                </a>
+		            </li>
+		            <li class="menu-item-has-children">
+		                <a onclick="javascript:location.href='/admin/statistics/goods.do'" title="">
+		                    <span>굿즈샵 통계</span>
+		                </a>
+		            </li>
+		        </ul>
+		    </nav>
+		</div>
+	</div>
+</header>
+<!-- goods side-bar end -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+
+$(function(){	
+	
+	$(".menu-item-has-children").css("content", "none");
+	
+    // Toggle dropdown menu for language selection
+    $('.seting-area .langages').on("click",function(){
+        $('.drop.language').toggleClass('active');
+    });
+
+    $(".drop").on("click",function(e){
+        e.stopPropagation();
+    }); 
+
+    // Event handling for menu items with children
+    $('li.menu-item-has-children > a').on('click', function () {
+        $(this).parent().siblings().children('ul').slideUp();
+        $(this).parent().siblings().removeClass('active');
+        $(this).parent().children('ul').slideToggle();
+        $(this).parent().toggleClass('active');
+        return false;
+    });
+    
+    $('li.middle-cate > a').on('click', function () {
+        $(this).parent().siblings().children('ul').slideUp();
+        $(this).parent().siblings().removeClass('active');
+        $(this).next('ul').slideToggle();
+        $(this).parent().toggleClass('active');
+        return false;
+    }); 
+    
+    /* $('li.middle-cate').on("click", function () {
+		$('li.middle-cate:after').css("transform", "rotate(-90deg)");
+	}); */
+	
+    $('li.middle-cate').on("click", function () {
+        var icon = $(this).find('a').find('i.fa');
+        if (icon.hasClass('rotated')) {
+            icon.removeClass('rotated');
+        } else {
+            icon.addClass('rotated');
+        }
+    });
+    
+});
+
+// Slider box for the community sidebar
+$(function() {
+    $("#price-range").slider({
+        range: "max",
+        min: 18, // Change this to change the min value
+        max: 65, // Change this to change the max value
+        value: 18, // Change this to change the display value
+        step: 1, // Change this to change the increment by value.
+        slide: function(event, ui) {
+            $("#priceRange").val(ui.value + " Years");
+        }
+    });
+    $("#priceRange").val( $("#price-range").slider("value") + " Years");
+});
+
+// Range slider for the goods sidebar
+$(function() {
+    $( "#slider-range" ).slider({
+        range: true,
+        min: 0,
+        max: 500,
+        values: [ 75, 300 ],
+        slide: function( event, ui ) {
+            $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+        }
+    });
+    $( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
+        " - $" + $( "#slider-range" ).slider( "values", 1 ) );
+});
+</script>

@@ -1,0 +1,61 @@
+package kr.or.ddit.controller.community;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.service.community.IArtistScheduleSerivce;
+import kr.or.ddit.vo.common.UserVO;
+import kr.or.ddit.vo.community.CalVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 아티스트 일정 조회 컨트롤러(사용자/관리자)
+ * FullCalendar API 활용
+ * @author 조재훈
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/artist/schedule")
+public class ArtistScheduleRetrieveController {
+	
+	@Inject
+	private IArtistScheduleSerivce scheduleService;
+	
+	
+	@ResponseBody
+	@RequestMapping("/test.do")
+	public ResponseEntity<List<CalVO>> test(
+			String agId
+			){
+		log.info("agId값" + agId);
+		List<CalVO> scList = new ArrayList<CalVO>();
+		scList = scheduleService.scList(agId);
+		List<CalVO> userList = new ArrayList<>();
+		userList = scheduleService.userList();
+		log.info("scList값" + scList);
+		log.info("userList값" + userList);
+		for (CalVO scItem : scList) {
+		    for (CalVO userItem : userList) {
+		        if (scItem.getUsername().equals(userItem.getUsername())) {
+		            scItem.setUserProfile(userItem.getUserProfile());
+		        }
+		    }
+		}
+		log.info("scList값" + scList);
+		return new ResponseEntity<List<CalVO>>(scList, HttpStatus.OK);
+	}
+	
+
+		
+	}
+	
+	

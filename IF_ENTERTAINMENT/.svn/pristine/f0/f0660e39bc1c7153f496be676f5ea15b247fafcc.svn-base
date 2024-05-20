@@ -1,0 +1,28 @@
+package kr.or.ddit.service.impl.goods;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.goods.IAddressMapper;
+import kr.or.ddit.service.goods.IAddressService;
+import kr.or.ddit.vo.goods.AddressVO;
+
+@Service
+public class AddressServiceImpl implements IAddressService {
+
+	@Inject
+	private IAddressMapper addressMapper;
+
+	@Override
+	public List<AddressVO> addressManaege(String userNo) {
+		return addressMapper.addressManaege(userNo);
+	}
+
+	@Override
+	public int addressInsert(AddressVO addressVO) {
+		return addressMapper.addressInsert(addressVO);
+	}
+}

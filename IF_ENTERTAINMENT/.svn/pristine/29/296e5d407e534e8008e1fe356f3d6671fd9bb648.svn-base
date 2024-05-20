@@ -1,0 +1,617 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+    <title>Artist Group Information</title>
+    <!-- CSS 스타일링 -->
+    <style>
+		    .post_button {
+		    width: 800px;
+		    height: 60px;
+		    border: 1px solid #eaeaea;
+		    border-radius: 50px;
+		    display: flex;
+		    justify-content: center;
+		    background-color: #fff;
+		    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+		}
+		.post_left {
+		    width: 85%;
+		    height: auto;
+		    display: flex;
+		    justify-content: left;
+		    align-items: center;
+		    padding-left: 20px;
+		    cursor: pointer;
+		}
+		.post_left img {
+		    width: 50px;
+		    height: 50px;
+		    margin-right: 15px;
+		}
+		.file_btn {
+		    position: relative;
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		}
+		.file_btn .post_image {
+		    cursor: pointer;
+		}
+		.file_btn .post_video {
+		    cursor: pointer;
+		}
+		.file_btn .file_image .fil_video[type="file"] {
+		    position: absolute;
+		    width: 1px;
+		    height: 1px;
+		    padding: 0;
+		    margin: -1px;
+		    overflow: hidden;
+		    clip: rect(0, 0, 0, 0);
+		    border: 0;
+		}
+		.file_btn i {
+		    font-size: 25px;
+		}
+		.file_btn i:nth-child(1) {
+		    margin-right: 10px;
+		}
+		.file_image {
+		    display: none;
+		}
+		.fil_video {
+		    display: none;
+		}
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+<div class="modal" id="myModal" data-userno="${UserInfo.userNo}" data-agId="${UserInfo.agId}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- 모달 헤더 -->
+            <div class="modal-header">
+                <h4 class="modal-title">포스트 추가</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- 모달 바디 -->
+            <div class="modal-body">
+                <!-- 포스트 내용 입력 폼 -->
+                <div>
+                    <textarea id="postContent" rows="4" cols="50"></textarea>
+                </div>
+                
+                <!-- 파일 업로드 -->
+                <div class="file_btn">
+                    <label for="imageInput" class="post_image" style="position: absolute; top: 40px; left: 1px;">
+                        <i class="far fa-image"></i>
+                        <i class="fa fa-video-camera"></i>
+                    </label>
+                    <input type="file" class="file_image" id="imageInput" name="">
+                </div>
+                
+                <!-- 멤버십 전용 포스트 체크박스 -->
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="membershipPost">
+                    <label class="form-check-label" for="membershipPost">멤버십 전용 포스트</label>
+                </div>
+            </div>
+            <!-- 모달 푸터 -->
+            <div class="modal-footer">
+                <!-- 포스트 버튼 -->
+                <button type="button" id="postBtn" class="btn btn-primary">포스트</button>
+                <!-- 모달 닫기 버튼 -->
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+	<div class="post_button">
+        <div class="post_left">
+            <img src="${pageContext.request.contextPath }${UserInfo.userProfile}" alt="">
+            <span>포스트를 남겨보세요.</span>
+        </div>
+        <div class="file_btn">
+            <label for="imageInput" class="post_image">
+                <i class="far fa-image"></i>
+            </label>
+            <input type="file" class="file_image" id="imageInput" name="">
+
+            <label for="videoInput" class="post_video">
+                <i class="fa fa-video-camera"></i>
+            </label>
+            <input type="file" class="fil_video" id="videoInput" name="">
+        </div>
+    </div>
+<div class="loadMore">
+    <c:forEach items="${feedList}" var="feed"  varStatus="loop">
+        <div class="central-meta item" style="width: 400px;">
+            <div class="user-post">
+                <div class="friend-info">
+                    <figure>
+                        <img src="${pageContext.request.contextPath}${feed.userProfile}" alt="">
+                    </figure>
+                    <ins>
+                        <a href="time-line.html" title="" >${feed.mnNickName}</a>
+                    </ins>
+                    <div class="friend-name">
+                        <div class="more">
+                            <div class="more-post-optns">
+                                <i class="ti-more-alt"></i>
+                                <ul>
+                                    <li><i class="fa-sharp fa-regular fa-bell"></i> 신고하기</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <span><i class="fa fa-globe"></i> <fmt:formatDate value="${feed.feedRegdate}" pattern="yyyy-MM-dd hh:mm"/></span>
+                    </div>
+                    <div class="post-meta">
+                        <figure>
+                            <div class="img-bunch">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <figure>
+                                            <div id="mediaContainer_${feed.feedNo}" class="about-chnl detail_content_box feeds" data-idx="${feed.feedNo}">
+                                                <div id="editableContent">
+		                                                    <a href="#" title="" onclick="detail()" data-toggle="modal" data-target="#img-comt">
+															    ${feed.feedContent}
+															</a>
+                                                </div>
+                                            </div>
+                                        </figure>
+                                        <script type="text/javascript">
+                                            var mediaContainer_${feed.feedNo} = document.getElementById("mediaContainer_${feed.feedNo}");
+                                            var faMime_${feed.feedNo} = "${feed.faMime}";
+                                            if (faMime_${feed.feedNo}.includes("image")) {
+                                                // 이미지 파일인 경우
+                                                var image_${feed.feedNo} = document.createElement("img");
+                                                image_${feed.feedNo}.src = "${pageContext.request.contextPath}/resources/feed/${feed.faSavedname}";
+                                                image_${feed.feedNo}.alt = "이미지";
+                                                image_${feed.feedNo}.style.height = "300px"; // 이미지의 높이 조절
+                                                image_${feed.feedNo}.style.width = "360px"; // 이미지의 높이 조절
+                                                mediaContainer_${feed.feedNo}.insertBefore(image_${feed.feedNo}, mediaContainer_${feed.feedNo}.firstChild);
+                                            } else if (faMime_${feed.feedNo}.includes("video")) {
+                                                // 비디오 파일인 경우
+                                                var video_${feed.feedNo} = document.createElement("video");
+                                                video_${feed.feedNo}.controls = true; // 비디오 컨트롤러 표시
+                                                video_${feed.feedNo}.style.height = "300px"; // 비디오의 높이 조절
+                                                video_${feed.feedNo}.style.width = "360px"; // 비디오의 높이 조절
+                                                var source_${feed.feedNo} = document.createElement("source");
+                                                source_${feed.feedNo}.src = "${pageContext.request.contextPath}/resources/feed/${feed.faSavedname}";
+                                                source_${feed.feedNo}.type = faMime_${feed.feedNo}; // 비디오 파일의 MIME 타입 설정
+                                                video_${feed.feedNo}.appendChild(source_${feed.feedNo});
+                                                mediaContainer_${feed.feedNo}.insertBefore(video_${feed.feedNo}, mediaContainer_${feed.feedNo}.firstChild);
+                                            } else {
+                                                // 이미지나 비디오가 아닌 경우
+                                                console.error("지원되지 않는 파일 형식입니다.");
+                                            }
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </figure>
+                        <div class="we-video-info">
+                            <ul>
+                                <li>
+                                    <div class="likes heart" title="Like/Dislike">
+                                        ❤ <span><!-- 좋아요 수증가 --></span>
+                                    </div>
+                                </li>
+                                <li><span class="comment" title="Comments" > <i class="fa fa-commenting"></i> <ins>${commentMap[feed.feedNo].size()}</ins></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="coment-area" style="display: block;">
+                        <ul class="we-comet">
+                            <c:forEach items="${commentMap[feed.feedNo]}" var="comment">
+                                <li>
+                                    <div class="comet-avatar">
+                                        <img src="${pageContext.request.contextPath}${comment.userProfile}" alt="">
+                                    </div>
+                                    <div class="we-comment">
+                                        <h5>
+                                            <a href="time-line.html" title="">${comment.mnNickName}</a>
+                                        </h5>
+                                        
+                                        <p >${comment.fcContent}</p>
+                                        <div class="inline-itms">
+                                            <span> <fmt:formatDate value="${comment.fcRegdate}" pattern="yyyy-MM-dd hh:mm"/></span><a href="#" title=""><i class="fa fa-heart"></i><span>
+<!--                                             		내 댓글 좋아요 갯수 -->
+                                          	</span></a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </c:forEach>
+</div>
+
+<button type="button" id="modalBtn" style="display:none;" data-toggle="modal" data-target="#img-comt"></button>
+
+
+	<!-- 모달 시작 -->
+<div class="modal fade" id="img-comt">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <video id="modalMedia" controls style="width: 300px;">
+                            <!-- JavaScript로 동적으로 source 추가 -->
+                        </video>
+
+                        <div id="modalContent">
+                            ${feedContent}
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="user">
+                            <figure id="modalProfile" style="width: 50px;">
+                                <img src="${pageContext.request.contextPath}${userProfile}" alt="">
+                            </figure>
+                            <div class="user-information">
+                                <h4>
+                                    <a href="#" title="" id="modalnick">${mnNickName}</a>
+                                </h4>
+                                <span id="modalFeedRegdate"><fmt:formatDate value="${feedRegdate}" pattern="yyyy-MM-dd hh:mm"/></span>
+                            </div>
+                        </div>
+                        <div class="we-video-info">
+                            <ul>
+                                <li>
+                                    <div title="Approvals/Disapprovals" class="likes heart">
+                                        ❤ <span>
+                                            <!-- 좋아요 갯수 -->
+                                        </span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span title="Comments" class="comment" id="modalCommentBtn" data-userno="${UserInfo.userNo}" data-feedno="" >
+                                        <i class="fa fa-commenting"></i>
+                                        <ins></ins>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div style="display: block;" class="coment-area">
+                            <ul class="we-comet" id="ulCommentArea">
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="commentModal" class="modal">
+    <!-- 모달 내용 -->
+    <div class="modal-content" style="width: 500px; margin-left: 700px; margin-top: 100px;">
+        <!-- 모달 헤더 -->
+        <div class="modal-header">
+            <h2>댓글 작성</h2>
+            <!-- 모달 닫기 버튼 -->
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <!-- 모달 바디 -->
+        <div class="modal-body">
+            <!-- 댓글 작성 폼 -->
+            <form id="commentForm">
+            	<input type="hidden" name="feedNo" id="feedRealNo">
+                <div class="form-group">
+                    <label for="commentContent">댓글 내용:</label>
+                    <textarea class="form-control" id="commentContent" rows="3"></textarea>
+                </div>
+                <!-- 댓글 작성 버튼 -->
+            </form>
+            	<input type="button" id ="commentButton" value="댓글쓰기">
+        </div>
+    </div>
+</div>
+
+<!--     <div class="container"> -->
+<!--         <h2>Artist Group Information</h2> -->
+<!--         <table> -->
+<!--             <tr> -->
+<!--                 <th>Artist Group ID</th> -->
+<!--                 <th>Artist Group Name</th> -->
+<!--                 <th>Artist Group Introduction</th> -->
+<!--                 <th>Artist ID</th> -->
+<!--                 <th>Artist Name</th> -->
+<!--                 <th>Artist Introduction</th> -->
+<!--             </tr> -->
+<%-- 			<c:forEach items="${artistGroup}" var="group"> --%>
+<!-- 			    <tr> -->
+<%-- 			        <td>${group.agId}</td> --%>
+<%-- 			        <td>${group.agName}</td> --%>
+<%-- 			        <td>${group.agIntro}</td> --%>
+<!-- 			    </tr> -->
+<%-- 			    <c:forEach items="${group.artistList}" var="artist"> --%>
+<!-- 			        <tr> -->
+<%-- 			            <td>${artist.agId}</td> --%>
+<%-- 			            <td>${artist.userNo}</td> --%>
+<%-- 			            <td>${artist.artistBirth}</td> --%>
+<%-- 			            <td>${artist.artistFakename}</td> --%>
+<%-- 			            <td>${artist.artistIntro}</td> --%>
+<!-- 			        </tr> -->
+<%-- 			    </c:forEach> --%>
+<%-- 			</c:forEach> --%>
+
+
+<!--         </table> -->
+<!--     </div> -->
+<script type="text/javascript">
+
+// var mediaContainer = document.getElementById("mediaContainer");
+// var faMime = "${feed.faMime}";
+
+// if (faMime.includes("image")) {
+//     // 이미지 파일인 경우
+//     var image = document.createElement("img");
+//     image.src = "${pageContext.request.contextPath}/resources/feed/" + "${feed.faSavedname}";
+//     image.alt = "이미지";
+//     image.style.height = "300px"; // 이미지의 높이 조절
+//     mediaContainer.insertBefore(image, mediaContainer.firstChild);
+// } else if (faMime.includes("video")) {
+//     // 비디오 파일인 경우
+//     var video = document.createElement("video");
+//     video.controls = true; // 비디오 컨트롤러 표시
+//     video.style.height = "300px"; // 비디오의 높이 조절
+//     var source = document.createElement("source");
+//     source.src = "${pageContext.request.contextPath}/resources/feed/" + "${feed.faSavedname}";
+//     source.type = faMime; // 비디오 파일의 MIME 타입 설정
+//     video.appendChild(source);
+//     mediaContainer.insertBefore(video, mediaContainer.firstChild);
+// } else {
+//     // 이미지나 비디오가 아닌 경우
+//     console.error("지원되지 않는 파일 형식입니다.");
+// }
+$(document).ready(function() {
+
+    // Comments 버튼을 클릭했을 때 모달을 열도록 설정
+    $('#modalCommentBtn').on('click', function() {
+        $('#commentModal').show();
+        
+    });
+
+    $('#commentModal .close').on('click', function() {
+        $('#commentModal').hide();
+    });
+    $('#commentButton').on('click',function() {
+        var commentContent = $('#commentContent').val();
+        var feedNo = $('#feedRealNo').val()s;
+        var userNo = $('#modalCommentBtn').data('userno');
+		alert("gdgdgdgd");
+		console.log("feedNo",feedNo);
+		console.log("commentContent",commentContent);
+		console.log("userNo",userNo);
+        $.ajax({
+            type: 'POST',
+            url: '/community/feed/comment/insert.do',
+            data: { 
+            	userNo:userNo,
+            	feedNo:feedNo,
+            	fcContent: commentContent,
+            	}, 
+            success: function(response) {
+            	$('#commentModal').modal('hide');
+            	alert("작성완료");
+//                 Swal.fire({
+//                     icon: "success",
+//                     title: "작성이 완료되었습니다.",
+//                     showConfirmButton: false,
+//                     timer: 1500
+//                 }).then(() => {
+//                     location.reload(); 
+//                 });
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+                alert('댓글 작성에 실패했습니다. 다시 시도해주세요.');
+            }
+        });
+    });
+ });
+
+//-------------------
+$(function(){
+	var feeds = $(".feeds");
+	
+    $(".loadMore").on("click", ".feeds", function(){
+        var feedNo = $(this).data("idx");
+        $.ajax({
+        	type: 'get',
+        	url:'/community/feed/artistFeedComment.do?feedNo=' + feedNo,
+        	success: function(data){
+        		console.log(data);
+        		console.log(data.feedVO.feedContent);
+        		
+ 
+        		$("#feedRealNo").val(feedNo);
+        		
+        		// feedCommentList를 이용해서 댓글들을 뿌린다.
+     			var cmtHtml = "";
+					
+     			$("#ulCommentArea").empty();
+       			data.feedCommentList.map(function(v,i){
+        			var fcContent = v.fcContent;
+        			var feedNo=v.feedNo;
+        			var fcNo = v.fcNo;
+        			var fcRegdate = v.fcRegdate;
+            		var date = new Date(fcRegdate);
+         		    var formattedDate = date.toLocaleString();
+        			var feedNo = v.feedNo;
+        			var mnNickName = v.mnNickName;
+        			var userNo = v.userNo
+        			var userProfile = v.userProfile;
+	        		var contextPath = '${pageContext.request.contextPath}'; 
+        			cmtHtml += "<li>";
+        			cmtHtml += "	<div class='comet-avatar' id='modalComProfile'>";
+        			cmtHtml += "		<img src='" + contextPath + userProfile + "' alt=''>";
+        			cmtHtml += "	</div>";
+        			cmtHtml += "	<div class='we-comment'>";
+        			cmtHtml += "    	<h5>";
+        			cmtHtml += "        	<a title='' href=''>"+mnNickName+"</a>";
+        			cmtHtml += "    	</h5>";
+       				cmtHtml += "   		<p id='modalComContent'>"+fcContent+"</p>";
+        			cmtHtml += "	</div>";
+        			cmtHtml += "	<div class='inline-itms' id='modalcomFcRegdate'>";
+        			cmtHtml += "        <span>"+formattedDate+"</span>";
+        			cmtHtml += "		<a title='Reply' href='#' class='we-reply'><i class='fa-solid fa-circle-check'></i><span></span></a>";
+        			cmtHtml += "    </div>";
+        			cmtHtml += "</li>";
+        			
+        			
+        			
+        		});
+        		
+        		$("#ulCommentArea").prepend(cmtHtml);
+        		
+        		var contextPath = '${pageContext.request.contextPath}'; 
+        		var content = data.feedVO.feedContent;
+        		var nickname = data.feedVO.mnNickName;
+        		var feedRegdate = data.feedVO.feedRegdate;
+        		var date = new Date(feedRegdate);
+        		var imageName = data.feedVO.userProfile; 
+        		var profile = "<img src='" + contextPath + imageName + "' alt=''>";
+        		console.log(profile);
+        		var mediaType = data.feedVO.faMime;
+        		var faSavedname = data.feedVO.faSavedname;
+
+        		if (mediaType.includes("image")) {
+        		    // 이미지인 경우
+        		    var modalMedia = document.getElementById("modalMedia");
+        		    var modalImage = document.createElement("img");
+        		    modalImage.src = contextPath + "/resources/feed/" + faSavedname;
+        		    modalImage.alt = "";
+        		    modalImage.style.width = "100%";
+        		    modalMedia.parentNode.replaceChild(modalImage, modalMedia);
+        		} else if (mediaType.includes("video")) {
+        		    // 동영상인 경우
+        		    var modalMedia = document.getElementById("modalMedia");
+        		    var source = document.createElement("source");
+        		    source.src = contextPath + "/resources/feed/" + faSavedname;
+        		    source.type = "";
+        		    modalMedia.appendChild(source);
+        		} else {
+        		    console.error("지원되지 않는 미디어 형식입니다.");
+        		}
+
+
+
+        		
+        		$("#modalProfile").html(profile);
+        		$("#modalContent").text(content);
+        		$("#modalnick").text(nickname);
+        		$("#modalFeedRegdate").text(date.toLocaleString());
+        		
+        		
+        		$('#modalBtn').click();
+
+        	}
+        	
+        	
+        });
+        
+    });
+	
+});
+	
+$('.post_button').on('click', function() {
+    $('#myModal').modal('show'); // 모달 표시
+});
+
+$('#postBtn').on('click', function() {
+    var agId = $('#myModal').data('agid');
+    var userNo = $('#myModal').data('userno');
+    var feedContent = $('#postContent').val(); 
+    var feedMembership = $('#membershipPost').prop('checked') ? 1 : 0;
+
+    var formData = new FormData();
+    formData.append('agId', agId);
+    formData.append('userNo', userNo);
+    formData.append('feedContent', feedContent);
+    formData.append('feedMembership', feedMembership);
+
+    // 파일이 첨부되었는지 확인
+    var feedFile = $('#imageInput')[0].files[0]; 
+    if (feedFile) {
+        formData.append('feedFile', feedFile);
+    }
+
+    // 서버에 데이터 전송
+    $.ajax({
+        type: 'POST',
+        url: '/community/feed/insert.do',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            $('#myModal').modal('hide');
+            Swal.fire({
+                icon: "success",
+                title: "작성이 완료되었습니다.",
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                location.reload(); 
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+        }
+    });
+});
+
+function getFeedNo() {
+    var feedNoElement = document.querySelector('.about-chnl.detail_content_box.feeds');
+    var feedNo = feedNoElement.getAttribute('data-idx');
+    return feedNo;
+}
+
+
+
+</script>

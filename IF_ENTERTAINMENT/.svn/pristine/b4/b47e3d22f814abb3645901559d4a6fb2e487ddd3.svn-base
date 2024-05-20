@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.community.IFeedMapper">
+		
+		<resultMap type="feedCommentVO" id="feedCommentMap">
+			<id property="fcNo" column="fc_no" />
+			<result property="fcContent" column="fc_content" />
+			<result property="fcRegdate" column="fc_regdate" />
+			<result property="userNo" column="user_no" />
+			<result property="feedNo" column="feed_no" />
+			<result property="fcDelyn" column="fc_delyn" />
+			<result property="feedType" column="feed_type" />
+			<result property="feedMembership" column="feed_membership" />
+			<result property="mnNickName" column="mn_nickname" />
+			<result property="agId" column="ag_id" />
+		</resultMap>
+		
+		
+		
+		
+		<sql id="feedCommentSearch">
+			<if test="searchType != null and searchType == 'content'">
+				and(fc_content like '%'||#{searchWord}||'%')
+			</if>
+		</sql>
+
+		<select id="selectCommentListCount"  parameterType="pagingVO" resultType="int" >
+			select count(fc_no)
+				from feed_comment
+				where 1=1
+				and fc_delyn = 'N'
+				<include refid="feedCommentSearch"></include>
+		</select>
+	
+		<select id="selectCommentList" resultType="feedCommentVO" resultMap="feedCommentMap">
+			select
+			    b.*, mn.mn_nickname
+			from (
+			    select
+			        a.*, row_number() over(order by fc_no desc) rnum
+			    from (
+			        select
+			            f.fc_no, f.fc_content, f.fc_regdate, 
+			            f.fc_delyn, f.user_no, f.feed_no, ft.feed_type, ft.feed_membership,ft.ag_Id
+			        from feed_comment f
+			        left outer join "USER" u on f.user_no = u.user_no
+			        left outer join feed ft on f.feed_no = ft.feed_no
+			        where 1=1
+			        <include refid="feedCommentSearch" />
+			        and f.fc_delyn = 'N'
+			        order by f.fc_no desc
+			    ) a
+			) b
+			left outer join member_nickname mn on b.user_no = mn.user_no
+			<![CDATA[
+			where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+			]]>
+		</select>
+				
+				
+		<select id="feedCommentListDetail" resultType="feedCommentVO">
+		    SELECT fc.*, mn.MN_NICKNAME
+		    FROM feed_comment fc
+		    LEFT JOIN member_nickname mn ON fc.user_no = mn.user_no
+		    LEFT JOIN "USER" u ON fc.user_no = u.user_no
+		    WHERE fc.fc_no = #{fcNo}
+		</select>
+		
+		<update id="deleteComment">
+			update feed_comment
+			set fc_delyn='Y'
+			where fc_no=#{fcNo}
+		</update>
+
+		<update id="updateComment">
+			update feed_comment
+			set fc_content =#{fcContent}
+			where fc_no=#{fcNo}
+		
+		</update>
+		<select id="mainCommentList"  resultType="feedCommentVO" resultMap="feedCommentMap" >
+			SELECT fc.*, mn.MN_NICKNAME,user_profile
+			    FROM feed_comment fc
+			    LEFT JOIN member_nickname mn ON fc.user_no = mn.user_no
+			    LEFT JOIN "USER" u ON fc.user_no = u.user_no
+			    WHERE fc.FEED_NO =#{feedNo}
+		</select>
+
+		<insert id="insertFeedComment" >
+			INSERT INTO FEED_COMMENT 
+			(FC_NO, FC_CONTENT, FC_REGDATE, USER_NO, FEED_NO, FC_DELYN)
+			VALUES (SEQ_FEED_COMMENT.nextval, #{fcContent}, SYSDATE, #{userNo}, #{feedNo}, #{fcDelyn})
+ 
+		</insert>
+</mapper>

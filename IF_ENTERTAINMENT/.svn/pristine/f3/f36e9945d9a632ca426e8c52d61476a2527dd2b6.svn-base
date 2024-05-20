@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.goods.IGoodsNoticeMapper">
+
+	<!-- 굿즈샵 메인 화면 슬라이드 리스트 출력용 -->
+	<select id="selectgoodsNoticeMainList" resultType="goodsNoticeVO">
+		select bf.bf_no, ba.ba_savepath
+		    from BOARD_FORM bf left outer join BOARD_ATTACHFILE ba on(bf.bf_no = ba.bf_no)
+		where bf_delyn = 'N' and bf_display = 'Y' and bt_no = 6
+		order BY bf.bf_no desc
+	</select>
+
+	<update id="deleteGoodsNotice" parameterType="int">
+		update board_form
+		set bf_delyn = 'Y'
+		where bf_no = #{bfNo}
+	</update>
+
+	<select id="selectGoodNoticeThumb" parameterType="int" resultType="string">
+		select
+			ba_savepath
+		from BOARD_ATTACHFILE
+		where bf_no = ${bfNo}
+	</select>
+	
+	<delete id="deleteGoodsNoticeFile">
+		delete from BOARD_ATTACHFILE
+			where bf_no = #{bfNo}
+	</delete>
+	
+	<update id="updateGoodsNotice" parameterType="goodsNoticeVO">
+		update board_form
+		    set 
+		bf_title = #{bfTitle},
+		bf_content = #{bfContent},
+		bf_display = #{bfDisplay}
+		where 
+		    bf_no = #{bfNo}
+	</update>
+
+	<select id="selectGoodsNotice" parameterType="int" resultType="goodsNoticeVO">
+		select
+		    bf.bf_no, bf.bf_title, bf.bf_content, bf.bf_regdate, bf.bf_delyn, bf.bf_display, 
+		    (select user_name from "USER" where user_no = bf.user_no) as "USER_NAME", bf.bt_no, 
+		    bf.bt_id, ba.ba_savepath
+		from BOARD_FORM bf left outer join BOARD_ATTACHFILE ba on(bf.bf_no = ba.bf_no)
+		where bf.bf_no = #{bfNo}
+	</select>
+
+	<update id="incrementHit" parameterType="int">
+		update board_form
+		set
+			bf_hit = bf_hit + 1
+		where bf_no = #{bfNo}
+	</update>
+
+	<insert id="insertGoodsNoticeFile">
+		insert into BOARD_ATTACHFILE (
+			BA_NO
+			, BF_NO
+			, BA_NAME
+			, BA_SAVEPATH
+			, BA_MIME
+			, BA_SIZE
+			, BA_FANCYSIZE
+		)values(
+		    seq_goods_attachfile.nextval
+		    , #{bfNo}
+		    , #{baName}
+		    , #{baSavepath}
+		    , #{baMime}
+		    , #{baSize}
+		    , #{baFancysize}
+		)
+	</insert>
+	
+	<insert id="insertGoodsNotice" parameterType="goodsNoticeVO" useGeneratedKeys="true">
+	<selectKey keyProperty="bfNo" resultType="int" order="BEFORE">
+		select seq_board_form.nextval from dual
+	</selectKey>
+		insert into board_form(
+		    bf_no, bf_title, bf_content, bf_hit, bf_regdate, bf_delyn, bf_display, user_no, bt_no, bt_id
+		)values(
+		     #{bfNo}, #{bfTitle}, #{bfContent}, 0, sysdate, 'N', #{bfDisplay}, #{userNo}, 6, 6
+		)
+	</insert>
+
+	<sql id="goodsNoticeSearch">
+		
+		<if test="searchWord != null">
+			and(bf_title like '%'||#{searchWord}||'%')
+		</if>
+	</sql>
+
+	<select id="selectGoodsNoticeListCount" parameterType="pagingVO" resultType="int">
+		SELECT COUNT(BF_NO)
+		FROM BOARD_FORM
+		WHERE bf_delyn = 'N' AND BT_NO = 6
+		<include refid="goodsNoticeSearch" />
+	</select>
+	
+	<select id="selectgoodsNoticeList" parameterType="pagingVO" resultType="goodsNoticeVO">
+		select	
+		    b.*
+		from (
+		    select
+		        a.*, row_number() over(order by BF_NO desc) rnum
+		    from(	
+		        SELECT
+		            BF.BF_NO, BF_TITLE, BF_REGDATE, BF_HIT, USER_NAME, BF_DISPLAY, BF_DELYN
+		        FROM 
+		            BOARD_FORM BF 
+		        LEFT OUTER JOIN "USER" U ON(U.USER_NO = BF.USER_NO)
+		        WHERE 
+		             BT_NO = 6 and bf.bf_delyn = 'N'
+		    <include refid="goodsNoticeSearch" />
+		    order by BF_NO desc
+		    ) a
+		) b
+		<![CDATA[
+		where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+
+
+</mapper>

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="kr.or.ddit.mapper.entertain.IIRMapper">
+	
+	<sql id="IREventSearch">
+		<if test="searchType != null and searchType == 'title'">
+			and (BF_TITLE like '%'||#{searchWord}||'%')
+		</if>
+	</sql>
+	
+	<insert id="insertIREvent" parameterType="IREventVO" useGeneratedKeys="true">
+	<selectKey keyProperty="bfNo" resultType="int" order="BEFORE">
+			select seq_board_form.nextval from dual
+	</selectKey>
+      INSERT INTO BOARD_FORM
+        (BF_NO, BF_TITLE, BF_CONTENT, BF_REGDATE, USER_NO, BT_NO)
+        VALUES
+        (#{bfNo}, #{bfTitle}, #{bfContent}, SYSDATE, #{userNo}, 3)
+    </insert>
+    
+	<insert id="insertIREventDetail" parameterType="IREventVO"> 
+      INSERT INTO IR_NOTICE
+        (BF_NO, IR_PLACE, IR_SCHEDULE)
+        VALUES
+        (#{bfNo}, #{irPlace}, #{irSchedule})
+    </insert>
+    
+<!--     <select id="selectIREvent" parameterType="int" resultType="IREventVO">
+		SELECT
+			BF_NO, BF_TITLE, BF_CONTENT, BF_REGDATE, USER_NO, BT_NO
+		FROM BOARD_FORM
+		where BF_NO = #{bfNo} AND BT_NO = 3
+	</select> -->
+	
+	<select id="selectIREvent" parameterType="int" resultType="IREventVO">
+    SELECT
+        BF.BF_NO, BF.BF_TITLE, BF.BF_CONTENT, BF.BF_REGDATE, BF.USER_NO, BF.BF_DELYN, BF.BT_NO,
+        IR.IR_PLACE, IR.IR_SCHEDULE
+    FROM BOARD_FORM BF
+    JOIN IR_NOTICE IR ON BF.BF_NO = IR.BF_NO
+    WHERE BF.BF_NO = #{bfNo} AND BF.BT_NO = 3
+	</select>
+    
+	<select id="selectIREventCount" parameterType="pagingVO" resultType="int">
+		SELECT COUNT(BF_NO)
+		FROM BOARD_FORM
+		WHERE bt_no = 3
+		<include refid="IREventSearch"/>
+	</select>
+	
+	<select id="selectIREventList" parameterType="pagingVO" resultType="IREventVO">
+		SELECT
+			B.*
+		FROM(
+			SELECT
+				A.*, ROW_NUMBER() OVER(ORDER BY A.BF_NO DESC) RNUM
+			FROM(
+				SELECT
+				BF_NO, BF_TITLE, BF_CONTENT, BF_REGDATE, USER_NO, BT_NO
+				FROM BOARD_FORM
+				WHERE BT_NO = 3
+				<include refid="IREventSearch"/> 
+				ORDER BY BF_NO DESC
+			)A
+		)B
+		<![CDATA[
+			WHERE B.RNUM >= #{startRow} AND B.RNUM <= #{endRow}
+		]]>
+	</select>
+	
+	<update id="updateIREvent">
+    UPDATE BOARD_FORM BF
+    JOIN IR_NOTICE IR ON BF.BF_NO = IR.BF_NO
+    SET
+        BF.BF_TITLE = #{bfTitle},
+        BF.BF_CONTENT = #{bfContent},
+        IR.IR_PLACE = #{irPlace},
+        IR.IR_SCHEDULE = #{irSchedule}
+    WHERE BF.BF_NO = #{bfNo} AND BF.BT_NO = 3
+	</update>
+	
+	<update id="deleteIREvent">
+		UPDATE BOARD_FORM
+		SET 
+			BF_DELYN = 'Y'
+		WHERE BF_NO = #{bfNo} AND BT_NO = 3
+	</update>
+	
+	
+	
+	<!-- IR 파일 관련 쿼리 -->
+	
+	<resultMap type="IRFileVO" id="IRFileMap">
+		<id property="bfNo" column="bf_no"/>
+		<result property="bfNo" column="bf_no"/>
+		<result property="bfTitle" column="bf_title"/>
+		<result property="bfRegdate" column="bf_regdate"/>
+		<result property="bfWriter" column="bfWriter"/>
+		<collection property="attachFileList" resultMap="attachFileMap"/>
+	</resultMap>
+	
+	<resultMap type="IRFileAttachVO" id="attachFileMap">
+		<id property="baNo" column="baNo"/>
+		<result property="baNo" column="ba_no"/>
+		<result property="baName" column="ba_name"/>
+		<result property="baSize" column="ba_size"/>
+		<result property="baFancysize" column="ba_fancysize"/>
+		<result property="baMime" column="ba_mime"/>
+		<result property="baSavepath" column="ba_savepath"/>
+	</resultMap>
+	
+	<select id="selectFileCount" parameterType="pagingVO" resultType="int">
+		
+		select 
+			count(bf_no)
+		from 
+			board_form
+		where 
+			bt_no = 4
+	
+	</select>
+	
+	<select id="selectIRFileList" parameterType="pagingVO" resultType="IRFileVO">
+		
+			SELECT
+			    b.*
+			FROM (
+			    SELECT
+			        a.*,
+			        ROW_NUMBER() OVER (ORDER BY a.bf_no DESC) AS rnum
+			    FROM (
+			        SELECT
+			            bf.bf_no,
+			            bf.bf_title,
+			            bf.bf_regdate,
+			            bf.user_no,
+			            u.user_name AS bfWriter
+			        FROM
+			            board_form bf
+			        INNER JOIN
+			            "USER" u ON bf.user_no = u.user_no
+			        WHERE
+			            bf.bt_no = 4
+			    ) a
+			) b
+		<![CDATA[
+			where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	
+	</select>
+	
+	<!-- pk를 받아 해당되는 게시글에 첨부된 파일 리스트를 가져온다 -->
+	<select id="getAttachFile" parameterType="int" resultType="IRFileAttachVO">
+	
+		select
+		    ba_no,
+		    bf_no,
+		    ba_name,
+		    ba_size,
+		    ba_fancysize,
+		    ba_mime,
+		    ba_savepath
+		from
+		    board_attachfile
+		where
+		    bf_no = #{bfNo}
+		    
+	</select>
+	
+	<insert id="insertIRFile" parameterType="IRFileVO" useGeneratedKeys="true">
+		<selectKey keyProperty="bfNo" resultType="int" order="BEFORE">		
+			select seq_board_form.nextval from dual
+		</selectKey>
+		insert into board_form(
+		    bf_no,
+		    bf_title, 
+		    bf_regdate, 
+		    user_no, 
+		    bt_no
+		) values(
+		    #{bfNo},
+		    #{bfTitle}, 
+		    sysdate, 
+		    #{userNo}, 
+		    4
+		)
+	</insert>
+	
+	<insert id="insertIRAttachFile" parameterType="IRFileAttachVO">
+	
+		insert into board_attachfile(
+		    ba_no,
+		    bf_no,
+		    ba_name,
+		    ba_savepath,
+		    ba_mime,
+		    ba_fancysize
+		) values (
+		    seq_board_attachfile.nextval,
+		    #{bfNo},
+		    #{baName},
+		    #{baSavepath},
+		    #{baMime},
+		    #{baFancysize}
+		)
+	</insert>
+	
+	<!-- IR 자료실 게시글의 상세정보를 가져온다  -->
+	<select id="selectIRFile" parameterType="int" resultMap="IRFileMap">
+		select
+			bf.bf_no, 
+	        bf_title, 
+	        bf_regdate, 
+	        (select user_name from "USER" where user_no = bf.user_no) as bfWriter,
+	        ba_no, 
+	        ba_name, 
+	        ba_size, 
+	        ba_fancysize, 
+	        ba_mime, 
+	        ba_savepath
+	    from 
+	    	board_form bf
+	    left outer join board_attachfile ba on bf.bf_no = ba.bf_no
+	    where 
+	    	bt_no = 4 and bf.bf_no = #{bfNo}
+	</select>
+	
+	<!-- IR 자료실 업데이트 -->
+	<update id="updateIRFile" parameterType="IRFileVO">
+		UPDATE 
+		    board_form
+		SET
+		    bf_title = #{bfTitle}
+		WHERE
+		    bf_no = #{bfNo}
+	</update>
+	
+	<!-- IR 자료실 첨부파일 업데이트 -->
+	<update id="updateIRAttachFile" parameterType="IRFileAttachVO">
+		UPDATE 
+		    board_attachfile
+		SET
+			ba_name = #{baName}, 
+		    ba_fancysize = #{baFancysize}, 
+		    ba_mime = #{baMime}, 
+		    ba_savepath = #{baSavepath}
+		WHERE
+		    ba_no = #{baNo}
+	</update>
+	
+	
+</mapper>

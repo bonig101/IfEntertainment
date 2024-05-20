@@ -1,0 +1,16 @@
+package kr.or.ddit.service.impl.community;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.community.ISurveyMapper;
+import kr.or.ddit.service.community.ISurveyService;
+
+@Service
+public class SurveyServiceImpl implements ISurveyService {
+	
+	@Inject
+	private ISurveyMapper surveyMapper;
+
+}

@@ -1,0 +1,33 @@
+package kr.or.ddit.service.impl.entertain;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.entertain.IArtistMapper;
+import kr.or.ddit.service.entertain.IArtistService;
+import kr.or.ddit.vo.entertain.AlbumVO;
+import kr.or.ddit.vo.entertain.TrackListVO;
+
+@Service
+public class ArtistServiceImpl implements IArtistService {
+
+	@Inject
+	private IArtistMapper artistMapper;
+
+	@Override
+	public List<AlbumVO> albumList(String agId) {
+		return artistMapper.albumList(agId);
+	}
+
+	@Override
+	public List<TrackListVO> selectAlbum(int alNo) {
+		return artistMapper.selectAlbum(alNo);
+	}
+	@Override
+	public AlbumVO albumDetail(int alNo) {
+		return artistMapper.albumDetail(alNo);
+	}
+}

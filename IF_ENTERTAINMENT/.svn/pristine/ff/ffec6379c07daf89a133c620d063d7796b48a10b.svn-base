@@ -1,0 +1,410 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<title>IF_ENTERTAINMENT</title>
+	<link rel="icon" href="images/fav.png" type="image/png" sizes="16x16">
+
+	<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/main.min.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/style.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/color.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/responsive.css">
+
+	<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/company.css">
+
+	<!-- JQuery CDN 연결 -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+	<!-- Javascript 연결 -->
+	<script src="${pageContext.request.contextPath }/resources/js/company_main.js"></script>
+	<script src="${pageContext.request.contextPath }/resources/js/loder.js"></script>
+
+	<!-- Swiper CDN 연결 -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+	<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+</head>
+
+<body>
+
+	<div class="wavy-wraper">
+		<div class="wavy">
+			<span style="--i:1;">i</span>
+			<span style="--i:2;">f</span>
+			<span style="--i:2;"><br /></span>
+			<span style="--i:2;"><br /></span>
+			<span style="--i:3;">e</span>
+			<span style="--i:4;">n</span>
+			<span style="--i:5;">t</span>
+			<span style="--i:6;">e</span>
+			<span style="--i:7;">r</span>
+			<span style="--i:8;">t</span>
+			<span style="--i:9;">a</span>
+			<span style="--i:5;">i</span>
+			<span style="--i:6;">n</span>
+			<span style="--i:7;">m</span>
+			<span style="--i:8;">e</span>
+			<span style="--i:9;">n</span>
+			<span style="--i:6;">t</span>
+			<span style="--i:7;">.</span>
+			<span style="--i:8;">.</span>
+			<span style="--i:9;">.</span>
+		</div>
+	</div>
+
+	<div class="theme-layout main_layout main_box">
+		<!-- topbar 시작 -->
+		<div class="topbar stick top_headerbar">
+			<div class="logo top_logo">
+				<a title="" href="about.html"><img src="images/main/폰트동일 로고.png" alt="logo"></a>
+			</div>
+			<div class="top-area">
+				<ul class="setting-area float-left nav_menu_bar">
+					<li>
+						<a href="newsfeed.html" title="Home" data-ripple="" class="nav_menu">
+							<span>COMPANY</span>
+						</a>
+						<div class="dropdowns nav_2depth">
+							<ul class="drops-menu nav_2depth_menu">
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="index.html" title="">기업소개</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">연혁</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">기업소식</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">찾아오는 길</a></h6>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<a href="" title="INVESTORS" data-ripple="" class="nav_menu">
+							<span>INVESTORS</span>
+						</a>
+						<div class="dropdowns nav_2depth">
+							<ul class="drops-menu nav_2depth_menu">
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">IR 자료실</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">IR 행사일정</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">주가 정보</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">재무정보</a></h6>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<a href="#" title="ARTISTS" data-ripple="" class="nav_menu">
+							<span>ARTISTS</span>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="NOTICE" data-ripple="" class="nav_menu">
+							<span>NOTICE</span>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="AUDITION" data-ripple="" class="nav_menu">
+							<span>AUDITION</span>
+						</a>
+						<div class="dropdowns nav_2depth">
+							<ul class="drops-menu nav_2depth_menu">
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">오디션일정확인</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">지원하기</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">지원내역확인</a></h6>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+				<ul class="setting-area float-left nav_menu_bar nav_language">
+					<li class="">
+						<a href="#" title="LANGUAGE" data-ripple="" class="nav_menu nav_menu_language">
+							<span>KOR</span>
+						</a>
+						<div class="dropdowns nav_2depth">
+							<ul class="drops-menu nav_2depth_menu">
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">ENG</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">CHN</a></h6>
+									</div>
+								</li>
+								<li>
+									<div class="mesg-meta">
+										<h6><a href="#" title="">JPN</a></h6>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- topbar 끝 -->
+
+		<!-- main content 시작 -->
+		<section>
+			<!-- Swiper 시작-->
+			<div class="swiperArea">
+				<div class="swiper mySwiper">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide main_img00 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="0" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(https://hybecorp.com/archive/npwkfLvi9Uc7jhRdWnPgsmhCEfgoyiKVbDlJdgRhbMp2qjozU3xlqNWFQCWe2nf55IsEwNuKPLmXLflEenclUgalNypovvTYyNLI0FVakH5lUHewTovjao7xvGKsg2c5.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/Vk5-c_v4gMU?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen>
+							</iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img01 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="2" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(https://hybecorp.com/archive/kZeHbXudVScPDp2TbINIg66KLqTu661hzuGV7jLAg8W9Q6Sw39AQWTbyAGTwJJlOTpcZ3x8HIggYy5HgHHMElHVPvZ6ywyXZ5Co8EwO3rpZK0Mxc1K5gqNqyMZTYNauy.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/IXkODEsjVWo?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+						<div class="swiper-slide main_img02 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="3" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(https://hybecorp.com/archive/W7lXTyKCwgFOLUoZYEVsCWzGqRl7GhWVaD2HfFWMglTlNv40WracY4nGhsye02kYmxAkns4lbEtcyEnu7B3VTPQgWdILW45oJXmW8xwyvypcYOQLtfCIrODji8YwcHmj.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/KNexS61fjus?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img03 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="4" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(https://hybecorp.com/archive/YPRDonERLebRde8DPXMTVPGGg6tQMrEzAP4L6eUqxdZd4sskIoXaSLtUnunrbtoT9maiI9NjNyICGK3beRpzGKobRIXITnmPbPE1B7zQVhw1lqQQgNvzOhveoUvucv0j.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/ZtYJMjx3dGw?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img04 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="5" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(https://hybecorp.com/archive/eFqXINeeWF6HyRbMR3zSUguzPJLCcfsFpHp6KzjVxzY9DkbLuPH6Raokd7JLXuVw3qKr5gWgYZwADMdZlO5QOivTjO4Ir5ssdQNJtfPIROn2qq0x7zRddlcu7fXp7zsM.png);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/hVAc1Vf2ITU?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img05 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="6" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(https://hybecorp.com/archive/7FE3fPmTP1s0VEdemzPRdsCu33MqpDJt6MzOmGs9XPq5IfX0MGckHvk3TweETQL71Ra8BEgiCmn5w4MZIHP9Bq70vl91pdeEubi70gZS3lwVtTS2BzCEhuptOtevvyaq.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/zzKV_T9ybe8?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img06 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="7" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(https://hybecorp.com/archive/yCNcUG70FzVqivz8jTtxLZbn41JrVGgampLM5T8wofySn9xLIkqcVjFSBBpivfKQxKoJ1ZVfrs09aZvwKM0SF7yD0lLUlep1Hp0ldgCEMvAxFSpfhb0UHKOlLHWzwvdU.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/J--BukW5BfQ?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img07 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="8" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(https://hybecorp.com/archive/zop4UPM1qYcO9OQkvHL6qud4BAwHvjpvS8FlUfGxAmQS9zkPo6AYYEIuELeVB3w9y3CkECejGdC6weunNSNExNAOcIGCpux982Skg3k54QtTSQThGAs6Dap8HlEPc1Ko.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/qedonJosQ3g?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img08 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="9" data-video-type="Youtube">
+
+							<div class="video_img"
+								style="background-image: url(https://hybecorp.com/archive/ia9lurqmkMVlurEypr3bOypAcefEJO1PrcBww4l6IyG4dSt4qZlREUKhwXuXUb25hrOUXOd5Rx9i4oXZ6PeDoyXyc1yzeaGJC8OxwTBUKiOKcRQ6d0sDXZpIt1vD6E5J.jpg);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/zSQ48zyWZrY?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
+
+						</div>
+
+						<div class="swiper-slide main_img09 main-swiper-div" data-swiper-autoplay="5000"
+							data-video-idx="10" data-video-type="Youtube">
+
+							<div class="video_img" style="background-image: url(assets/images/sunmi.png);">
+								<a href="#none" class="play_btn"></a>
+							</div>
+
+							<iframe class="pc_video"
+								src="https://www.youtube.com/embed/vJvX9L6FCWI?autoplay=0&amp;enablejsapi=1&amp;mute=1&amp;showinfo=0&amp;rel=0&amp;modestbranding=1&amp;controls=0&amp;loop=0"
+								title="선미 (SUNMI) - &#39;열이올라요 (Heart Burn)&#39; Music Video" frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+								referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+						</div>
+					</div>
+					<!-- swiper button 부분 시작 -->
+					<div class="swiper-button-next"></div>
+					<div class="swiper-button-prev"></div>
+					<div class="swiper-pagination"></div>
+					<div class="autoplay-progress">
+						<svg viewBox="0 0 48 48">
+							<circle cx="24" cy="24" r="20"></circle>
+						</svg>
+						<span></span>
+					</div>
+					<!-- swiper button 부분 끝 -->
+				</div>
+			</div>
+			<!-- Swiper 끝-->
+		</section>
+		<!-- main content 끝 -->
+
+		<!-- bottom bar 시작-->
+		<div class="bottombar footerbar">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<span class="copyright meCopyright">© WELL SEE CODING 2024. All rights reserved.</span>
+					</div>
+					<div class="col-md-12 golink">
+						<span class="golinkCommunity">
+							<a href="#">커뮤니티바로가기</a>
+						</span>
+						<span class="golinkGoods">
+							<a href="#">굿즈샵바로가기</a>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- bottom bar 끝-->
+	</div>
+
+
+
+	<script src="${pageContext.request.contextPath }/resources/js/main.min.js"></script>
+	<script src="${pageContext.request.contextPath }/resources/js/script.js"></script>
+
+</body>
+
+</html>

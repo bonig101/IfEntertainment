@@ -1,0 +1,319 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<script src="${pageContext.request.contextPath }/resources/sweetAlertCustom/sweetAlertCustom.js"></script>
+
+
+<div class="central-meta OrderIssue">
+	<h1 class="create-post">주문내역 상세정보</h1>
+	<div class="cart-sec" style="margin-bottom: 30px">
+		<table class="table table-responsive OrderIssue-table">
+			<tr>
+				<th>주문일자</th>
+				<th>상품</th>
+				<th>수량</th>
+				<th>결제금액</th>
+				<th>상태</th>
+			</tr>
+			<c:set value="${orderDetailList }" var="myOrderDetailList"/>
+			<c:choose>
+				<c:when test="${empty myOrderDetailList }">
+					<tr>
+						<td colspan="5">주문 디테일이 존재하지 않습니다.</td> 
+					</tr>
+				</c:when>
+				<c:otherwise>
+					<c:forEach items="${myOrderDetailList }" var="myOrderDetail">
+						<tr>
+							<td>
+								<div>
+									<span><fmt:formatDate value="${myOrderDetail.orderDate}" pattern="yyyy-MM-dd" /></span><br>
+									<span class=" order_no woocommerce-Price-amount amount">${myOrderDetail.orderNo }</span>
+								</div>
+							</td>
+							<td>
+								<div class="cart-avatar issu-imgbox goods" data-goodsNo="${myOrder.goodsNo}">
+									<img src="${myOrderDetail.goodsThumbnail }" alt="">
+								</div>
+								<div class="cart-meta issue-pro-con goods" data-goodsNo="${myOrder.goodsNo}">
+									<span class="issue-pro-artist">${myOrderDetail.goodsArtist }</span>
+									<span class="issue-pro-title">${myOrderDetail.goodsName }</span>
+								</div>
+							</td>
+							<td>
+								<span class="cart-prices" style="line-height: 68px"> 
+									<ins>
+										<span class="woocommerce-Price-amount amount">${myOrderDetail.odQuantity }</span>
+									</ins> 
+								</span>
+							</td>
+							<td>
+								<span class="cart-prices" style="line-height: 68px"> 
+									<ins>
+										<span class="woocommerce-Price-amount amount">
+											<fmt:formatNumber value="${myOrderDetail.odPrice }" pattern="#,###"/>
+										</span>
+									</ins> 
+								</span>
+							</td>
+							<td class="orderdetail_issueBtn">
+								<span class="cart-prices"> 
+									<ins>
+										<span class="woocommerce-Price-amount amount">
+											<c:choose>
+												<c:when test="${myOrderDetail.orderDelivery eq 'N'}">
+													<span class="woocommerce-Price-currencySymbol">배송전</span>
+												</c:when>
+												<c:otherwise>
+													<div class="Btn_box">
+														<%-- <span style="font-size: 13px;">
+															배송일(<fmt:formatDate value="${myOrderDetail.cmplDate }" pattern="yyyy-MM-dd" />)
+														</span> --%>
+														<c:choose>
+															<c:when test="${myOrderDetail.odStatus eq '0'}">
+																<span style="font-size: 13px;">
+																	배송일(<fmt:formatDate value="${myOrderDetail.cmplDate }" pattern="yyyy-MM-dd" />)
+																</span>
+																<span style="font-size: 13px;">
+																	배송일(<fmt:formatDate value="${myOrderDetail.cmplDate }" pattern="yyyy-MM-dd" />)
+																</span>
+																<a href="#" class="main-btn create-pst order-cancelBtn chBtn"
+																	data-odNo="${myOrderDetail.odNo }" data-orderNo="${myOrderDetail.orderNo }">교환 요청</a>
+															</c:when>
+															<c:when test="${myOrderDetail.odStatus eq '1'}">
+																<span style="font-size: 15px; font-weight: 600;">교환 신청 처리중</span>
+															</c:when>
+															<c:when test="${myOrderDetail.odStatus eq '2'}">
+																<span style="font-size: 13px; font-weight: 600;">교환 처리 완료</span>
+															</c:when>
+															<c:otherwise>
+																<span style="font-size: 13px; font-weight: 600;">취소됨</span>
+															</c:otherwise>
+														</c:choose>
+													</div>												
+												</c:otherwise>
+											</c:choose>
+										</span>
+									</ins> 
+								</span>
+							</td>
+						</tr>
+					</c:forEach>
+				</c:otherwise>
+			</c:choose>
+		</table>
+	</div>
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="central-meta">
+				<div class="create-post address">
+					<span class="address-title">배송지 정보</span>
+					<c:if test="${myOrderDetailList[0].orderDelivery eq 'N' || myOrderDetailList[0].odIssue <= 0}">
+						<a href="#" title="" class="main-btn" data-ripple="">배송지 변경</a>
+					</c:if>
+				</div>
+				<div class="about-chnl">
+					<ul>
+						<li>
+							<span>받는분 :</span> 
+							<span style="width: 400px">${myOrderDetailList[0].maReciever }</span>
+						</li>
+						<li>
+							<span>주소 :</span> 
+							<span style="width: 400px">${myOrderDetailList[0].maAddress1 } ${myOrderDetailList[0].maAddress2 } 
+							(${myOrderDetailList[0].maPostcode })</span>
+						</li>
+						<li>
+							<span>연락처 :</span> 
+							<span style="width: 400px">${myOrderDetailList[0].maTelno }</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="amount-area">
+				<div class="total-area detail-total">
+					<ul>
+						<c:choose>
+							<c:when test="${empty myOrderDetailList }">
+								<span>주문내용이 없습니다.</span>
+							</c:when>
+							<c:otherwise>
+								<c:forEach items="${myOrderDetailList }" var="myOrderDetail">
+									<li>
+										<span>${myOrderDetail.goodsName } :</span>
+										<i> <fmt:formatNumber value="${myOrderDetail.odPrice }" pattern="#,###"/>  원</i>
+									</li>
+								</c:forEach>
+							</c:otherwise>
+						</c:choose>
+						<li>
+							<span>Shipping :</span>
+							<i>Free</i>
+						</li>
+						<li class="order-total">
+							<span style="font-size: 25px;">ORDER TOTAL :</span>
+							<i style="font-size: 25px;"><fmt:formatNumber value="${myOrderDetailList[0].orderTotalprice }" pattern="#,###"/>원</i>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 모달시작 -->
+<div class="modal fade cancelmodal" id="inputModal" tabindex="-1" aria-labelledby="inputModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-di">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inputModalLabel">취소사유를 작성해주세요.</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb">
+		    	<div class="form-group odcancel-form" style="margin-top: 10px;">
+		            <div>
+		                <label for="inputText">교환 사유 :</label>
+				        <textarea id="guiDetail" name="guiDetail" 
+				        class="form-control canceltext" placeholder="텍스트를 입력하세요" style="height: 200px;"></textarea>
+		            </div>
+		            <div>
+		            	<label for="inputText">이미지 첨부 :</label>
+		            	<input type="file" id="orderIssuefile" name="orderIssuefile" />
+		            	<div class="Issueimgbox">
+		            		<img id=Issueimg src="" alt="" >
+		            	</div>
+		            </div>
+	    		</div> 
+			</div>
+            <div class="modal-footer mf">
+                <button id="cancelBtn" type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                <button id="ansBtn" type="button" class="btn btn-primary">교환 신청하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 모달 끝 -->
+
+<script type="text/javascript">
+$(function () {
+	var goods = $(".goods");
+	
+	goods.on("click", function () {
+		var goodsNo = $(this).data('goodsno');
+		location.href = "/goods/goodsDetail.do?goodsNo=" + goodsNo;
+	});
+	
+	var chBtn = $(".chBtn");
+	var ansBtn = $("#ansBtn");
+	
+	chBtn.on("click", function (event) {
+		event.preventDefault();
+		
+		var odNo = $(this).data('odno');
+		var orderNo = $(this).data('orderno');
+		
+		Swal.fire({
+            title: '상품교환 신청 하시겠습니까?',
+            text: "신청시 취소가 불가합니다.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '네, 교환할래요',
+            cancelButtonText: '취소'
+        }).then((result) => {
+        	
+            if (result.isConfirmed) {
+            	modal.modal('show'); // 모달 열기
+            	
+            	ansBtn.on("click", function () {
+            		
+		        	var guiDetail = $("#guiDetail").val();
+		        	
+		        	var formData = new FormData();
+		        	formData.append('orderNo', orderNo);
+		        	formData.append('odNo', odNo);
+		        	formData.append('guiType', 2);
+		        	formData.append('guiDetail', guiDetail);
+		        	formData.append('orderIssuefile', $('#orderIssuefile')[0].files[0]);
+		        	
+		        	$.ajax({
+		        		type : "post",
+		        		url : "/goods/order/orderChange.do",
+		        		data : formData,
+		        		dataType : "text",
+		        		processData : false,
+		        		contentType : false,
+		        		success : function (res) {
+							console.log(res);
+							if (res == "OK") {
+								Swal.fire({
+								  icon: "success",
+								  title: "교환신청이 완료되었습니다.",
+								  showConfirmButton: false,
+								  timer: 1500
+								});
+							}
+							modal.modal("hide");
+							setInterval(() => {
+								location.reload(true);
+							}, 1501);
+						}
+		        	});
+				});
+
+            } else if (result.dismiss === Swal.DismissReason.cancel) { // 취소 버튼을 눌렀을 때
+                // "취소" 버튼을 눌렀을 때
+                Swal.fire( 
+                    '작업이 취소되었습니다.', 
+                    '', 
+                    'info' 
+                )
+            }
+        });
+	});
+	
+	var modal = $("#inputModal"); 
+	
+	modal.on('show.bs.modal', function () {     
+         var modal = $(this);
+         modal.appendTo('body');
+    });
+	
+	var orderIssuefile = $("#orderIssuefile");
+	
+	orderIssuefile.on("change", function (event) {
+		file = event.target.files[0];
+		
+		if (isimgFile(file)) {
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				$("#Issueimg").attr("src", e.target.result);
+				$(".Issueimgbox").css("display", "block");
+			}
+			reader.readAsDataURL(file);
+		}else {
+			Swal.fire(
+			  '이미지 파일만 등록 가능합니다.',
+			  '',
+			  'warning'
+			)			
+		}
+	});
+	
+	
+	function isimgFile(file) {
+		var ext = file.name.split(".").pop().toLowerCase(); // 파일명에서 확장자를 가져온다.
+		return ($.inArray(ext,["jpg","jpeg","png", "gif"]) === -1) ? false : true;
+	}
+});
+</script>

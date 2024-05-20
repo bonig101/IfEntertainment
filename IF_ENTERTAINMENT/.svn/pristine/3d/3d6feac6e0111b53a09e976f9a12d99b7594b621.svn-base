@@ -1,0 +1,448 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/font-awesome.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/themify-icons.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/line-icons.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/bootstrap.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/animate.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/jquery.datepicker.min.css">
+
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/jquery.js"></script>  --%>
+<script src="${pageContext.request.contextPath }/resources/js1/bootstrap.min.js"></script> 
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/perfect-scrollbar.jquery.min.js"></script>  --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/chart.min.js"></script>  --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/echart.min.js"></script>  --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/jquery.sparkline.min.js"></script>  --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/custom2.js"></script>  --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/flatweather.min.js"></script>  --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/html5lightbox.js"></script>  --%>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/custom.js"></script> --%>
+
+<!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
+<!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+
+<div class="main-content">
+            <div class="responsive-header">
+                                <div class="logo-area">
+                                    <ul class="notify-area">
+                                        <li>
+                                            <div class="nav-icon3"> <span></span> <span></span> <span></span> <span></span> </div>
+                                        </li>
+                                        <li class="notifications"><a href="#" title=""><i class="fa fa-bell-o"></i></a><span class="red-bg">02</span>
+                                            <div class="drop notify"> <span class="drop-head">Notifications</span>
+                                                <ul class="drop-meta">
+                                                    <li> <i class="notifi-icon blue">N</i>
+                                                        <div class="notifi-meta">
+                                                            <h4><a href="#" title="">Nulla Vel Metus Scelerisque Ante Commodo. </a></h4>
+                                                            <span>02:34PM</span> </div>
+                                                    </li>
+                                                    <li> <i class="notifi-icon red">C</i>
+                                                        <div class="notifi-meta">
+                                                            <h4><a href="#" title="">Nulla Vel Metus Scelerisque Ante Commodo. </a></h4>
+                                                            <span>02:34PM</span> </div>
+                                                    </li>
+                                                    <li> <i class="notifi-icon yellow">A</i>
+                                                        <div class="notifi-meta">
+                                                            <h4><a href="#" title="">Nulla Vel Metus Scelerisque Ante Commodo. </a></h4>
+                                                            <span>02:34PM</span> </div>
+                                                    </li>
+                                                    <li> <i class="notifi-icon blue">N</i>
+                                                        <div class="notifi-meta">
+                                                            <h4><a href="#" title="">Nulla Vel Metus Scelerisque Ante Commodo. </a></h4>
+                                                            <span>02:34PM</span> </div>
+                                                    </li>
+                                                </ul>
+                                                <span class="drop-bottom"><a href="#" title="">View More Notifications</a></span> </div>
+                                        </li>
+                                        <li class="messages"><a href="#" title=""><i class="fa fa-envelope-o"></i></a><span class="blue-bg">10</span>
+                                            <div class="drop messages"> <span class="drop-head">3 New Message <i class="fa fa-pencil-square-o"></i></span>
+                                                <ul class="drop-meta">
+                                                    <li> <i class="notifi-icon"><img src="images/resources/user-mesg.jpg" alt=""></i>
+                                                        <div class="notifi-meta"> <span>02:34PM</span>
+                                                            <h4><a href="#" title="">Hi Teddy, Just wanted to let you...</a></h4>
+                                                        </div>
+                                                    </li>
+                                                    <li> <i class="notifi-icon"><img src="images/resources/user-mesg2.jpg" alt=""></i>
+                                                        <div class="notifi-meta"> <span>02:34PM</span>
+                                                            <h4><a href="#" title="">Hi Teddy, Just wanted to let you...</a></h4>
+                                                        </div>
+                                                    </li>
+                                                    <li> <i class="notifi-icon"><img src="images/resources/user-mesg3.jpg" alt=""></i>
+                                                        <div class="notifi-meta"> <span>02:34PM</span>
+                                                            <h4><a href="#" title="">Hi Teddy, Just wanted to let you...</a></h4>
+                                                        </div>
+                                                    </li>
+                                                    <li> <i class="notifi-icon"><img src="images/resources/user-mesg.jpg" alt=""></i>
+                                                        <div class="notifi-meta"> <span>02:34PM</span>
+                                                            <h4><a href="#" title="">Hi Teddy, Just wanted to let you...</a></h4>
+                                                        </div>
+                                                    </li>
+                                                    <li> <i class="notifi-icon"><img src="images/resources/user-mesg2.jpg" alt=""></i>
+                                                        <div class="notifi-meta"> <span>02:34PM</span>
+                                                            <h4><a href="#" title="">Hi Teddy, Just wanted to let you...</a></h4>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <span class="drop-bottom"><a href="#" title="">View More messages</a></span> </div>
+                                        </li>
+                                    </ul>
+									
+                                    <div class="user-head">
+									<div class="admin">
+										<div class="admin-avatar"> <img src="images/resources/admin.png" alt=""> <i class="online"></i> </div>
+									</div>
+									<div class="drop setting"> <span class="drop-head">stifen Doe <i>30 days trial</i></span>
+										<ul class="drop-meta">
+											<li> <a href="#" title=""><i class="fa fa-eyedropper"></i>Edit Profile</a> </li>
+											<li> <a href="#" title=""><i class="fa fa-envelope-o"></i>My Inbox</a> </li>
+											<li> <a href="#" title=""><i class="fa fa-adjust"></i>task</a> </li>
+											<li> <a href="#" title=""><i class="fa fa-calendar"></i>Calender</a> </li>
+											<li> <a href="#" title=""><i class="fa fa-align-right"></i>Balance Report</a> </li>
+										</ul>
+										<span class="drop-bottom"><a href="#" title=""><i class="fa fa-sign-out"></i>log Out</a></span> </div>
+                                    </div>
+									<ul class="seting-area">
+									<li class="langages">
+										<a title="" href="#">Eng</a>
+										<ul class="drop language">
+											<li class="lang-selected"><a href=""><i class="fa fa-check"></i> Eng</a></li>
+											<li><a href="">Rus</a></li>
+											<li><a href="">Jap</a></li>
+											<li><a href="">Arb</a></li>
+										</ul>
+									</li>
+									<li class="setting-panel"><a title="" href="#"><i class="icon-equalizer"></i></a></li>
+								</ul>
+                                </div>
+                                <div class="t-search">
+                                    <form method="post">
+                                        <input type="text" placeholder="Enter Your Keyword">
+                                        <button type="submit"><i class="fa fa-search"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+            <!-- responsive header -->
+            <div class="panel-body">
+              
+              <div class="content-area">
+                <div class="sub-bar">
+                  <div class="sub-title">
+                    <h4>Dashboard:</h4>
+                    <span>Welcome To web Admin Panel!</span>
+                  </div>
+                  <ul class="bread-crumb">
+                    <li><a href="#" title="">Home</a></li>
+                    <li>Dashbord</li>
+                  </ul>
+                </div>
+                <div class="inner-bg">
+                  <div class="gap no-top">
+                    <div class="element-title">
+                      <h4>Accordians & Tabs</h4>
+                      <span>These are accordians & tabs in Different styles.</span> </div>
+                    <div class="tab-style">
+                      <ul class="tab nav nav-tabs tab-btns">
+                        <li class="nav-item"><a class="active" href="#link1" data-toggle="tab">tab 1</a></li>
+                        <li class="nav-item"><a href="#link2" data-toggle="tab">tab 2</a></li>
+                        <li class="nav-item"><a href="#link3" data-toggle="tab">tab 3</a></li>
+                        <li class="nav-item"><a href="#link4" data-toggle="tab">tab 3</a></li>
+                      </ul>
+                      <div class="tab-content">
+                        <div class="tab-pane active fade show" id="link1">
+                          <div class="tab-meta">
+                            <p> High High lorm ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat
+                              ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. High lorm ipsum dolor sit amet
+                              adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis
+                              tation ullamcorper. </p>
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="link2">
+                          <div class="tab-meta">
+                            <p> High High lorm ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat
+                              ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. High lorm ipsum dolor sit amet
+                              adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis
+                              tation ullamcorper. </p>
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="link3">
+                          <div class="tab-meta">
+                            <p> High lorm ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat
+                              ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. High lorm ipsum dolor sit amet
+                              adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis
+                              tation ullamcorper. </p>
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="link4">
+                          <div class="tab-meta">
+                            <p> High High lorm ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat
+                              ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. High lorm ipsum dolor sit amet
+                              adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis
+                              tation ullamcorper. </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-style style2">
+                      <ul class="nav nav-tabs tab tab-btns">
+                        <li class="nav-item"><a class="active" href="#tab1" data-toggle="tab">tab 1</a></li>
+                        <li class="nav-item"><a href="#tab2" data-toggle="tab">tab 2</a></li>
+                        <li class="nav-item"><a href="#tab3" data-toggle="tab">tab 3</a></li>
+                        <li class="nav-item"><a href="#tab4" data-toggle="tab">tab 3</a></li>
+                      </ul>
+                      <div class="tab-content">
+                        <div class="tab-pane active fade show" id="tab1">
+                          <div class="tab-meta">
+                            <p> High lorm ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat
+                              ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. High lorm ipsum dolor sit amet
+                              adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis
+                              tation ullamcorper. </p>
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab2">
+                          <div class="tab-meta">
+                            <p> High lorm ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat
+                              ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. High lorm ipsum dolor sit amet
+                              adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis
+                              tation ullamcorper. </p>
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab3">
+                          <div class="tab-meta">
+                            <p> High lorm ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat
+                              ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. High lorm ipsum dolor sit amet
+                              adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis
+                              tation ullamcorper. </p>
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab4">
+                          <div class="tab-meta">
+                            <p> High lorm ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat
+                              ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. High lorm ipsum dolor sit amet
+                              adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis
+                              tation ullamcorper. </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-style style3">
+                      <ul class="nav nav-tabs tab tab-btns">
+                        <li class="nav-item"><a class="active" href="#bs1" data-toggle="tab"><i class="fa fa-home"></i>home 1</a></li>
+                        <li class="nav-item"><a href="#bs2" data-toggle="tab"><i class="fa fa-coffee"></i> deal 2</a></li>
+                        <li class="nav-item"><a href="#bs3" data-toggle="tab"><i class="fa fa-cloud-upload"></i> upload 3</a></li>
+                        <li class="nav-item"><a href="#bs4" data-toggle="tab"><i class="fa fa-gear"></i> setting 3</a></li>
+                      </ul>
+                      <div class="tab-content">
+                        <div class="tab-pane active fade show" id="bs1">
+                          <div class="tab-meta">
+                            <p> High lorm ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat
+                              ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. High lorm ipsum dolor sit amet
+                              adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis
+                              tation ullamcorper. </p>
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="bs2">
+                          <div class="tab-meta">
+                            <p> High lorm ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat
+                              ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. High lorm ipsum dolor sit amet
+                              adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis
+                              tation ullamcorper. </p>
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="bs3">
+                          <div class="tab-meta">
+                            <p> High lorm ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat
+                              ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. High lorm ipsum dolor sit amet
+                              adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis
+                              tation ullamcorper. </p>
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="bs4">
+                          <div class="tab-meta">
+                            <p> High lorm ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat
+                              ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. High lorm ipsum dolor sit amet
+                              adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis
+                              tation ullamcorper. </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordians-style">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="toggle toggle-style1" id="toggle">
+                              <h4 class="wdg-tl">Style No. 1</h4>
+                              <div class="toggle-item brd-5 activate">
+                                <h3 class="active">Using This Dedicated Purpose Theme? <span><i class="fa fa-angle-up"></i></span></h3>
+                                <div class="content">
+                                  <div class="simple-text">
+                                    <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="toggle-item brd-5">
+                                <h3 class="">Creative And Corporate Industries? <span><i class="fa fa-angle-up"></i></span></h3>
+                                <div class="content">
+                                  <div class="simple-text">
+                                    <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="toggle-item brd-5">
+                                <h3 class="">Business Niche Or Creative Style? <span><i class="fa fa-angle-up"></i></span></h3>
+                                <div class="content">
+                                  <div class="simple-text">
+                                    <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="toggle toggle-style2" id="toggle2">
+                              <h4 class="wdg-tl">Style No. 2</h4>
+                              <div class="toggle-item brd-5 activate">
+                                <h3 class="active"><i class="fa fa-life-bouy"></i>Using This Dedicated Purpose Theme?</h3>
+                                <div class="content">
+                                  <div class="simple-text">
+                                    <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="toggle-item brd-5">
+                                <h3 class=""><i class="fa fa-joomla"></i>Creative And Corporate Industries?</h3>
+                                <div class="content">
+                                  <div class="simple-text">
+                                    <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="toggle-item brd-5">
+                                <h3 class=""><i class="fa fa-leaf"></i>Business Niche Or Creative Style?</h3>
+                                <div class="content">
+                                  <div class="simple-text">
+                                    <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="">
+                    <div class="accordians-style">
+                      <div class="gap">
+						  <div class="row">
+							<div class="col-md-6">
+							  <div class="toggle toggle-style3" id="toggle3">
+								<h4 class="wdg-tl">Style No. 3</h4>
+								<div class="toggle-item brd-5 activate">
+								  <h3 class="active"><i class="fa fa-life-bouy"></i>Using This Dedicated Purpose Theme?</h3>
+								  <div class="content">
+									<div class="simple-text">
+									  <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.</p>
+									</div>
+								  </div>
+								</div>
+								<div class="toggle-item brd-5">
+								  <h3 class=""><i class="fa fa-joomla"></i>Creative And Corporate Industries?</h3>
+								  <div class="content">
+									<div class="simple-text">
+									  <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.</p>
+									</div>
+								  </div>
+								</div>
+								<div class="toggle-item brd-5">
+								  <h3 class=""><i class="fa fa-leaf"></i>Business Niche Or Creative Style?</h3>
+								  <div class="content">
+									<div class="simple-text">
+									  <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.</p>
+									</div>
+								  </div>
+								</div>
+							  </div>
+							</div>
+							<div class="col-md-6">
+							  <div class="toggle toggle-style4" id="toggle4">
+								<h4 class="wdg-tl">Style No. 4</h4>
+								<div class="toggle-item activate">
+								  <h3 class="active"><i class="fa fa-life-bouy"></i>Using This Dedicated Purpose Theme?</h3>
+								  <div class="content">
+									<div class="simple-text">
+									  <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.</p>
+									</div>
+								  </div>
+								</div>
+								<div class="toggle-item">
+								  <h3 class=""><i class="fa fa-joomla"></i>Creative And Corporate Industries?</h3>
+								  <div class="content">
+									<div class="simple-text">
+									  <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.</p>
+									</div>
+								  </div>
+								</div>
+								<div class="toggle-item">
+								  <h3 class=""><i class="fa fa-leaf"></i>Business Niche Or Creative Style?</h3>
+								  <div class="content">
+									<div class="simple-text">
+									  <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.</p>
+									</div>
+								  </div>
+								</div>
+							  </div>
+							</div>
+						  </div> 
+                      </div>
+                    </div>
+                  </div>
+                  <div class="">
+                    <div class="accordians-style">
+                      <div class="">
+                        <div class="col-md-12">
+                          <div class="toggle toggle-style5" id="toggle5">
+                            <h4 class="wdg-tl">Style No. 5</h4>
+                            <div class="toggle-item brd-5 activate">
+                              <h3 class="active"><i class="fa fa-life-bouy"></i>Using This Dedicated Purpose Theme?</h3>
+                              <div class="content">
+                                <div class="simple-text">
+                                  <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.High lorm ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad</p>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="toggle-item brd-5">
+                              <h3 class=""><i class="fa fa-joomla"></i>Creative And Corporate Industries?</h3>
+                              <div class="content">
+                                <div class="simple-text">
+                                  <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.High lorm ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad</p>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="toggle-item brd-5">
+                              <h3 class=""><i class="fa fa-leaf"></i>Business Niche Or Creative Style?</h3>
+                              <div class="content">
+                                <div class="simple-text">
+                                  <p>Suspendisse potenti. Maecenas dapibus ac tellus sed pulvinar estibulum bib volutpat. Sociis, eget mollis, exercitationem fames.High lorm ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="bottombar"> 
+									<span>© 2019. Dewwater. All Rights Reserved.</span>
+                                </div>
+              <!-- bottombar --> 
+            </div>
+          </div>

@@ -1,0 +1,25 @@
+package kr.or.ddit.controller.goods;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.goods.IFAQService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 굿즈샵 FAQ 조회 컨트롤러(사용자/관리자)
+ * @author 이수진
+ */
+@Controller
+@Slf4j
+@RequestMapping("/goods/faq")
+public class FAQRetrieveController {
+
+	@Inject
+	private IFAQService faqService;
+	
+	// 아코디언 css 적용하여 질문 클릭하면 답변 보이도록
+	
+}

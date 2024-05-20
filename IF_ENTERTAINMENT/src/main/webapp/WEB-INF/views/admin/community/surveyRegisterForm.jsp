@@ -1,0 +1,813 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/bootstrap.min.js"></script> --%>
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/font-awesome.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/themify-icons.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/line-icons.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/bootstrap.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/animate.min.css">
+<%-- <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/perfect-scrollbar.min.css"> --%>
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/jquery.datepicker.min.css">
+
+<script src="${pageContext.request.contextPath }/resources/js1/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath }/resources/js1/jquery.js"></script> 
+<script src="${pageContext.request.contextPath }/resources/js1/bootstrap.min.js"></script> 
+<%-- <script src="${pageContext.request.contextPath }/resources/js1/perfect-scrollbar.jquery.min.js"></script>  --%>
+<script src="${pageContext.request.contextPath }/resources/js1/chart.min.js"></script> 
+<script src="${pageContext.request.contextPath }/resources/js1/echart.min.js"></script> 
+<script src="${pageContext.request.contextPath }/resources/js1/jquery.sparkline.min.js"></script> 
+<script src="${pageContext.request.contextPath }/resources/js1/custom2.js"></script> 
+<script src="${pageContext.request.contextPath }/resources/js1/flatweather.min.js"></script> 
+<script src="${pageContext.request.contextPath }/resources/js1/html5lightbox.js"></script> 
+<script src="${pageContext.request.contextPath }/resources/js1/custom.js"></script>
+
+<!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
+<!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+
+<style>
+/* 셀렉트 박스 스타일 */
+select {
+	font-family: inherit;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #f4f8ff;
+    border: 1px solid #eaeaea;
+    padding: 8px 12px;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 14px;
+    color: #333333;
+    cursor: pointer;
+    outline: none;
+    height: 50px;
+    position: relative;
+}
+
+/* 셀렉트 박스 드롭다운 스타일 */
+select option {
+	font-family: inherit;
+    background-color: #f4f8ff;
+    color: #333333;
+}
+
+#upload-span{
+	display: block;	
+}
+
+/* 데이트피커 */
+.datepicker {
+    font-family: inherit;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #f4f8ff;
+    border: 1px solid #eaeaea;
+    padding: 12px;
+    border-radius: 5px;
+    width: calc(50% - 6px); 
+    font-size: 14px;
+    color: #333333;
+    cursor: pointer;
+    outline: none;
+    height: 50px;
+    position: relative;
+}
+
+#rows div, #surveyQuestion div {
+	margin-bottom: 20px;
+}
+
+.dateForm {
+	display: flex;
+	flex-direction: column;
+}
+
+#surveyFormTitle {
+	margin-bottom: 55px;
+}
+#surveyFormDisplay{
+	margin-top: 50px;
+}
+
+#bigTitle {
+	margin-bottom: 50px; 
+	font-weight: bolder;
+}
+
+#buttonz {
+    position: relative;
+    bottom: 10px;
+    margin-top: 70px;
+    float: left;
+    text-align: right;
+    width: 100%;
+}
+
+#upload-span {
+	font-weight: bolder;
+	font-size: 13px;
+}
+
+label {
+	font-weight: bolder;
+	font-size: 15px;
+}
+
+/* 동적 설문지 추가 관련 css */
+
+#sfDisplay {
+    margin-left: 15px;
+    top: 1px;
+    position: relative;
+}
+
+#sfTitle{
+	width: 1155px;
+}
+
+#surveyQuestion {
+	max-width: 1155px;
+	background-color: #f4f8ff;
+	border: 2px solid #eaeaea;
+ 	height: auto;
+	min-height: 200px; 
+	padding: 20px;
+	overflow: auto;
+}
+.qna_btnbox {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.fileContainer {
+	border: 1px solid #eaeaea;
+	height: 50px;
+}
+.fileContainer > span {
+	position: relative;
+    bottom: 0;
+    height: 30px;
+}
+
+#vertical{
+	margin: 0;
+	padding: 5px;
+	top: 0;
+	bottom: 0;
+}
+
+.questions{
+	padding: 15px;
+	border: 1px solid gray;
+	color: black;
+	font-size: larger;
+	margin-top: 20px;
+}
+
+.questionNo{
+	position: relative;
+	left: 10px;
+    top: 10px;
+    width: 50px;
+    font-size: initial;
+    margin-right: 9px;
+}
+
+/* #addQuestionBtn {
+	margin-top: 10px;
+	position: relative;
+	left: 1035px;
+} */
+
+.answer {
+	display: flex;
+}
+
+.answerInput {
+	height: 20px;
+}
+
+.answers {
+    margin-top: 30px;
+	padding: 20px;
+	padding-bottom: 0;
+	padding-left: 38px;
+	margin-bottom: 0;
+	border: 1px solid gray;
+	height: auto;
+	min-height: 200px;
+}
+
+.answerNo {
+	font-size: x-large;
+}
+
+.answerBtn-box {
+	position: relative;
+    left: 87%;
+    bottom: -15px;
+}
+
+.types{
+	display: flex;
+}
+
+.delQeustion, .delOption {
+	cursor: pointer;
+	z-index: 1;
+}
+
+#thumimg {
+	width: 500px;
+}
+
+.toggle-item {
+	height: auto;
+}
+
+.fa.fa-close:before{
+	color: darkgray;
+    top: 8px;
+    position: relative;
+}
+
+.toggle-item > h3{
+	border-bottom: 1px solid gray;
+	height: 85px;
+}
+
+.sqTitle, selects sqTypes {
+    width: 850px;
+    border-color: gray;
+    top: 6px;
+    position: relative;
+}
+
+</style>
+
+<div class="gap no-gap">
+	<div class="inner-bg">
+		<div class="element-title" id="bigTitle">
+			<h2>설문조사 등록</h2>
+		</div>
+		<div class="add-prod-from">
+			<form action="/community/survey/register.do" method="post" id="surveyForm" enctype="multipart/form-data">
+				<div class="row" id="rows">
+					<div class="col-md-12" id="surveyFormTitle">
+						<div style="padding: 0; margin: 0;">
+							<label>제목</label>
+						</div>
+						<input type="text" id="sfTitle" name="sfTitle" value="2024년 5월 가장 보고싶은 연예인은?">
+					</div>
+					<div class="col-md-12" style="margin-top: 45px;">
+						<span id="upload-span" class="upload-image">썸네일</span> 
+						<label class="fileContainer" style="width: 500px;">
+							<span id="vertical">upload</span>
+							<input type="file" id="sfFile" name="sfFile" />
+						</label>
+						<div id="thumimgBox">
+							<a href="#" target="_blank" id="thumbLink">
+								<img id="thumimg" src="" alt="" >
+							</a>
+						</div>
+					</div>
+
+					<div class="col-md-6 dateForm">
+						<label>시작일</label> 
+						<input type="date" class="datepicker startDate" id="sfRegdate" name="sfRegdate" style="width: 500px;"/>
+					</div>
+
+					<div class="col-md-6  dateForm" style="right: 129px;">
+						<label>마감일</label> 
+						<input type="date" class="datepicker endDate" id="sfEnddate" name="sfEnddate" style="width: 500px;" />
+					</div>
+
+					<div class="col-md-4" id="surveyFormDisplay" style="margin-bottom: 45px;">
+						<label>팝업 등록 여부</label> 
+						<input type="checkbox" class="check-box" id="sfDisplay" name="sfDisplay" value="Y">
+					</div>
+				</div>
+				<label>설문 내용</label>
+				<div id="surveyQuestion">
+					<div class="qna_btnbox">
+						<a href="#" id="addQuestionBtn" class="btn-st bordr rd-30">질문추가</a>
+					</div>
+					<div class="accordians-style">
+						<div class="gap">
+							<div class="toggle toggle-style3" id="toggle3">
+								<!-- 동적으로 질문이 추가될 영역 -->
+							</div>
+						</div>
+					</div>
+				</div>
+			<sec:csrfInput/>
+			</form>
+			<div class="col-md-12">
+				<div class="buttonz" id="buttonz">
+					<button type="button" id="registerBtn">설문등록</button>
+					<button type="button" id="cancelBtn">취소</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+	//아코디언 플러그인 초기화 함수 - 동적으로 생성되는 아코디언은 효과가 적용되지 않아 초기화 함수를 만들어두고 필요한 곳에서 호출한다.
+	function initializeAccordion() {
+	    $(".toggle-item").each(function() {
+	        $(this).find(".content").hide();
+	        $(this).find("h3:first").addClass("active").next().slideDown(500).parent().addClass("activate");
+	        $(this).find("h3").on("click", function() {
+	            if ($(this).next().is(":hidden")) {
+	                $(this).siblings("h3").removeClass("active").next().slideUp(500).removeClass("animated zoomIn").parent().removeClass("activate");
+	                $(this).toggleClass("active").next().slideDown(500).addClass("animated zoomIn").parent().toggleClass("activate");
+	                return false;
+	            }
+	        });
+	    });
+	}
+	
+	$(function() {
+		
+		var toggle3 = $("#toggle3");				// 동적으로 질문이 생성될 영역
+		var answers = $(".answers");				// 동적으로 보기가 생성될 영역
+		var addQuestionBtn = $("#addQuestionBtn");	// 질문추가 버튼
+		var addOptionBtn = $(".addOptionBtn");		// 질문추가 버튼
+		
+		var delQuestion = $(".delQuestion");		// 질문삭제 버튼
+		var delOption = $(".delOption");			// 보기삭제 버튼
+		var startDate;								// 설문 시작일 변수 선언
+		var endDate;								// 설문 종료일 변수 선언
+		
+		var surveyForm = $("#surveyForm");			// 설문폼
+		var registerBtn = $("#registerBtn");		// 설문 등록 버튼
+		var cancelBtn = $("#cancelBtn");			// 등록 취소 버튼
+		
+		// 썸네일 성공 여부 - 이미지 이외에 다른 첨부파일을 올리면 
+		// 값은 들어오지만 null 체크가 되지 않아서 flag 생성
+		// 이미지 이외의 파일이 들어온다면 해당 flag를 false로 
+		// 바꾼 후에 최종 확인에서 해당 상태를 확인한다.
+		var thumbPassed = true;		
+		
+		var sfDisplay = $("#sfDisplay");
+		// 팝업등록여부를 체크하면 현재 게시중인 팝업이 있는지를 체크 한 후 
+		// 어떤 게시물을 팝업으로 띄울지 선택하라는 알림을 띄운다
+		sfDisplay.on("click", function(){
+			$.ajax({
+				url: "/community/survey/popupcheck",
+				type: "get",
+				beforeSend: function(xhr){
+					xhr.setRequestHeader(header, token);
+				},
+				success: function(data){
+					if(data == 'EXIST'){
+						Swal.fire({
+					        title: '이미 게시중인 설문이 존재합니다.', 
+					        text: "기존 설문의 게시를 중단하시겠습니까?", 
+					        icon: 'info', 
+					        showCancelButton: true, // 취소 버튼 보이도록 설정
+					        confirmButtonColor: '#3085d6', // 삭제 버튼 색상 설정
+					        cancelButtonColor: '#d33', // 취소 버튼 색상 설정
+					        confirmButtonText: '중단', // 삭제 버튼 텍스트 설정
+					        cancelButtonText: '취소' // 취소 버튼 텍스트 설정
+					    }).then((result) => {
+					        if (result.isConfirmed) { 
+					        	$.ajax({
+					    			url : "/community/survey/finishSurveyAjax",
+					    			type : "get",
+					    			beforeSend: function(xhr){
+					    				xhr.setRequestHeader(header, token);
+					    			},
+					    			success: function(data){
+					    				console.log(data);
+					    				if(data == "SUCCESS"){
+					    					Swal.fire({
+					    						icon : "success",
+					    						title : "기존 설문이 마감되었습니다",
+					    						showConfirmButton : false,
+					    						timer : 1000
+					    					});		
+					    				}
+					    			}
+					    		});
+					        } else if (result.dismiss === Swal.DismissReason.cancel) { // 취소 버튼을 눌렀을 때
+					            $("#sfDisplay").prop("checked", false);
+					        }
+					    });
+						
+					}
+				}
+			});
+		});
+		
+		// 모든 설문지 폼 완성 후 등록버튼 클릭 이벤트 핸들러
+		registerBtn.on("click", function(){
+			
+			// 기본 폼에 대한 유효성 검사
+			var sfTitle = $("#sfTitle").val();
+			var sfFile = $("#sfFile").val();
+			var sfRegdate = $("#sfRegdate").val();
+			var sfEnddate = $("#sfEnddate").val();
+			var sfDisplay = $("#sfDisplay").val();
+			
+			if(sfTitle == null || sfTitle == ""){
+				Swal.fire({
+					icon : "error",
+					title : "제목이 입력되지 않았습니다.",
+					showConfirmButton : false,
+					timer : 1000
+				});
+				return false;
+			}			
+			if(sfFile == null || sfFile == ""){
+				Swal.fire({
+					icon : "error",
+					title : "썸네일이 등록되지 않았습니다.",
+					showConfirmButton : false,
+					timer : 1000
+				});
+				return false;
+			}			
+			if(sfRegdate == null || sfRegdate == ""){
+				Swal.fire({
+					icon : "error",
+					title : "시작일이 입력되지 않았습니다.",
+					showConfirmButton : false,
+					timer : 1000
+				});
+				return false;
+			}			
+			if(sfEnddate == null || sfEnddate == ""){
+				Swal.fire({
+					icon : "error",
+					title : "종료일이 입력되지 않았습니다.",
+					showConfirmButton : false,
+					timer : 1000
+				});
+				return false;
+			}	
+			
+			// 동적으로 생성된 질문과 보기들의 유효성 검사
+			var sqTitles = $(".sqTitles"); 			// 설문 질문들
+			var sqTypes = $(".sqTypes");			// 설문 타입들
+			
+			var validationSqTitles = true; 			// 질문제목 유효성 검사 통과 여부를 나타내는 변수
+			var validationSqTypes = true; 			// 질문타입 유효성 검사 통과 여부를 나타내는 변수
+			var validationSoContents = true;		// 질문보기 유효성 검사 통과 여부를 나타내는 변수
+			
+			// 각 질문 제목 유효성 검증
+			$.each(sqTitles, function(index, item){
+				if(sqTitles.eq(index).val() == null || sqTitles.eq(index).val() == ""){
+					Swal.fire({
+						icon : "error",
+						title : (index+1) + "번째 질문 제목이 비어있습니다.",
+						showConfirmButton : false,
+						timer : 2000
+					});
+					
+					// 해당 질문의 아코디언 활성화
+					$('#toggle3 .toggle-item').eq(index).find("h3").addClass("active");
+			        $('#toggle3 .toggle-item').eq(index).find(".content").slideDown(500);
+			        
+			        // 다른 질문의 아코디언은 닫기
+			        $('#toggle3 .toggle-item').not(':eq(' + index + ')').find("h3").removeClass("active");
+			        $('#toggle3 .toggle-item').not(':eq(' + index + ')').find(".content").slideUp(500);
+
+			        validationSqTitles = false;
+					return false;
+				}
+			});
+			
+			if(!validationSqTitles) {
+			    // 유효성 검사 실패로 인한 추가 처리
+			    return;
+			}
+			
+			// 각 질문 타입 유효성 검증
+			$.each(sqTypes, function(index, item){
+				
+				console.log(index + "번째 질문의 타입 => " + sqTypes.eq(index).val());
+				
+				if(sqTypes.eq(index).val() == null || sqTypes.eq(index).val() == ""){
+					Swal.fire({
+						icon : "error",
+						title : (index+1) + "번째 질문 타입이 비어있습니다.",
+						showConfirmButton : false,
+						timer : 2000
+					});
+					
+					// 해당 질문의 아코디언 활성화
+					$('#toggle3 .toggle-item').eq(index).find("h3").addClass("active");
+			        $('#toggle3 .toggle-item').eq(index).find(".content").slideDown(500);
+			        
+			        // 다른 질문의 아코디언은 닫기
+			        $('#toggle3 .toggle-item').not(':eq(' + index + ')').find("h3").removeClass("active");
+			        $('#toggle3 .toggle-item').not(':eq(' + index + ')').find(".content").slideUp(500);
+
+			        validationSqTypes = false;
+					return false;
+				}
+			});
+			
+			if(!validationSqTypes) {
+			    // 유효성 검사 실패로 인한 추가 처리
+			    return;
+			}
+			
+			// 각 보기들에 대한 유효성 검증 - 중첩 each 활용
+			// 어려워서 아직 못하는중
+			
+			
+			if(!thumbPassed){
+				// 썸네일을 통과 못한경우 리턴
+				return;
+			}
+			
+			surveyForm.submit();
+			
+		});
+		
+		// 설문 등록 취소버튼 클릭 이벤트 핸들러
+		cancelBtn.on("click", function(){
+			swal(
+					"설문등록을 취소 하시겠습니까?", 
+					"작성중인 내용은 저장되지 않습니다.", 
+					'등록 취소',
+					'계속 작성',
+					"/community/survey/list.do"
+			);
+		});
+		
+		// 질문추가 버튼 클릭 이벤트 핸들러
+		addQuestionBtn.on("click", function(event){
+		    event.preventDefault();
+		    var questionCount = toggle3.find(".toggle-item").length + 1; // 이미 추가된 질문 개수에 1을 더하여 새로운 질문의 번호를 결정
+		    var questionIndex = toggle3.find(".toggle-item").length;
+		    
+		    var html = '';
+		    html += '<div class="toggle-item brd-5" style="border: 1px solid dimgray;">';
+		    html += '    <h3 class="">';
+		    html += '        <i class="fa fa-leaf"></i><font style="font-size:x-large; position: relative; top: 4px;">질문 ' + questionCount + '</font>';
+		    html += '        <i class="fa fa-close fa-2x delQuestion" data-idx="' + questionCount + '" style="position:relative; top:-5px; left: 890px; background: none;"></i>';
+		    html += '    </h3>';
+		    html += '    <div class="content">';
+		    html += '        <div class="questions">';
+		    html += '            <div class="qna">';
+		    html += '                <div class="qna-box" style="height: 50px; display: flex;">';
+		    html += '                    <label class="questionNo" style="width: 70px; font-size: larger;">질문</label>';
+		    html += '                    <input type="text" class="sqTitles" style="width: 850px; border-color: gray; position: relative; top: 6px;" name="surveyQuestionList['+ questionIndex +'].sqTitle" />';
+		    html += '                </div>';
+		    html += '                <div class="types" style="margin-bottom: 5px;">';
+		    html += '                    <label class="questionNo" style="top: 12px; width: 70px; font-size: larger;">유형</label>';
+		    html += '                    <select name="surveyQuestionList[' + questionIndex + '].sqType" style="width: 300px; height: 50px; border-color: gray; position: relative; top: 6px;" class="selects sqTypes">';
+		    html += '                        <option value="">유형을 선택해주세요</option>';
+		    html += '                        <option value="radio">단일선텍형</option>';
+		    html += '                        <option value="checkbox">복수선택형</option>';
+		    html += '                    </select>';
+		    html += '                </div>';
+		    html += '                <div class="answers">';
+// 		    html += '                    <div class="answer">';
+// 		    html += '                    </div>';
+		    html += '                </div>';
+		    html += '            </div>';
+		    html += '            <div class="answerBtn-box">';
+		    html += '                <a href="#" class="btn-st bordr rd-30 addOptionBtn">보기추가</a>';
+		    html += '            </div>';
+		    html += '        </div>';
+		    html += '    </div>';
+		    html += '</div>';
+		    
+		    toggle3.append(html);
+		    
+		    // 아코디언이 추가될 때 모든 아코디언이 활성화 되는것을 방지
+		    toggle3.find(".toggle-item:last-child").find(".content").hide();
+		    toggle3.find(".toggle-item:last-child").find("h3").removeClass("active");
+		    
+		});
+		
+	    // 아코디언 헤더 클릭 이벤트 핸들러
+	    $('#toggle3').on("click", "h3", function () {
+	        var $this = $(this);
+	        var $content = $this.next();
+
+	        if (!$this.hasClass('active')) {
+	            // 모든 질문의 활성화 클래스를 제거
+	            $('#toggle3 h3').removeClass('active');
+
+	            // 현재 클릭한 아코디언 요소에만 active 클래스 추가
+	            $this.addClass('active');
+
+	            // 다른 아코디언 요소의 내용을 닫음
+	            $('#toggle3 .content').not($content).slideUp(500);
+
+	            // 클릭한 아코디언 요소의 내용을 숨겼다가 애니메이션 효과와 함께 슬라이드 다운하며 나타나도록 함
+	            $content.hide().addClass("animated zoomIn").slideDown(500);
+
+	        } else {
+	            // 이미 클릭된 아코디언 요소인 경우 닫음
+	            $this.removeClass('active');
+	            $content.slideUp(500);
+	        }
+	    });
+
+	 	// 보기 추가 클릭 이벤트 핸들러
+	    $('#toggle3').on("click", ".addOptionBtn", function(event){
+	        event.preventDefault();
+	        var optionHTML = "";
+	        var optionArea = $(this).closest('.toggle-item').find('.answers');
+	        var answerCount = optionArea.find('.answer').length + 1; // 이미 추가된 보기 개수에 1을 더하여 새로운 보기의 번호를 결정
+	        var answerIndex = optionArea.find('.answer').length - 1;
+	        var answerNo = convertNumberToKorean(answerIndex + 2); // 번호를 한글로 변환하여 사용 (①, ②, ...)
+	        var questionIdx = $(this).closest('.toggle-item').index(); // 해당 보기가 속한 질문의 인덱스를 가져옴
+	        
+// 	        alert("answerIndex => " + answerIndex);
+	        
+	        optionHTML += '<div class="answer">';
+	        optionHTML += '    <span class="answerNo">' + answerNo + '</span>';
+	        optionHTML += '    <input type="text" name="surveyQuestionList[' + questionIdx + '].optionList[' + (answerIndex + 1) + '].soContent" class="answerInput soContents" style="margin-left: 10px; height: 40px; width: 700px;  border-color: gray;" />';
+	        optionHTML += '    <i class="fa fa-close delOption" data-idx="' + answerCount + '" style="position:relative; top: 5px; left: 10px; background: none;"></i>';
+	        optionHTML += '</div>';
+	        
+	        optionArea.append(optionHTML);
+	    });
+
+		// 숫자를 한글로 변환하는 함수
+	    function convertNumberToKorean(number) {
+	        var koreanNumbers = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'];
+	        if (number >= 1 && number <= 10) {
+	            return koreanNumbers[number - 1];
+	        } else {
+	            return number.toString(); // 범위를 벗어날 경우 숫자 그대로 반환
+	        }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       	    }
+		
+		// 질문 삭제 클릭 이벤트 핸들러
+	    $('#toggle3').on("click", ".delQuestion", function(){
+	        var questionItem = $(this).closest('.toggle-item'); // 클릭된 삭제 버튼이 속한 질문 아이템을 찾음
+	        questionItem.remove(); // 해당 질문  삭제
+	        
+	        // 삭제된 질문 이후의 모든 질문의 번호를 1씩 감소시킴
+	        $('#toggle3 .toggle-item').each(function(index) {
+	            $(this).find("font").text("질문 " + (index + 1)); // 번호를 갱신
+	        });
+	    });
+		
+	    // 보기 삭제 클릭 이벤트 핸들러
+	    $('#toggle3').on("click", ".delOption", function(){
+	        var optionItem = $(this).closest('.answer'); // 클릭된 삭제 버튼이 속한 보기 아이템을 찾음
+	        var questionItem = optionItem.closest('.toggle-item'); // 해당 보기 아이템이 속한 질문 아이템을 찾음
+	        optionItem.remove(); // 해당 보기 삭제
+	        
+	        // 삭제된 보기 이후의 모든 보기의 번호를 1씩 감소시킴
+	        updateAnswerNumbers(questionItem);
+	    });
+
+	    // 보기 번호 업데이트 함수
+	    function updateAnswerNumbers(questionItem) {
+	        var answerItems = questionItem.find('.answers').find('.answer');
+	        answerItems.each(function(index) {
+	            var answerNo = convertNumberToKorean(index+1); // 보기 번호 업데이트
+	            $(this).find('.answerNo').text(answerNo); // 보기 번호를 업데이트된 번호로 설정
+	        });
+	    }
+
+		// 시작일을 선택했을 때 그 날짜를 저장한다
+		$("#sfRegdate").on("change", function() {
+			startDate = new Date($(this).val());
+			console.log(startDate);
+			if (startDate > endDate) {
+				Swal.fire({
+					icon : "error",
+					title : "<div style='font-size:22px'>시작일은 마감일보다 늦을 수 없습니다.</div>",
+					showConfirmButton : false,
+					timer : 2000
+				});
+				$(this).val("");
+				startDate = null;
+				return false;
+			} 
+		});
+
+		// 종료일을 선택했을 때 그 날짜를 시작일과 비교하여 전이라면 값 변경을 강제한다.
+		$("#sfEnddate").on("change", function() {
+			endDate = new Date($(this).val());
+			console.log(endDate);
+			if (startDate > endDate) {
+				Swal.fire({
+					icon : "error",
+					title : "<div style='font-size:22px'>마감일은 시작일보다 빠를 수 없습니다.</div>",
+					showConfirmButton : false,
+					timer : 2000
+				});
+				$(this).val("");
+				return false;
+			} 
+		});
+		
+		// 기존에 적용되어있던 nice-select 삭제
+		$("#surveyQuestion").find("select").removeClass("nice-select");
+		
+		// 이미지 파일을 업로드 시 썸네일을 화면에 출력한다.
+		$("#sfFile").on("change", function(event){
+			var file = event.target.files[0];
+			
+			// ajax를 활용하여 썸네일을 경로에 저장하여 미리보기를 볼 수 있도록 한다.
+			var formData = new FormData();
+			formData.append("file", file);
+			
+			$.ajax({
+				url : "/community/survey/uploadAjax",
+				type : "post",
+				beforeSend: function(xhr){
+					xhr.setRequestHeader(header, token);
+				},
+				data : formData,
+				dataType : "text", // 비동기 통신의 최종 결과물을 text 형식으로 받겠다고 알리고 전달되는 서버 메소드에서는 produces를 통해 텍스트 인것을 인지하고 받는다
+				processData : false, // 이진 데이터로 직렬화가 되어 파일이 제대로 전송되지 않게 되는것을 막는다 (Default값은 true)
+				contentType : false,
+				success : function(data){
+					$("#thumbLink").attr("href", "/community/survey/displayFile?fileName=" + data);
+				}
+			});
+			
+			
+			if(isimgFile(file)){ // 이미지인지를 체크하여 다른 타입은 파일을 업로드할 수 없도록 한다.
+				var reader = new FileReader();
+				reader.onload = function (e) {
+					$("#thumimg").attr("src", e.target.result);
+				}
+				reader.readAsDataURL(file);
+				thumbPassed = true;
+			}else {
+				Swal.fire({
+					icon : "error",
+					title : "이미지 파일만 등록가능합니다.",
+					showConfirmButton : false,
+					timer : 1500
+				});
+				thumbPassed = false;
+			}
+		});
+		
+		// 문서 로드 완료 후 아코디언 플러그인 초기화
+	    initializeAccordion();
+		
+	});
+	
+	// 임시 파일로 썸네일 이미지 만들기
+	function getThumbnailName(fileName){
+		var front = fileName.substr(0, 12); // /2024/03/06/ 폴더 
+		var end = fileName.substr(12); // 뒤 파일명
+		
+		console.log("front : " + front);
+		console.log("end : " + end);
+		
+		return front + "s_" + end;
+	}
+	
+	// 파일의 타입을 리턴해준다.
+	function isimgFile(file) {
+		var ext = file.name.split(".").pop().toLowerCase(); // 파일명에서 확장자를 가져온다.
+		return ($.inArray(ext,["jpg","jpeg","png", "gif"]) === -1) ? false : true;
+	}
+
+	// 현재 날짜를 가져온다
+	var currentDate = new Date().toISOString().slice(0, 10);
+
+	// 입력 필드에 현재 날짜를 최소 날짜로 설정
+	document.getElementById("sfRegdate").setAttribute("min", currentDate);
+	document.getElementById("sfEnddate").setAttribute("min", currentDate);
+
+	// 스위트 알러트 함수
+	function swal(title, text, confirmMsg, cancelMsg, requestUrl){
+	    Swal.fire({
+	        title: title, 
+	        text: text, 
+	        icon: 'warning', 
+	        showCancelButton: true, // 취소 버튼 보이도록 설정
+	        confirmButtonColor: '#d33', // 삭제 버튼 색상 설정
+	        cancelButtonColor: '#3085d6', // 취소 버튼 색상 설정
+	        confirmButtonText: confirmMsg, // 삭제 버튼 텍스트 설정
+	        cancelButtonText: cancelMsg // 취소 버튼 텍스트 설정
+	    }).then((result) => {
+	        setTimeout(() => {
+	            Swal.close(); // 일정 시간 후 SweetAlert2 경고창 닫기
+	        }, 20000); // 2000ms(2초) 후에 경고창 닫기
+	        if (result.isConfirmed) { 
+	        	// 삭제 버튼을 눌렀을 때
+	        	location.href = requestUrl;
+	        } 
+	    });
+	}
+</script>
+

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.goods.IFAQMapper">
+
+	<sql id="faqBoarUserdSearch">
+		<if test="searchType != null and searchType == 'title'">
+			and (bf_title like '%' || #{searchWord} || '%')
+		</if>
+	</sql>
+	
+
+	<select id="selectUserFaqListCount" parameterType="pagingVO" resultType="int">
+		select 
+			count(bf_no)
+		from 
+			board_form
+		where 
+			bt_id = 7
+		<include refid="faqBoarUserdSearch"/>
+	</select>
+
+	<select id="selectFaqList" parameterType="pagingVO" resultType="faqVO">
+		select
+			b.*
+			from(
+				select
+					a.*
+					, row_number() over(order by bf_no desc) rnum
+				from(
+					select
+						bf_no
+						, bf_title
+						, bf_content
+						, bf_hit
+						, bf_regdate
+						, bt.bt_id
+					from board_form bf left outer join board_type bt on(bf.bt_id = bt.bt_id )
+					where bt.bt_id = 7
+					<include refid="faqBoarUserdSearch"/>
+					order by 1 desc
+				) a
+			) b
+			<![CDATA[
+			where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+			]]>
+	</select>
+	
+	<select id="selectAdminFaqListCount" parameterType="pagingVO" resultType="int">
+		select 
+			count(bf_no)
+		from 
+			board_form
+		where 
+			bt_id = 7
+	</select>
+	
+	<select id="selecAdminFaqList" parameterType="pagingVO" resultType="faqVO">
+		select
+			b.*
+			from(
+				select
+					a.*
+					, row_number() over(order by bf_no desc) rnum
+				from(
+					select
+						bf_no
+						, bf_title
+						, bf_content
+						, bf_hit
+						, bf_regdate
+						, bt.bt_id
+						, u.user_id
+					from board_form bf 
+					left outer join board_type bt on bf.bt_id = bt.bt_id 
+					left outer join "USER" u on bf.user_no = u.user_no
+					where bt.bt_id = 7
+					<include refid="faqBoarUserdSearch"/>
+					order by 1 desc
+				) a
+			) b
+			<![CDATA[
+			where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+			]]>
+	</select>
+	
+	<insert id="faqInsert" parameterType="faqVO" useGeneratedKeys="true">
+		<selectKey keyProperty="bfNo" resultType="int" order="BEFORE">
+			select seq_board_form.nextval from dual
+		</selectKey>		
+		insert into board_form(
+			bf_no
+			, bf_title
+			, bf_content
+			, user_no
+			, bt_no
+			, bt_id
+		)values(
+			#{bfNo}
+			, #{bfTitle}
+			, #{bfContent}
+			, #{userNo}
+			, 7
+			, 7
+		)
+	</insert>
+	
+	
+
+</mapper>

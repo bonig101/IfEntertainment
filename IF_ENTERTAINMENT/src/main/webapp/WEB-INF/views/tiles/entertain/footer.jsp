@@ -1,0 +1,64 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+
+<style type="text/css">
+
+@font-face {
+    font-family: 'LOTTERIACHAB';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/LOTTERIACHAB.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GmarketSansMedium';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+	font-family: 'GmarketSansMedium', sans-serif;
+}
+
+.bottombar .golink a {
+    color: black;
+    opacity: 0.5;
+    transition: opacity 0.3s ease; /* 호버 효과를 위한 투명도 전환 효과 */
+}
+
+.bottombar .golink a:hover {
+    opacity: 1;
+}
+
+.golinkCommunity {
+    border-right: 3px rgba(0, 0, 0, 0.5) solid;
+    padding-right: 20px;
+    transition: background-color 0.3s ease, opacity 0.3s ease; /* 호버 효과를 위한 전환 효과 */
+}
+
+.golinkCommunity:hover {
+    opacity: 1; /* 투명도 변경 */
+}
+
+</style>
+    
+<!-- bottom bar 시작-->
+		<div class="bottombar footerbar detailFooterbar">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<span class="copyright meCopyright">© WELL SEE CODING 2024. All rights reserved.</span>
+					</div>
+					<div class="col-md-12 golink">
+						<span class="golinkCommunity detail_golinkCommunity">
+							<a href="/community/main.do">커뮤니티바로가기</a>
+						</span>
+						<span class="golinkGoods">
+							<a href="/goods/main.do">굿즈샵바로가기</a>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- bottom bar 끝-->

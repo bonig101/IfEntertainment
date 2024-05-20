@@ -1,0 +1,297 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/company.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/bootstrap.min.css">
+<script src="${pageContext.request.contextPath }/resources/js1/bootstrap.min.js"></script>
+</head>
+<body>
+<style>
+/* 모달 내부 */
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+  position: relative;
+  z-index: 9999 !important;
+  color: #000;
+}
+
+/* 닫기 버튼 */
+.close {
+  color: #000;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 30px;
+}
+
+.close:hover,
+.close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.mem_modalTitle {
+	text-align: center;
+	padding: 30px;
+}
+
+/* 배경 어둡게 */
+.modal {
+  display: none; /* 초기에는 숨겨짐 */
+  position: fixed;
+  z-index: 99999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4); /* 배경 어둡게 */
+}
+
+/* 등록 및 취소 버튼 */
+.model_buttons {
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.model_buttons button {
+  margin-left: 10px;
+}
+
+#artistForm {
+}
+
+#artistTable {
+	width: 90%;
+	margin: 0 auto;
+    border-top: 2px solid #000;
+	border-bottom: 2px solid #000;
+
+}
+
+#artistprofilePhoto {
+/* 	width: 250px; */
+/* 	height: auto; */
+/* 	padding:13px 20px; */
+/* 	background-color: gray; */
+/* 	position: absolute; */
+/* 	top: 28.5%; */
+/* 	left: 21.5%; */
+}
+
+#artistprofilePhoto::after {
+}
+
+.custom-file {
+    position: relative;
+    display: inline-block;
+    width: 350px; /* 필드의 너비를 조정할 수 있습니다. */
+}
+
+.custom-file-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.custom-file-label {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+/*     background-color: #007bff; /* 필드 배경색을 원하는 색상으로 변경할 수 있습니다. */ */
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+</style>
+<div class="gap inner-bg">
+  <div class="table-styles">
+  
+  <div class="little-heading">
+  	<h2 class="header_title" style="margin-bottom: 30px">회원 관리</h2>
+  </div>
+  
+  	<div class="gap listbar-container">
+    <div class="discount-copon list-bar list_buttons_box">
+      <div class="row">
+<!-- 		<div class="col-md-2" style="display: flex;"> -->
+<!-- 		    <button class="filter-btn btn-st filter_btn " data-feedType="1">팬</button> -->
+<!-- 		    <button class="filter-btn btn-st filter_btn" data-feedType="2">아티스트</button> -->
+<!-- 		</div> -->
+        <div class="col-md-4" style="background-color: gray;">
+			<form method="post" id="searchForm" >
+			    <input type="hidden" name="page" id="page"/>
+			    <div class="searchform-box searchform_box">
+			        <select name="searchType" class="mem_searchType">
+			            <option value="content" ${searchType eq 'content' ? 'selected' : ''}>이름</option>
+			        </select>	
+			        
+			        <input type="text" class="mem_searchWord" name="searchWord" value="${searchWord}" placeholder="검색">
+			        
+			        <button type="submit" class="mem_searchBtn">검색</button>
+			    </div>
+			</form>
+        </div>
+        <div class="col-md-3 bottons_box" style="background-color: green;">
+<!-- 			<button class="mem_edit" name="" value="">편집</button> -->
+        	<form id="deleteForm" class="delRegiForm" >
+	        	<button type="submit" class="mem_remove" style="width: 150px">선택항목 삭제하기</button>
+<!-- 	        	<input type="hidden" name="" id="selectedFeedIds"/> -->
+        	</form>
+	        <div id="mem_artistRegister">
+	        	<button id="artistRegister" value="artistRegister"><i class="fa fa-plus" aria-hidden="true"></i>아티스트 등록</button>
+	        </div>
+	        
+	        <div id="artistModal" class="modal">
+			  <div class="modal-content">
+			    <span class="close">&times;</span>
+			    <h2 class="mem_modalTitle">아티스트 등록</h2>
+			    <!-- 아티스트 등록 폼 -->
+			    <form id= artistForm>
+			      <table id="artistTable">
+			        <tr>
+			          <td> </td>
+			          <td><label for="artistprofilePhoto" style="color: #000;">프로필 사진</label></td>
+			          <td colspan="3">
+			          	<div class="custom-file">
+				            <input type="file" class="custom-file-input" id="artistprofilePhoto" name="artistprofilePhoto">
+				            <label class="custom-file-label" for="artistprofilePhoto">이미지를 선택해주세요.</label>
+				        </div>
+			          </td>
+			        </tr>
+			        <tr>  
+			          <td><label for="artistID" style="color: #000;">아티스트 ID</label></td>
+			          <td colspan="3"><input type="text" id="artistID" name="artistID"></td>
+			        </tr>
+			        <tr>
+			          <td><label for="artistPw" style="color: #000;">비밀번호</label></td>
+			          <td><input type="text" id="artistPw" name="artistPw"></td>
+			          <td><label for="artistPw1" style="color: #000;">비밀번호 확인</label></td>
+			          <td><input type="text" id="artistPw1" name="artistPw1"></td>
+			        </tr>
+			        <!-- 필요한 다른 입력 필드 추가 -->
+			      </table>
+			      <!-- 등록 및 취소 버튼 -->
+			      <div class="model_buttons">
+			        <button type="button" class="cancel">취소</button>
+			        <button type="submit" class="register">등록</button>
+			      </div>
+			    </form>
+			  </div>
+			</div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+    
+    <div class="widget">
+      <table class="prj-tbl striped table-responsive">
+        <thead class="color">
+           <tr class="feedTitle">
+             <th width="7%"><i class="all-slct"></i></th>
+             <th width="7%"><em>번호</em></th>
+             <th width="10%"><em>아이디</em></th>
+             <th width="10%"><em>이름</em></th>
+             <th width="13%"><em>연락처</em></th>
+             <th width="13%"><em>이메일</em></th>
+             <th width="10%"><em>생년월일</em></th>
+             <th width="10%"><em>가입일</em></th>
+             <th width="10%"><em>정지여부</em></th>
+             <th width="10%"><em>상태</em></th>
+           </tr>
+        </thead>
+        <tbody>
+        <c:set value="${pagingVO.dataList}" var="memberList"/>
+        <c:choose>
+        	<c:when test="${empty memberList}">
+        		<tr>
+        			<td colspan="10">회원 리스트가 존재하지 않습니다.</td>
+        		</tr>
+        	</c:when>
+        	<c:otherwise>
+        		<c:forEach items="${memberList}" var="member">
+        			<tr class="feedList">
+			            <td><input type="checkbox" class="selectFeed" value="${member.userNo }"/></td>
+			            <td><span>${member.userNo}</span></td>
+			            <td><span>${member.userId}</span></td>
+			            <td><span>${member.userName}</span></td>
+			            <td><span>${member.memberTelno}</span></td>
+			            <td><span>${member.memberEmail}</span></td>
+			            <td><span>${member.memberBirth}</span></td>
+			            <td><span><fmt:formatDate value="${member.memberRegdate}" pattern="yyyy-MM-dd"/></span></td>
+			            <td>
+			            	<span>${member.memberStopyn == 'N' ? '일반' : member.memberStopyn == 'Y' ? '정지' : '알 수 없음'}</span>
+			            </td>
+			            <td>
+				            <span>
+				            	<button class="modify"><i class="fa fa-pencil" aria-hidden="true" style="margin-right: 10px;"></i></button>
+				            	<button class="delete"><i class="icon-trash"></i></button>
+				            </span>
+			            </td>
+			          </tr>
+        		</c:forEach>
+        	</c:otherwise>
+        </c:choose>
+        </tbody> 
+      </table>
+    </div>
+    
+    <div class="card-footer feed-footer clearfix" id="pagingArea">
+		${pagingVO.pagingHTML}
+	</div>
+
+  </div>
+</div>
+<script type="text/javascript">
+$(function() {
+	var searchForm = $("#searchForm");
+    var pagingArea = $("#pagingArea");
+
+    pagingArea.on("click", "a", function(event){
+        event.preventDefault();
+        var pageNo = $(this).data("page");
+        searchForm.find("#page").val(pageNo);
+        searchForm.submit();
+    });
+    
+    $("#artistRegister").click(function() {
+        $("#artistModal").show();
+    });
+
+    // 모달 닫기 버튼 클릭 시 모달 숨김
+    $(".close").click(function() {
+        $("#artistModal").hide();
+    });
+    
+ // 파일 입력 필드 변경 시 파일 이름을 표시
+    $('.custom-file-input').on('change', function() {
+        var fileName = $(this).val().split('\\').pop();
+        $(this).siblings('.custom-file-label').html(fileName);
+    });
+    
+    
+});
+</script>
+</body>
+</html>

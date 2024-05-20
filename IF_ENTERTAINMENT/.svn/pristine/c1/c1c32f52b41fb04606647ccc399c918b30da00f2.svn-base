@@ -1,0 +1,24 @@
+package kr.or.ddit.controller.community;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.community.IFeedService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 피드 댓글 등록 컨트롤러
+ * @author 임민혁
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/feed/comment")
+public class FeedCommentInsertController {
+	// 아티스트가 쓴 댓글을 팬피드 상단에 최신작성일 순으로 배치 
+	
+	@Inject
+	private IFeedService feedService;
+	
+}

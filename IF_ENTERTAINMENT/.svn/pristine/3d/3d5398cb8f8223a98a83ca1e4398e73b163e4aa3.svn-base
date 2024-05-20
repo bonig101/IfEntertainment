@@ -1,0 +1,24 @@
+package kr.or.ddit.controller.community;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.community.IArtistScheduleSerivce;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 아티스트 일정 수정 및 삭제 컨트롤러(관리자)
+ * FullCalendar API 활용
+ * @author 조재훈
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/artist/schedule")
+public class ArtistScheduleModifyController {
+
+	@Inject
+	private IArtistScheduleSerivce scheduleService;
+	
+}

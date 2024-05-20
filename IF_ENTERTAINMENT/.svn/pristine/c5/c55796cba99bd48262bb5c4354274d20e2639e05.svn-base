@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.entertain.IAuditionMapper">
+
+	<sql id="auditionBoardSearch">
+		<if test="searchType != null and searchType == 'title'">
+			and (bf_title like '%' || #{searchWord} || '%')
+		</if>
+	</sql>
+	
+	<resultMap type="auditionBoardVO" id="auditionBoardMap">
+		<id property="bfNo" column="bf_no"/>
+		<result property="bfTitle" column="bf_title"/>
+		<result property="bfContent" column="bf_content"/>
+		<result property="bfHit" column="bf_hit"/>
+		<result property="bfRegdate" column="bf_regdate"/>
+		<result property="bfDelyn" column="bf_delyn"/>
+		<result property="bfDisplay" column="bf_display"/>
+		<result property="userNo" column="user_no"/>
+		<result property="btNo" column="bt_no"/>
+		<result property="btId" column="bt_id"/>
+		<result property="btName" column="bt_name"/>
+	</resultMap>
+	
+	
+	<select id="selectNoticeCount" parameterType="pagingVO" resultType="int">
+		select count(bf_no)
+		from board_form
+		where bt_id = 5
+		<include refid="auditionBoardSearch"/>
+	</select>
+	
+	<select id="auditionScheduleList" parameterType="pagingVO" resultMap="auditionBoardMap">
+		select 
+		b.*
+		from(
+		    select
+		        a.*, row_number() over(order by bf_no desc) rnum
+		    from(
+		        select 
+		            bf_no
+		            , bf_title
+		            , bf_content
+		            , bf_hit
+		            , bf_regdate,
+		            bt.bt_id
+		        from board_form bf left outer join board_type bt on(bf.bt_id = bt.bt_id)
+		        where bt.bt_id = 5
+		        <include refid="auditionBoardSearch"/>
+		        order by 1 desc
+		    ) a
+		)b
+		<![CDATA[
+		where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+		
+	</select>
+	
+	<select id="auditionScheduleDetail" parameterType="int" resultType="auditionBoardVO">
+		select
+			bf_no
+			, bf_title
+			, bf_content
+			, bf_hit
+			, bf_regdate
+			, bf_delyn,
+			bf_display
+			, user_no
+			, bt_no
+			, bt_id
+		from board_form
+		where 
+		bt_id = 5
+		and bf_no = #{bfNo}
+	</select>
+	
+	<select id="nationList" parameterType="nationVO" resultType="nationVO">
+		select 
+			nation_no
+			, nation_name
+		from nation
+	</select>
+	
+	<insert id="auditionSupportRegister" parameterType="auditionRegisterVO" useGeneratedKeys="true">
+		<selectKey keyProperty="arNo" resultType="int" order="BEFORE">
+			select seq_audition_register.nextval from dual
+		</selectKey>
+		insert into audition_register(
+			ar_no
+			, ar_title
+			, ar_name
+			, ar_gender
+			, ar_birth
+			, ar_pw
+			, ar_telno
+			, ar_email
+			, ar_height
+			, ar_weight
+			, ar_category
+			, ar_education
+			, ar_specialty
+			, ar_career
+			, ar_photo
+			, ar_video
+			, ar_regdate
+			, ar_cancel 
+			,ar_nation
+		)values(
+			#{arNo}
+			, #{arTitle}
+			, #{arName}
+			, #{arGender}
+			, #{arBirth}
+			, #{arPw}
+			, #{arTelno}
+			, #{arEmail}
+			, #{arHeight}
+			, #{arWeight}
+			, #{arCategory}
+			, #{arEducation}
+			, #{arSpecialty}
+			, #{arCareer}
+			, #{arPhoto}
+			, #{arVideo}
+			, sysdate
+			, #{arCancel}
+			,#{arNation}
+		)
+		
+	</insert>
+	
+	<select id="selectSupport" parameterType="int" resultType="auditionRegisterVO">
+		select
+			ar_no
+			, ar_title
+			, ar_name
+			, ar_gender
+			, ar_birth
+			, ar_pw
+			, ar_telno
+			, ar_email
+			, ar_height
+			, ar_weight
+			, ar_category
+			, ar_education
+			, ar_specialty
+			, ar_career
+			, ar_photo
+			, ar_video
+			, ar_regdate
+			, ar_cancel 
+			,ar_nation
+		from audition_register
+		where ar_no = #{arNo}
+	</select>
+	
+	<update id="updateSupport">
+	
+		update audition_register
+		set
+			ar_title = #{arTitle}
+			, ar_name = #{arName}
+			, ar_gender = #{arGender}
+			, ar_birth = #{arBirth}
+			, ar_pw = #{arPw}
+			, ar_telno = #{arTelno}
+			, ar_email = #{arEmail}
+			, ar_height = #{arHeight}
+			, ar_weight = #{arWeight}
+			, ar_category = #{arCategory}
+			, ar_education = #{arEducation}
+			, ar_specialty = #{arSpecialty}
+			, ar_career = #{arCareer}
+			, ar_photo = #{arPhoto}
+			, ar_video = #{arVideo}
+			, ar_regdate = sysdate 
+			, ar_nation = #{arNation}
+		where ar_no = #{arNo}
+			
+	</update>
+	
+	<delete id="deleteAuditionFile" parameterType="int">
+		delete from audition_register
+		where ar_no = #{arNo}
+	</delete>
+	
+	<update id="cancelSupport" parameterType="auditionRegisterVO">
+		update audition_register
+		set
+			ar_cancel  = 'Y'
+		where ar_no = #{arNo}
+	</update>
+	
+	<select id="auditionSupportCheck" parameterType="auditionRegisterVO" resultType="auditionRegisterVO">
+		select *
+		from 
+			audition_register
+		where
+			ar_name = #{arName}
+			and ar_telno = #{arTelno}
+			and ar_pw = #{arPw}
+			and ar_cancel = 'N'
+	</select>
+	
+	<update id="cancelAudition" parameterType="int">
+		update 
+			audition_register
+		set 
+			ar_cancel  = 'Y'
+		where
+			ar_no = #{arNo}
+	</update>
+
+
+</mapper>

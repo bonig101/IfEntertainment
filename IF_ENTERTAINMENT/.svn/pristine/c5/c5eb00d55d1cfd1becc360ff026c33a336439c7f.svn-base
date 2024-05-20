@@ -1,0 +1,29 @@
+package kr.or.ddit.controller.community;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.community.IFeedService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 피드 신고 컨트롤러
+ * @author 임민혁
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/feed")
+public class ReportFeedController {
+	// 신고사유 셀렉트 박스에 하드코딩될 내용
+	// 1. 이용 가이드라인 위반
+	// 2. 선정/폭력성
+	// 3. 스팸/광고/도배글
+	// 4. 기타
+	// 상세 내용도 적을 수 있음 (null 허용 적어도되고 안적어도됨)
+	
+	@Inject
+	private IFeedService feedService;
+	
+}

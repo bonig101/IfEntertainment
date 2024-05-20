@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="kr.or.ddit.mapper.entertain.IFinanceMapper">
+	
+	<select id="excelDown" resultType="financeExcelVO">
+        SELECT * FROM FINANCE_INFORMATION
+        order by fi_year
+    </select>
+	
+	<delete id="delete">
+	DELETE FROM FINANCE_INFORMATION
+	</delete>
+	<insert id="insert" parameterType="financeExcelVO">
+	
+      INSERT INTO FINANCE_INFORMATION
+        (FI_YEAR, FI_ASSET, FI_CASSET, FI_NASSET, FI_LIABILITIES, FI_CLIABILITIES, FI_NLIABILITIES, FI_TOTALCAPITAL, FI_PCSE, FI_CAPITAL, FI_SIS, FI_OTHERCAPITAL, FI_AOCI, FI_RE, FI_NCI)
+        VALUES
+        (#{fiYear}, #{fiAsset}, #{fiCasset}, #{fiNasset}, #{fiLiabilities}, #{fiCliabilities}, #{fiNliabilities}, #{fiTotalcapital}, #{fiPcse}, #{fiCapital}, #{fiSis}, #{fiOthercapital}, #{fiAoci}, #{fiRe}, #{fiNci})
+
+    </insert>
+	
+	
+	
+</mapper>

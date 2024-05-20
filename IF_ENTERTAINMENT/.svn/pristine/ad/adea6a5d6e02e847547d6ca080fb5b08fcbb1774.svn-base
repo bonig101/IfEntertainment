@@ -1,0 +1,61 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<title>LOGIN PAGE</title>
+<link rel="icon" type="image/png" href="images/fav.png">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/font-awesome.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/bootstrap.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/animate.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/color.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css1/responsive.css">
+</head>
+<body>
+
+	<!-- Start Page Loading -->
+	<div id="loader-wrapper">
+		<div id="loader"></div>
+		<div class="loader-section section-left"></div>
+		<div class="loader-section section-right"></div>
+	</div>
+	
+	<div class="panel-layout">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="admin-lock vh100">
+						<div class="admin-form">
+							<div class="logo">
+								<img src="images/logo2.png" alt="">
+							</div>
+							<h4>IF ENTERTAINMENT</h4>
+							<form method="post">
+								<label><i class="fa fa-hand-o-right"></i></label> 
+								<input type="text" placeholder="아이디"> <label>
+								<i class="fa fa-hand-o-right"></i></label> 
+								<input type="text" placeholder="비밀번호"> 
+								<input type="checkbox" id="remember">
+									<label for="remember">내정보 저장
+										<a href="#" title="">아이디/비밀번호 찾기</a>
+									</label>
+								<button type="submit">로그인</button>
+							</form>
+							<span>아직 회원이 아니신가요? 
+								<a href="#" title="">회원가입 하러가기</a>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="${pageContext.request.contextPath }/resources/js1/jquery.js"></script>
+	<script src="${pageContext.request.contextPath }/resources/js1/bootstrap.min.js"></script>
+	<script src="${pageContext.request.contextPath }/resources/js1/custom.js"></script>
+</body>
+</html>

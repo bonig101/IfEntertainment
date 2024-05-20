@@ -1,0 +1,36 @@
+package kr.or.ddit.service.impl.community;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.community.IFeedMapper;
+import kr.or.ddit.service.community.IFeedService;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.community.FeedVO;
+
+@Service
+public class FeedServiceImpl implements IFeedService {
+
+	@Inject
+	private IFeedMapper feedMapper;
+
+	@Override
+	public int selectFeedListCount(PaginationInfoVO<FeedVO> pagingVO) {
+		return feedMapper.selectFeedListCount(pagingVO);
+	}
+
+	@Override
+	public List<FeedVO> selectFeedList(PaginationInfoVO<FeedVO> pagingVO) {
+		return feedMapper.selectFeedList(pagingVO);
+	}
+
+	@Override
+	public void deleteFeed(FeedVO feedVO) {
+		feedMapper.deleteFeed(feedVO);
+	}
+
+
+}

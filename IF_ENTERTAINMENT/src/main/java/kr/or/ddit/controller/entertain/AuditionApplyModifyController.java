@@ -1,0 +1,82 @@
+package kr.or.ddit.controller.entertain;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import kr.or.ddit.service.entertain.IAuditionService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.entertain.AuditionRegisterVO;
+import kr.or.ddit.vo.entertain.NationVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 오디션 신청내역 수정 컨트롤러
+ * @author 이수진
+ */
+@Controller
+@Slf4j
+@RequestMapping("/entertain/audition")
+public class AuditionApplyModifyController {
+	// 등록시 업로드했던 증명사진과 지원영상은 미리보기로 보이도록 (수정안해도 되고 해도되고)
+	// 수정 할꺼면 영상이나 사진 우측 상단에 x마크 만들어서 삭제
+	
+	// 오디션 취소여부를 N -> Y로 업데이트
+	
+	@Inject
+	private IAuditionService auditionService;
+	
+	@RequestMapping(value = "/auditionSupportUpdate.do", method = RequestMethod.GET)
+	public String auditionSupportUpdateForm(int arNo, Model model) {
+		
+		AuditionRegisterVO auditionRegisterVO = auditionService.selectSupport(arNo);
+		List<NationVO> nationList = auditionService.nationList();
+//		log.info("auditionRegisterVO {}", auditionRegisterVO);
+		model.addAttribute("auditionRegisterVO", auditionRegisterVO);
+		model.addAttribute("nationList", nationList);
+		return "entertain/auditionSupportUpdate";
+	}
+	
+	@RequestMapping(value = "/auditionSupportUpdate.do", method = RequestMethod.POST)
+	public String auditionSupportUpdate(
+			AuditionRegisterVO auditionRegisterVO,
+			HttpServletRequest req,
+			RedirectAttributes ra,
+			Model model
+			) {
+//		log.info("###################auditionRegisterVO {}",auditionRegisterVO);
+		ServiceResult result = auditionService.updateSupport(req, auditionRegisterVO);
+		
+		if(result.equals(ServiceResult.OK)) {	// 수정 성공
+			ra.addFlashAttribute("message", "게시글 수정이 완료되었습니다.");
+		}else {	// 수정 실패
+			model.addAttribute("auditionRegisterVO", auditionRegisterVO);
+			model.addAttribute("message", "서버에러, 다시 시도해주세요.");
+		}
+		return "redirect:/entertain/audition/auditionSupportDetail.do?arNo=" + auditionRegisterVO.getArNo();
+	}
+	
+	@RequestMapping(value="/cancelAudition", method = RequestMethod.GET)
+	public ResponseEntity<ServiceResult> cancelAudition(int arNo){
+		ResponseEntity<ServiceResult> entity = null;
+		
+		ServiceResult result = auditionService.cancelAudition(arNo);
+		
+		if(result.equals(ServiceResult.OK)) {
+			entity = new ResponseEntity<ServiceResult>(result, HttpStatus.OK);
+		}
+		return entity;
+	}
+	
+	
+}

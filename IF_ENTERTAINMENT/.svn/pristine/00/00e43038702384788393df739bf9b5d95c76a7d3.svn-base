@@ -1,0 +1,74 @@
+package kr.or.ddit.service.impl.common;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.common.IStatisticMapper;
+import kr.or.ddit.service.common.IStatisticService;
+import kr.or.ddit.vo.statistic.GoodsSalesVO;
+import kr.or.ddit.vo.statistic.KeywordVO;
+import kr.or.ddit.vo.statistic.MemberRateVO;
+import kr.or.ddit.vo.statistic.StatisticInfoVO;
+
+@Service
+public class StatisticServiceImpl implements IStatisticService {
+
+	@Inject
+	private IStatisticMapper statisticMapper;
+	
+	@Override
+	public List<String> selectAgIdList() {
+		return statisticMapper.selectAgIdList();
+	}
+	
+	// 커뮤니티 통계
+	@Override
+	public List<MemberRateVO> selectMemberRateList(StatisticInfoVO statisticInfoVO) {
+		return statisticMapper.selectMemberRateList(statisticInfoVO);
+	}
+
+	@Override
+	public List<KeywordVO> selectMaleKeywordList(StatisticInfoVO statisticInfoVO) {
+		return statisticMapper.selectMaleKeywordList(statisticInfoVO);
+	}
+
+	@Override
+	public List<KeywordVO> selectFemaleKeywordList(StatisticInfoVO statisticInfoVO) {
+		return statisticMapper.selectFemaleKeywordList(statisticInfoVO);
+	}
+
+	@Override
+	public List<MemberRateVO> selectMemberAgeList(StatisticInfoVO statisticInfoVO) {
+		return statisticMapper.selectMemberAgeList(statisticInfoVO);
+	}
+
+	@Override
+	public List<MemberRateVO> selectMemberGenderList(StatisticInfoVO statisticInfoVO) {
+		return statisticMapper.selectMemberGenderList(statisticInfoVO);
+	}
+	
+	// 굿즈샵 통계
+	@Override
+	public List<GoodsSalesVO> selectArtistSalesList(StatisticInfoVO statisticInfoVO) {
+		return statisticMapper.selectArtistSalesList(statisticInfoVO);
+	}
+
+	@Override
+	public List<GoodsSalesVO> selectTopSalesList(StatisticInfoVO statisticInfoVO) {
+		return statisticMapper.selectTopSalesList(statisticInfoVO);
+	}
+
+	@Override
+	public List<MemberRateVO> selectGenderSalesList(StatisticInfoVO statisticInfoVO) {
+		return statisticMapper.selectGenderSalesList(statisticInfoVO);
+	}
+
+	@Override
+	public List<GoodsSalesVO> selectYearSalesList(StatisticInfoVO statisticInfoVO) {
+		return statisticMapper.selectYearSalesList(statisticInfoVO);
+	}
+
+}

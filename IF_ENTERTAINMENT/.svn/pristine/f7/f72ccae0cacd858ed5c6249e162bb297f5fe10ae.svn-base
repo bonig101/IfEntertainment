@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.community.IFeedMapper">
+		
+		<resultMap id="artistGroupMap" type="mainartistGroupVO">
+		    <id property="agId" column="ag_id"/>
+		    <result property="agName" column="ag_name"/>
+		    <result property="agDate" column="ag_date"/>
+		    <result property="agIntro" column="ag_intro"/>
+		    <result property="agProfile" column="ag_profile"/>
+		    <result property="agDelyn" column="ag_delyn"/>
+		    <collection property="artistList" resultMap="artistMap"/>
+		</resultMap>
+	
+	
+		<resultMap id="artistMap" type="mainartistVO">
+		    <id property="userNo" column="USER_NO"/>
+		    <result property="artistBirth" column="ARTIST_BIRTH"/>
+		    <result property="artistIntro" column="ARTIST_INTRO"/>
+		    <result property="artistFakename" column="ARTIST_FAKENAME"/>
+		    <result property="artistDelyn" column="ARTIST_DELYN"/>
+		    <result property="agId" column="AG_ID"/>
+		    <result property="userId" column="USER_ID"/>
+		    <result property="userName" column="USER_NAME"/>
+		    <result property="userType" column="USER_TYPE"/>
+		    <result property="enabled" column="ENABLED"/>
+		</resultMap>
+
+
+		<select id="selectArtist" resultType="mainartistGroupVO" resultMap="artistGroupMap">
+		    SELECT 
+		        ag.AG_ID, ag.AG_DATE, ag.AG_NAME, 
+		        ag.AG_INTRO, ag.AG_DELYN, ag.AG_PROFILE,
+		        a.USER_NO, a.ARTIST_BIRTH, a.ARTIST_FAKENAME,
+		        a.ARTIST_INTRO, a.ARTIST_DELYN, a.AG_ID
+		    FROM ARTIST_GROUP ag
+		        INNER JOIN ARTIST a ON ag.AG_ID = a.AG_ID
+		</select>
+
+		<select id="getArtistById" resultType="mainartistGroupVO" resultMap="artistGroupMap">
+			SELECT 
+			    ag.AG_ID, ag.AG_DATE, ag.AG_NAME, 
+			    ag.AG_INTRO, ag.AG_DELYN, ag.AG_PROFILE,
+			    a.USER_NO, a.ARTIST_BIRTH, a.ARTIST_FAKENAME,
+			    a.ARTIST_INTRO, a.ARTIST_DELYN, a.AG_ID
+			FROM ARTIST_GROUP ag
+			INNER JOIN ARTIST a ON ag.AG_ID = a.AG_ID
+			WHERE ag.AG_ID = #{agId}
+		</select>
+
+
+</mapper>

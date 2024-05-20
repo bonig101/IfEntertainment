@@ -1,0 +1,19 @@
+package kr.or.ddit.controller.community;
+
+import lombok.extern.slf4j.Slf4j;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.community.ICollectionService;
+
+@Controller
+@Slf4j
+@RequestMapping("/community/collection")
+public class CollectionController {
+
+	@Inject
+	private ICollectionService collectionService;
+}

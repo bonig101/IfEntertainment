@@ -1,0 +1,16 @@
+package kr.or.ddit.service.impl.community;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.community.ICollectionMapper;
+import kr.or.ddit.service.community.ICollectionService;
+
+@Service
+public class ConllectionServiceImpl implements ICollectionService {
+	
+	@Inject
+	private ICollectionMapper collectionMapper;
+
+}

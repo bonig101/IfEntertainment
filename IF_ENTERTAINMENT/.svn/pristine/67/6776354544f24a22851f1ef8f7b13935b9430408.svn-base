@@ -1,0 +1,45 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style type="text/css">
+.checkForm {
+	margin: 0 auto;
+}
+
+#checkBtn {
+	width: 100px;
+}
+
+</style>
+</head>
+
+<body>
+	<div class="col-lg-6 checkForm" id="checkForm">
+		<form class="we-form support_check" id="supportCheckForm" method="post" action="/entertain/audition/auditionSupportCheck.do">
+<%-- 			<input type="hidden" name="arNo" value="${auditionRegisterVO.arNo }"> --%>
+			<span>🎼 지원내역 확인하기</span>
+			<input type="text" name="arName" placeholder="이름">
+			<input type="text" name="arTelno" placeholder="연락처">
+			<input type="password" name="arPw" placeholder="비밀번호">
+			<input type="button" value="확인" id="checkBtn">
+			<sec:csrfInput/>
+		</form>
+	</div>
+</body>
+<script type="text/javascript">
+$(function() {
+	var supportCheckForm = $("#supportCheckForm");
+	var checkBtn = $("#checkBtn");
+	
+	checkBtn.on("click", function() {
+		supportCheckForm.submit();
+	});
+});
+</script>
+</html>

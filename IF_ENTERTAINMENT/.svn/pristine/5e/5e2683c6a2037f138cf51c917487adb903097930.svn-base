@@ -1,0 +1,183 @@
+package kr.or.ddit.socket;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.inject.Inject;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
+
+import org.springframework.stereotype.Component;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import kr.or.ddit.service.common.IWebSocketSevice;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.NotificationVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 웹소켓 알림 관련 핸들러
+ * 
+ * @author 성이수
+ */
+@Slf4j
+@Component
+@RequiredArgsConstructor
+@ServerEndpoint(value = "/notiserver")
+public class WebSocketNotificationHandler {
+	// 웹 실시간 알림을 처리하기 위한 핸들러
+	// 실시간 알림이 필요한 각 분야에서 해당 핸들러 호출하여 실시간 알림 보낼 수 있도록
+	// 클라이언트가 서버에 연결할때 호출되는 메서드
+
+//	public WebSocketNotificationHandler() {
+//		System.out.println("WebSocketNotificationHandler 생성자 호출됨...");
+//	}
+
+	@Inject
+	private IWebSocketSevice websocketService;
+
+	
+//	private static List<Map<Session, String>> sessionMapList = new ArrayList<Map<Session, String>>();
+	private static Set<Session> sessionMapList = Collections.synchronizedSet(new HashSet<Session>());
+	
+
+	@OnOpen
+	public void handleOpen(Session session) {
+		//log.info("세션 들어간다!@!@!@!@!@!@!@");
+		sessionMapList.add(session);
+	}
+
+	@OnMessage
+	public void handleMessage(String msg, Session session) throws IOException {
+
+		log.info("소켓 들어옴!!!!!!! {}", msg);
+		
+		JsonParser jp = new JsonParser();
+		JsonObject eleObj = jp.parse(msg).getAsJsonObject(); // 전체 json 데이터
+		String type = eleObj.get("type").getAsString(); // 기준이 되는 타입을 꺼냄
+		
+		log.info("@@@eleObj : {}", eleObj);
+		log.info("@@@type : {}", type);
+		
+		// 타입 검열 (각자의 메소드로 이동)
+//		if (type.equals("goodsInquiry")) {e
+//			inquiry(eleObj, session);
+//		}
+		
+		
+		log.info("#### sessionMapList size : {}", sessionMapList.size());
+		
+		for (Session m : sessionMapList) {
+				// 제약 조건이 없이 로그인 한 전체 사용자에게 메시지를 발송...
+				try {
+					String sendMsg = String.format(" %s 사용자가 알림을 발송 하였습니다. ", m.getUserPrincipal().getName());
+					m.getBasicRemote().sendText(sendMsg);
+					
+					log.info("sendMsg : {}", sendMsg);
+				
+				} catch (Exception e) {
+					return;
+				}
+		}
+		
+		if (type.equals("goodsInquiry")) {
+			try {
+				inquiry(eleObj);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		
+//		
+//		Map<String, Object> mmap = session.getUserProperties();
+//		StandardSessionFacade ss = (StandardSessionFacade) mmap.get("Session");
+//		SecurityContext sc = (SecurityContext) ss.getAttribute("SPRING_SECURITY_CONTEXT");
+//		log.info(sc.getAuthentication().getName());
+//		log.info("sc user id : {}", sc.getAuthentication().getName());
+//		log.info("session user Id : {}", session.getUserPrincipal().getName());
+		
+
+	}
+
+	/**
+	 * 1:1문의 답변에 대한 알림
+	 * @param eleObj
+	 * @param session
+	 */
+	//private void inquiry(JsonObject eleObj, Session session) {
+	private void inquiry(JsonObject eleObj) {
+		
+		log.info("### eleObj : {}", eleObj);
+		log.info("### 리스트 : {}", sessionMapList);
+		log.info("### 리스트개수 : {}", sessionMapList.size());
+		
+		for (Session m : sessionMapList) {
+			log.info(" 시스템에 로그인 되어 있는 사용자 ID : {} ", m.getUserPrincipal().getName());
+		}
+		
+		String type = eleObj.get("type").getAsString();
+		String userId = eleObj.get("userId").getAsString();
+		String status = eleObj.get("status").getAsString();
+		String giNo = eleObj.get("giNo").getAsString();
+		String admin = "admin001";
+
+		NotificationVO notificationVO = new NotificationVO();
+		notificationVO.setNotiSender(admin);
+		notificationVO.setNotiReciever(userId);
+		notificationVO.setNotiType(type);
+		notificationVO.setNotiUrl("/goods/inquiry/detail.do?giNo=" + giNo);
+		if (status.equals("등록")) {
+			notificationVO.setNotiContent("1:1문의 답변이 등록되었습니다.");
+		} else {
+			notificationVO.setNotiContent("1:1문의 답변이 수정되었습니다.");
+		}
+		notificationVO.setNotiType(type);
+
+		log.info("!!!!notificationVO : " + notificationVO);
+		ServiceResult result = null;
+		try {
+			result = websocketService.insertInquiry(notificationVO);
+
+			if (result.equals(ServiceResult.OK)) {
+//				for (Session s : list) {
+//					if (s != session) {
+//						
+//	                    // 여기서 특정 userId인 경우에만 알림을 보냄
+//                        try {
+//                            s.getBasicRemote().sendText("알림");
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//	                }
+//				}
+			} else {
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@OnClose
+	public void handleClose(Session session) {
+		sessionMapList.remove(session);
+	}
+
+	@OnError
+	public void handleError(Throwable t) {
+
+	}
+
+}

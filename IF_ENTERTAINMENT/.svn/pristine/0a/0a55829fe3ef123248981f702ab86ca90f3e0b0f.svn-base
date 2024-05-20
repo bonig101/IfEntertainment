@@ -1,0 +1,62 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<div class="gap no-gap">
+	<div class="inner-bg">
+		<div class="element-title">
+			<h4>공지사항 상세보기</h4>
+		</div>
+		<div class="add-prod-from">
+			<div class="row">
+					<div class="con_view_box">
+            <div class="view_header">
+                <h3>${companyNotice.bfTitle }</h3>
+                        <span class="c_writer">작성자 ${companyNotice.userNo }</span>
+                        <span class="c_date">작성일 ${companyNotice.bfRegdate }</span>
+                        <span class="c_date">삭제여부 ${companyNotice.bfDelyn }</span>
+            </div>
+            <div class="view_body">
+                ${companyNotice.bfContent }
+            </div>
+        </div>
+				<div class="col-md-12">
+					<div class="buttonz">
+						<button type="button" id="listBtn">목록</button>
+						<button type="button" id="updateBtn">수정</button>
+						<button type="button" id="deleteBtn">삭제</button>
+					</div>
+				</div>
+			<form action="/entertain/company/notice/delete.do" id="delForm" method="post">
+				<input type="hidden" name="bfNo" value="${companyNotice.bfNo }"/>
+			</form>				
+			</div>
+		</div>
+	</div>
+</div>
+ <script>
+ $(function(){
+	 
+	 var delForm = $("#delForm");
+	 var listBtn = $("#listBtn");
+	 var updateBtn = $("#updateBtn");
+	 var deleteBtn = $("#deleteBtn");
+	 
+	 listBtn.on("click", function(){
+		 location.href = "/entertain/company/notice/list.do";
+	 });
+	 
+	 updateBtn.on("click", function(){
+		 delForm.attr("method", "get");
+		 delForm.attr("action", "/entertain/company/notice/update.do");
+		 delForm.submit();
+	 });
+	 
+	 deleteBtn.on("click", function(){
+		if(confirm("정말로 삭제하시겠습니까?")){
+			delForm.submit();
+		} 
+	 });
+	 
+ });
+ </script>

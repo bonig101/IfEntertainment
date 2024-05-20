@@ -1,0 +1,99 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
+
+<style>
+	@font-face {
+	    font-family: 'LOTTERIACHAB';
+	    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/LOTTERIACHAB.woff2') format('woff2');
+	    font-weight: normal;
+	    font-style: normal;
+	}
+	
+	@font-face {
+	    font-family: 'GmarketSansMedium';
+	    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+	    font-weight: normal;
+	    font-style: normal;
+	}
+	
+	body {
+		font-family: 'GmarketSansMedium', sans-serif;
+	}
+</style>
+
+<!-- side header -->
+<div class="topbar">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-lg-2">
+				<div class="logo">
+					<a title="" href="/admin"> <span
+						style="font-family: 'GmarketSansMedium'; color: white; font-size: 28px;">
+							If Admin <i class="fa-brands fa-waze"></i>
+					</span>
+					</a>
+				</div>
+			</div>
+			<div class="col-lg-9">
+				<ul class="notify-area">
+				</ul>
+				<ul class="seting-area">
+					<li class="langages">
+						<a href="#" title=""> 
+							<span>관리할 카테고리</span> 
+							<i class="fa-solid fa-caret-down"></i>
+						</a>
+						<ul class="drop language">
+<%-- 							<sec:authorize access="hasRole('ROLE_ENTERTAIN')"> --%>
+								<li><a href="">엔터테인먼트</a></li>
+<%-- 							</sec:authorize> --%>
+<%-- 							<sec:authorize access="hasRole('ROLE_COMMUNITY')"> --%>
+								<li><a href="">커뮤니티</a></li>
+<%-- 							</sec:authorize> --%>
+<%-- 							<sec:authorize access="hasRole('ROLE_GOODS')"> --%>
+								<li><a href="">굿즈샵</a></li>
+<%-- 							</sec:authorize> --%>
+						</ul>
+					</li>
+					<li class="setting-panel">
+						<a href="#" title=""> 
+							<span>사이트 바로가기</span> 
+							<i class="fa fa-external-link" aria-hidden="true"></i>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="col-lg-1">
+				<div class="user-head">
+					<div class="admin">
+						<span>YISOO723</span>
+						<div class="admin-avatar">
+							<i class="online"></i>
+						</div>
+					</div>
+					<div class="drop setting">
+						<span class="drop-bottom"> 
+							<a href="#" title=""> 
+								<i class="fa fa-sign-out"></i>log Out
+							</a>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(function(){
+	
+	$('.seting-area .langages').on("click", function(){
+		$('.drop.language').toggleClass('active');
+	});
+	
+	$(".drop").on("click",function(e){
+		e.stopPropagation();
+  	}); 	
+	
+});
+</script>

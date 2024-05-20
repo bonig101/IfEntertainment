@@ -1,0 +1,180 @@
+package kr.or.ddit.controller.common;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.common.IAdminService;
+import kr.or.ddit.service.common.IWordAnalysisService;
+import kr.or.ddit.vo.goods.goodsInquiryVO;
+import kr.or.ddit.vo.statistic.GoodsSalesVO;
+import kr.or.ddit.vo.statistic.KeywordVO;
+import kr.or.ddit.vo.statistic.MemberRateVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 엔터테인먼트 메인페이지 
+ * @author 홍진영
+ */
+@Controller
+@Slf4j
+public class MainController {
+	
+	@Inject
+	private IAdminService adminService;
+	
+	@Inject
+	private IWordAnalysisService wordAnalysisService;
+	
+	@RequestMapping(value="/")
+	public String main() {
+		return "index";
+	}
+	
+//	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value="/admin")
+	public String adminMain(Model model) {
+		
+		/*
+		 * 금일, 전일 가입자 통계
+		 */
+		// 통계 자료들을 담을 맵을 선언
+		Map<String, Object> statMap = new HashMap<String, Object>();
+		
+		// 금일 가입자 수를 조회한다.
+		int todayRegister = adminService.selectTodayRegister();
+		statMap.put("todayRegister", todayRegister);
+		
+		// 어제 가입자 수를 조회한다.
+		int yesterdayRegister = adminService.selectYesterdayRegister();
+		
+		// 어제 대비 오늘 가입자 증감률을 계산
+		double increaseRate = 0.0;
+		if (yesterdayRegister != 0) {
+		    increaseRate = ((double) (todayRegister - yesterdayRegister) / yesterdayRegister) * 100.0;
+		} else {
+		    // 어제 가입자가 0명인 경우, 증감률을 100%로 설정
+		    increaseRate = 100.0;
+		}
+		// 증감률을 소수점 둘째 자리까지 반올림
+		increaseRate = Math.round(increaseRate * 100.0) / 100.0;
+		statMap.put("increaseRate", increaseRate);
+		
+		/*
+		 *  판매금액 통계
+		 */
+		
+		// 오늘 판매 금액을 조회한다.
+		long todaySales = adminService.selectTodaySales();
+		statMap.put("todaySales", todaySales);
+		
+		// 전일 판매 금액을 조회한다.
+		long yesterdaySales = adminService.selectYesterdaySales();
+//		long yesterdaySales = 192000;
+		
+		// 어제 대비 오늘 가입자 증감률을 계산
+		double increaseRate_sales = 0.0;
+		if (yesterdaySales != 0) {
+			increaseRate_sales = ((double)(todaySales - yesterdaySales) / yesterdaySales) * 100.0;
+		}
+		
+		// 어제 판매 금액이 0원이고 오늘 판매 금액이 1원 이상인 경우 100%로 표시
+		if (yesterdaySales == 0 && todaySales >= 1) {
+		    increaseRate_sales = 100.0;
+		} 
+		
+		// 증감률을 소수점 둘째 자리까지 반올림
+		increaseRate_sales = Math.round(increaseRate_sales * 100.0) / 100.0;
+		statMap.put("increaseRate_sales", increaseRate_sales);
+		
+		/*
+		 *  굿즈처리관련 정보
+		 */
+		
+		// 배송처리해야 할 건수를 조회한다.
+		int deliveryCount = adminService.selectDeliveryCount();
+		statMap.put("deliveryCount", deliveryCount);
+		
+		// 교환승인해야할 건수를 조회한다.
+		int changeCount = adminService.selectChangeCount();
+		statMap.put("changeCount", changeCount);
+		
+		/*
+		 *  미답변 처리 문의 정보
+		 */
+		// 미답변 문의 개수를 조회온다.
+		int inquriryCount = adminService.selectInquiryCount();
+		statMap.put("inquriryCount", inquriryCount);
+		
+		// 미답변 문의 리스트를 3개까지 조회온다.
+		List<goodsInquiryVO> giList = adminService.selectInquiryList();
+		statMap.put("giList", giList);
+		
+		// 팬피드에 작성된 게시글 내용을 전부 불러온다.
+		List<KeywordVO> keywordList = adminService.getKeyword();
+		StringBuffer sb = new StringBuffer();
+		
+		if(keywordList != null && keywordList.size() > 0) {
+			for (KeywordVO keywordVO : keywordList) {
+				sb.append(" " + keywordVO.getFeedContent());
+			}
+			
+			List<String> keywords = null;
+			
+			try {
+				keywords = wordAnalysisService.doWordNouns(sb.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			statMap.put("keywords", keywords);
+		}
+		
+		// 가입자 성별 & 연령별 카운트 리스트를 조회한다.
+		List<MemberRateVO> mrList = adminService.selectMemberRateList();
+		log.info("#### mrList : {}", mrList);
+		
+		// 남녀 별 카운트를 담을 리스트 선언
+		List<List<Integer>> memberRates = new ArrayList<List<Integer>>();
+		
+		// 조회된 쿼리결과를 넘겨줄 데이터 리스트에 담는다.
+		for (MemberRateVO memberRateVO : mrList) {
+			List<Integer> list = new ArrayList<Integer>();
+			list.add(memberRateVO.getFemaleCount());
+			list.add(memberRateVO.getMaleCount());
+			memberRates.add(list);
+		}
+		statMap.put("memberRates", memberRates);
+		
+		// 아티스트별 굿즈샵 판매액을 가져온다.
+		List<GoodsSalesVO> goodsSalesVOList = adminService.selectGoodsSalesList();
+		if(goodsSalesVOList != null && goodsSalesVOList.size() > 0) {
+			List<List<Object>> goodsSalesList = new ArrayList<List<Object>>();
+			
+			for (GoodsSalesVO gsVO : goodsSalesVOList) {
+				List<Object> list = new ArrayList<Object>();
+				list.add(gsVO.getGoodsArtist());
+				list.add(gsVO.getTotalPrice());
+				goodsSalesList.add(list);
+			}
+			
+			statMap.put("goodsSalesList", goodsSalesList);
+		}
+		
+		model.addAttribute("statMap", statMap);
+		return "admin/adminMain";
+		
+	}
+	
+	
+
+	
+}

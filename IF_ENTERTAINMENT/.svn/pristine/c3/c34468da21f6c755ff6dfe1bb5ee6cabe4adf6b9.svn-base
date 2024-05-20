@@ -1,0 +1,34 @@
+package kr.or.ddit.mapper.entertain;
+
+import java.util.List;
+
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.IREventVO;
+import kr.or.ddit.vo.entertain.IRFileAttachVO;
+import kr.or.ddit.vo.entertain.IRFileVO;
+
+public interface IIRMapper {
+
+	// IR 행사일정
+	public int insertIREvent(IREventVO ireventVO);
+	public void insertIREventDetail(IREventVO ireventVO);
+	public int selectIREventCount(PaginationInfoVO<IREventVO> pagingVO);
+	public List<IREventVO> selectIREventList(PaginationInfoVO<IREventVO> pagingVO);
+	public IREventVO selectIREvent(int bfNo);
+	public int updateIREvent(IREventVO ireventVO);
+	public void updateIREventDetail(IREventVO ireventVO);
+	public int deleteIREvent(int bfNo);
+	
+	// IR 자료실
+	public int selectFileCount(PaginationInfoVO<IRFileVO> pagingVO);
+	public List<IRFileVO> selectIRFileList(PaginationInfoVO<IRFileVO> pagingVO);
+	public int insertIRFile(IRFileVO irFileVO);
+	public void insertIRAttachFile(IRFileAttachVO irFileAttachVO);
+	public IRFileVO selectIRFile(int bfNo);
+	public List<IRFileAttachVO> getAttachFile(int bfNo);
+	public int updateIRFile(IRFileVO irFileVO);
+	public void updateIRAttachFile(IRFileAttachVO irFileAttachVO);
+	public int deleteIRAttachFile(int bfNo);
+	public int deleteIRFile(int bfNo);
+
+}

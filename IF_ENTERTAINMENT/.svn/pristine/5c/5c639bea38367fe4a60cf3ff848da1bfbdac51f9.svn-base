@@ -1,0 +1,278 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style type="text/css">
+.image-container {
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    height: 100px; /* 부모 요소의 높이를 지정 */
+}
+</style>
+  <link rel="icon" href="images/fav.png" type="image/png" sizes="16x16"> 
+  <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/main.min.css">
+<%--   <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/style.css"> --%>
+  <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/color.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/responsive.css">
+</head>
+<body>
+<div class="col-lg-12">
+								<div class="central-meta">
+									<h4 class="create-post">장바구니</h4>
+									<div class="cart-sec">
+										<table class="table table-responsive">
+											<tr>
+												<th>상품명</th>
+												<th>가격</th>
+												<th>수량</th>
+												<th>총 가격</th>
+											</tr>
+											<c:forEach var="list" items="${list }">
+											<tr>
+												<td>
+													<a href="#" title="" class="delete-cart"><i class="ti-close"></i></a>
+													<div class="cart-avatar">
+														<div class="image-container">
+														    <img src="${list.cartThumbnail}" style="width: 80px; height: 80px;"  alt="">
+													<input type="hidden" class="userNo" name="userNo" value="${list.userNo }">
+													<input type="hidden" class="goodsNo" name="goodsNo" value="${list.goodsNo }">
+													<input type="hidden" class="goodsQuantity" name="goodsQuantity" value="${list.goodsQuantity }">
+														</div>
+													</div>
+													<div class="cart-meta">
+														<span>${list.cartName }</span>
+													</div>
+												</td>
+												<td>
+													<span class="cart-prices"> 
+														<ins>
+															<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">&#8361;</span>${list.cartPrice }</span>
+														</ins> 
+													</span>
+												</td>
+												<td>
+													     <div class="cart-list-quantity">
+												                <div class="c-input-number">
+												                    <button class="decrease-quantity">-</button>
+												                    <input type="text" class="manual-adjust" value="${list.cartQuantity}" data-price="${list.cartPrice}" data-goodsno="${list.goodsNo}" data-userno="${list.userNo}"/>
+												                    <button class="increase-quantity">+</button>
+												                </div>
+												            </div>
+												        </td>
+												        <td>
+												            <span class="total-price">${list.cartQuantity * list.cartPrice}</span>
+												            
+												        </td>
+											</tr>
+											</c:forEach>
+										</table>
+									</div>
+									<div class="row">
+										<div class="col-lg-6">
+											<div class="amount-area">
+												
+												<!-- 총합계를 표시할 부분 -->
+										<div class="total-area">
+										    <ul>
+										        <li>
+										            <span>장바구니 소계:</span>
+										            <i id="cartSubtotal">$0.00</i>
+										        </li>
+										        <li>
+										            <span>배송비:</span>
+										            <i>무료</i>
+										        </li>
+										        <li class="order-total">
+										            <span>총 주문 금액:</span>
+										            <i id="orderTotal">$0.00</i>
+										        </li>
+										    </ul>
+										</div>
+
+											</div>
+										</div>
+										<div class="col-lg-6">
+											<form method="post" class="coupon-code">
+													<input type="text" placeholder="Enter your Coupon">
+													<button><i class="fa-regular fa-paper-plane"></i></button>
+												</form>
+											<div class="proceed">
+												<a href="/goods/goodsPurchase.do" title="" class="main-btn3">Update Cart</a>
+												<a href="/goods/goodsPurchase.do" title="" class="main-btn">Proceed to Chefdckout</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+</body>
+	<script src="${pageContext.request.contextPath }/resources/js/main.min.js"></script>
+	<script src="${pageContext.request.contextPath }/resources/js/userincr.js"></script>
+	<script src="js/script.js"></script>
+	
+<script type="text/javascript">
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+
+</script>	
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.delete-cart').click(function(event) {
+        event.preventDefault();
+        
+        var $this = $(this); 
+        var goodsNo = $this.closest('tr').find('.goodsNo').val();
+        var userNo = $this.closest('tr').find('.userNo').val();
+
+        swal.fire({
+            title: "삭제하시겠습니까?",
+            text: "이 작업은 되돌릴 수 없습니다",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: '예',
+            cancelButtonText: '아니오',
+            reverseButtons: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "/goods/goodsCartDelete.do",
+                    contentType: "application/json",
+                    beforeSend: function(xhr){
+                    	xhr.setRequestHeader(header, token);
+                    },
+                    data: JSON.stringify({
+                        goodsNo: goodsNo,
+                        userNo: userNo
+                    }),
+                    beforeSend: function(xhr){
+                    	xhr.setRequestHeader(header, token);
+                    },
+                    success: function(response) {
+                        swal.fire({
+                            title: "삭제가 완료되었습니다!",
+                            icon: "success",
+                            showCancelButton: false,
+                            timer : 1500
+                        }).then(() => {
+                            window.location.href = '/goods/goodsCart.do'; 
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        swal.fire("오류", "오류가 발생했습니다. 다시 시도해주세요.", "error");
+                    }
+                });
+            }
+        });
+    }); 
+}); 
+</script>
+<script>
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function updateTotalsJQuery() {
+    var total = 0;
+    
+    $('.total-price').each(function() {
+        total += parseInt($(this).text().replace('₩', '').replace(/,/g, ''));
+    });
+
+    $('#cartSubtotal').text('₩' + numberWithCommas(total));
+    $('#orderTotal').text('₩' + numberWithCommas(total));
+}
+
+$(document).ready(function() {
+	
+	$('.total-price').each(function() {
+	        var price = parseInt($(this).text().replace('₩', '').replace(/,/g, ''));
+	        $(this).text('₩' + numberWithCommas(price));
+	    });
+    updateTotalsJQuery();
+    
+    $(document).on('click', '.decrease-quantity, .increase-quantity', function() {
+        var $this = $(this);
+        var $input = $(this).siblings('input.manual-adjust');
+        var currentQuantity = parseInt($input.val());
+        var stockQuantity = parseInt($this.closest('tr').find('.goodsQuantity').val());
+        var pricePerItem = parseInt($input.data('price'));
+        var goodsNo = $this.closest('tr').find('.goodsNo').val();
+        var userNo = $this.closest('tr').find('.userNo').val();
+        var maxPerCustomer = 5;
+
+        if ($(this).hasClass('increase-quantity')) {
+            if (currentQuantity < stockQuantity && currentQuantity < maxPerCustomer) {
+                currentQuantity++;
+            } else {
+                if (currentQuantity >= stockQuantity) {
+                	Swal.fire({
+
+                		  icon: "error",
+                		  title: "재고수량보다 많은 수량은 구매할 수 없습니다.",
+                		  showConfirmButton: false,
+                		  timer: 1500
+                		});
+                } else if (currentQuantity >= maxPerCustomer) {
+                	Swal.fire({
+
+                		  icon: "error",
+                		  title: "1인 구매제한 갯수는 5개 입니다.",
+                		  showConfirmButton: false,
+                		  timer: 1500
+                		});
+                }
+                return;
+            }
+        } else if ($(this).hasClass('decrease-quantity') && currentQuantity > 1) {
+            currentQuantity--;
+        }
+        
+        $input.val(currentQuantity);
+        
+        $input.closest('tr').find('.total-price').text('₩' + numberWithCommas(currentQuantity * pricePerItem));
+        
+        updateTotalsJQuery();
+        
+        $.ajax({
+            type: "POST",
+            url: "/goods/goodsCartUpdate.do",
+            contentType: "application/json",
+            beforeSend: function(xhr){
+            	xhr.setRequestHeader(header, token);
+            },
+            data: JSON.stringify({
+                goodsNo: goodsNo,
+                userNo: userNo,
+                cartQuantity: currentQuantity
+            }),
+            success: function(response) {
+                console.log("수량 업데이트 성공");
+            },
+            error: function(xhr, status, error) {
+                console.log("수량 업데이트 실패");
+            }
+        });
+    });
+});
+</script>
+
+	
+	
+	
+</html>

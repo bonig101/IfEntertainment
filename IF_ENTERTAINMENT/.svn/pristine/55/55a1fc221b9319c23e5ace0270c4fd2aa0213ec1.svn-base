@@ -1,0 +1,17 @@
+package kr.or.ddit.mapper.community;
+
+import java.util.List;
+
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.community.SurveyFormVO;
+import kr.or.ddit.vo.community.SurveyOptionVO;
+import kr.or.ddit.vo.community.SurveyQuestionVO;
+
+public interface ISurveyMapper {
+	public int insertSurvey(SurveyFormVO surveyFormVO);
+	public int insertSurveyQuestion(SurveyQuestionVO surveyQuestionVO);
+	public void insertSurveyOption(SurveyOptionVO surveyOptionVO);
+	public int selectSurveyCount(PaginationInfoVO<SurveyFormVO> pagingVO);
+	public List<SurveyFormVO> selectSurveyList(PaginationInfoVO<SurveyFormVO> pagingVO);
+	public SurveyFormVO selectSurvey(int sfNo);
+}

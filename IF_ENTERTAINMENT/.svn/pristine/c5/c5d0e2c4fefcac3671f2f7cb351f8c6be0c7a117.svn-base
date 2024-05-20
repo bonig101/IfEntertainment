@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.IAdminMapper">
+
+<!-- 금일 가입자 수를 조회한다. -->
+<select id="selectTodayRegister" resultType="int">
+	select 
+		count(member_regdate)
+	from 
+		member
+	where
+		trunc(member_regdate) = trunc(current_date)
+</select>
+
+<!-- 금일 가입자 수를 조회한다. -->
+<select id="selectYesterdayRegister" resultType="int">
+	select 
+		count(member_regdate)
+	from 
+		member
+	where
+		trunc(member_regdate) = trunc(current_date) - 1
+</select>
+
+<!-- 금일 굿즈 판매금액을 조회한다. -->
+<select id="selectTodaySales" resultType="long">
+	select 
+	    nvl(sum(order_totalprice), 0) totalprice
+	from 
+	    "ORDER"
+	where 
+	    trunc(order_date) = trunc(current_date)
+</select>
+
+<!-- 전일 굿즈 판매금액을 조회한다. -->
+<select id="selectYesterdaySales" resultType="long">
+	select 
+	    nvl(sum(order_totalprice), 0) totalprice
+	from 
+	    "ORDER"
+	where 
+	    trunc(order_date) = trunc(current_date) - 1
+</select>
+
+<!-- 미처리 배송처리 건수를 조회한다. -->
+<select id="selectDeliveryCount" resultType="int">
+	select 
+	    count(order_delivery) 
+	from 
+	    "ORDER"
+	where order_delivery = 'N'
+</select>
+
+<!-- 미처리 교환신청 건수를 조회한다. -->
+<select id="selectChangeCount" resultType="int">
+	select 
+	    count(order_no)
+	from
+	    order_issue
+	where
+	    gui_type = '2'
+	    and gui_cngdate is null
+</select>
+
+<!-- 미답변 문의 총 갯수를 조회한다. -->
+<select id="selectInquiryCount" resultType="int">
+	select 
+	    count(*) inquriryCount
+	from 
+	    goods_inquiry 
+	where
+	    gi_reply is null
+</select>
+
+<!-- 미답변 문의를 3개까지만 조회한다. -->
+<select id="selectInquiryList" resultType="goodsInquiryVO">
+	select
+	    (select user_id from "USER" where user_no = gi.user_no) userId,
+	    CASE
+	        WHEN LENGTH(gi_title) > 15 THEN RPAD(SUBSTR(gi_title, 1, 15), 18, '...')
+	        ELSE gi_title
+	    END AS gi_title,
+	    gi_regdate
+	from 
+	    goods_inquiry gi
+	where 
+	    gi_reply is null
+	    <![CDATA[
+	    	AND ROWNUM <= 3
+	    ]]>
+	order by gi_regdate
+</select>
+
+<!-- 팬들이 작성판 피드의 내용들과 작성자 성별을 가져온다. -->
+<select id="getKeyword" resultType="keywordVO">
+	SELECT
+	    f.feed_content,
+	    m.member_gender AS gender
+	FROM 
+	    feed f
+	LEFT JOIN member m ON f.user_no = m.user_no
+	WHERE 
+	    feed_type = '1'
+	    and feed_content is not null
+	    and m.member_gender is not null
+</select>
+
+<!-- 연령대를 그룹으로 묶어 가입자 인원을 조회 -->
+<select id="selectMemberRateList" resultType="memberRateVO">
+	select
+	    age_group,
+	    sum(case when member_gender = 'F' then 1 else 0 end) as female_count,
+	    sum(case when member_gender = 'M' then 1 else 0 end) as male_count
+	from (
+	    select
+	        case
+	         <![CDATA[
+	            when trunc(months_between(sysdate, to_date(member_birth, 'yy/mm/dd')) / 12) < 20 then '10대 이하'
+	            when trunc(months_between(sysdate, to_date(member_birth, 'yy/mm/dd')) / 10) < 30 then '20대'
+	            when trunc(months_between(sysdate, to_date(member_birth, 'yy/mm/dd')) / 10) < 40 then '30대'
+	            when trunc(months_between(sysdate, to_date(member_birth, 'yy/mm/dd')) / 10) < 50 then '40대'
+	            else '50대 이상'
+	        ]]>
+	        end as age_group,
+	        member_gender
+	    from
+	        member
+	) subquery
+	group by
+	    age_group
+	order by
+	    age_group desc	
+</select>
+
+<!-- 아티스트별 굿즈 판매액 -->
+<select id="selectGoodsSalesList" resultType="goodsSalesVO">
+	select
+	    g.goods_artist,
+	    nvl(sum(od.od_quantity * od.od_price), 0) as total_price
+	from
+	    goods g
+	left outer join order_detail od on g.goods_no = od.goods_no
+	left outer join order_issue oi on od.order_no = oi.order_no
+	left outer join "ORDER" ord on od.order_no = ord.order_no
+	where 
+	    (oi.gui_type != 1 or oi.gui_type is null) 
+	group by
+	    g.goods_artist
+	order by
+	    total_price desc, 1
+</select>
+
+<!-- 방문자 카운트 관련 -->
+<!-- 전체 방문자 수 증가 -->
+<insert id="setVisitTotalCount" parameterType="String">
+	insert into visit (v_date, user_id) values (sysdate, #{userName})
+</insert>
+
+<!-- 전제 방문자수 조회 -->
+<select id="getVisitTodayCount" resultType="int">
+	select count(*) from visit
+</select>
+
+<!-- 오늘 방문자수 조회 -->
+<select id="getVisitTotalCount" resultType="int">
+	select count(*) from visit
+	where substr(to_char(v_date), 1, 9) = to_date(sysdate, 'yy/MM/dd')
+</select>
+
+
+</mapper>

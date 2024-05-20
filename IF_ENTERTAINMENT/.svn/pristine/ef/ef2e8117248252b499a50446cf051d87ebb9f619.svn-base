@@ -1,0 +1,114 @@
+package kr.or.ddit.controller.entertain;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import kr.or.ddit.service.entertain.ICompanyNoticeService;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.CompanyNoticeVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 기업공지 조회 컨트롤러(사용자/관리자)
+ * @author 서어진
+ */
+@Controller
+@Slf4j
+@RequestMapping("/entertain/company/notice")
+public class CompanyNoticeRetrieveController {
+	
+	@Inject
+	private ICompanyNoticeService companyNoticeService;
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+	@RequestMapping(value="/list.do")
+	public String CompanyNoticeList(
+			@RequestParam(name="page", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(required = false, defaultValue = "title") String searchType,
+			@RequestParam(required = false) String searchWord,
+			Model model
+			) {
+		PaginationInfoVO<CompanyNoticeVO> pagingVO = new PaginationInfoVO<CompanyNoticeVO>();
+		
+		if(StringUtils.isNotBlank(searchWord)) {
+			pagingVO.setSearchType(searchType);
+			pagingVO.setSearchWord(searchWord);
+			
+			model.addAttribute("searchType", searchType);
+			model.addAttribute("searchWord", searchWord);
+		}
+		
+		pagingVO.setCurrentPage(currentPage);
+		int totalRecord = companyNoticeService.selectCompanyNoticeCount(pagingVO);
+		pagingVO.setTotalRecord(totalRecord); 
+		
+		List<CompanyNoticeVO>  dataList = companyNoticeService.selectCompanyNoticeList(pagingVO);
+		pagingVO.setDataList(dataList); 
+		
+		model.addAttribute("pagingVO", pagingVO);
+		
+		return "admin/entertain/CompanyNoticeList";
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+	@RequestMapping(value="/detail.do", method = RequestMethod.GET)
+	public String CompanyNoticeDetail(int bfNo, Model model) {
+		CompanyNoticeVO companyNoticetVO = companyNoticeService.selectCompanyNotice(bfNo);
+		model.addAttribute("companyNotice", companyNoticetVO);
+		return "admin/entertain/CompanyNoticeDetail";
+	}
+	
+	// 사용자 리스트
+	@RequestMapping(value="/userlist.do")
+	public String UserCheckCompanyNoticeList(
+			@RequestParam(name="page", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(required = false, defaultValue = "title") String searchType,
+			@RequestParam(required = false) String searchWord,
+			Model model
+			) {
+		PaginationInfoVO<CompanyNoticeVO> pagingVO = new PaginationInfoVO<CompanyNoticeVO>();
+		
+		if(StringUtils.isNotBlank(searchWord)) {
+			pagingVO.setSearchType(searchType);
+			pagingVO.setSearchWord(searchWord);
+			
+			model.addAttribute("searchType", searchType);
+			model.addAttribute("searchWord", searchWord);
+		}
+		
+		pagingVO.setCurrentPage(currentPage);
+		int totalRecord = companyNoticeService.selectUserCompanyNoticeCount(pagingVO);
+		pagingVO.setTotalRecord(totalRecord); 
+		
+		List<CompanyNoticeVO>  dataList = companyNoticeService.selectUserCompanyNoticeList(pagingVO);
+		pagingVO.setDataList(dataList); 
+		
+		model.addAttribute("pagingVO", pagingVO);
+		
+		return "entertain/UserCheckCompanyNoticeList";
+	}
+	
+	@RequestMapping(value="/userdetail.do", method = RequestMethod.GET)
+	public String UserCheckCompanyNoticeDetail(int bfNo, Model model) {
+		CompanyNoticeVO companyNoticetVO = companyNoticeService.selectUserCompanyNotice(bfNo);
+		model.addAttribute("companyNotice", companyNoticetVO);
+
+		/*
+		 * ArrayList<CompanyNoticeVO> prevAndNextPost =
+		 * companyNoticeService.selectPrevAndNextPost(bfNo);
+		 * model.addAttribute("prevAndNextPost", prevAndNextPost);
+		 */
+		
+		return "entertain/UserCheckCompanyNoticeDetail";
+	}
+}
+

@@ -1,0 +1,26 @@
+package kr.or.ddit.vo.entertain;
+
+import java.time.LocalDate;
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class ArtistVO {
+
+	private int userNo;
+	private String artistBirth;
+	private String artistIntro;
+	private String artistFakename;
+	private String artistDelyn;
+	private String agId;
+	private String userName;
+	private String userId;
+	private String userPw;
+	private String userType;
+	private String userProfile;
+	private String enabled;
+	
+	
+	
+}

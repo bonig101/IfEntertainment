@@ -1,0 +1,15 @@
+package kr.or.ddit.service.impl.goods;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.goods.IGoodsPurchaseMapper;
+import kr.or.ddit.service.goods.IGoodsPurchaseService;
+
+@Service
+public class GoodsPurchaseServiceImpl implements IGoodsPurchaseService {
+
+	@Inject
+	private IGoodsPurchaseMapper goodsPurchaseMapper;
+}

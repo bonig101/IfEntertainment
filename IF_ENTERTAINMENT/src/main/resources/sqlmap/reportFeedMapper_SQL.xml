@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.community.IFeedMapper">
+
+<insert id="feedReport">
+
+	insert into report(
+		REPORT_NO
+		, REPORT_GUBUN
+		, REPORT_TYPE
+		, REPORT_REASON
+		, REPORT_DATE
+		, FEED_NO
+		, USER_NO
+		
+	)values(
+		seq_report.nextval,
+		#{reportGubun}
+		, #{reportType}
+		, #{reportReason}
+		, sysdate
+		, #{feedNo}
+		, #{userNo}	
+	)
+
+
+
+</insert>
+	
+	
+
+
+</mapper>

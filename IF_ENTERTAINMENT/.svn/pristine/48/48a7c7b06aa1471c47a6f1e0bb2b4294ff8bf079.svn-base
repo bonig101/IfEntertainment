@@ -1,0 +1,13 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<div class="col-lg-3">
+	<aside class="sidebar static left">
+		<div class="widget stick-widget">
+			<h4 class="widget-title">Audition</h4>
+			<ul class="naves">
+				<li><a href="/entertain/audition/scheduleList.do" title="">오디션 일정확인</a></li>
+				<li><a href="/entertain/audition/auditionSupportGuide.do" title="">지원하기</a></li>
+				<li><a href="/entertain/audition/auditionSupportList.do" title="">지원내역 확인</a></li>
+			</ul>
+		</div>
+	</aside>
+</div>

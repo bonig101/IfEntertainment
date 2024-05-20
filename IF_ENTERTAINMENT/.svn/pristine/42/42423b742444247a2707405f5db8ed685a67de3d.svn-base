@@ -1,0 +1,89 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
+<div class="gap inner-bg">
+  <div class="table-styles">
+  
+  <div class="little-heading">
+  	<h2 style="margin-bottom: 30px">굿즈 공지사항 목록</h2>
+  </div>
+  
+  	<div class="product-details">
+	  <div class="gap no-top">
+	    <div class="product-details-wrapper paddlr70">
+	      <div class="product-detail paddlr100">
+	        <div class="row">
+	          <div class="col-lg-5 col-md-5">
+	            <div class="product-detail-thumb"> <img src="images/resources/prodcut-detail.jpg" alt=""> </div>
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	  <div class="gap no-gap">
+	    <div class="single-post-detail paddlr130 detail-area">
+	   		<h1>Kraus Colonial Oak</h1>
+		    <p>All right. Well, take care yourself. I guess that’s what you’re best, presence old master? A tremor in the Force. The last time felt it was in the presence of my old master. I have traced the Rebel spies to her European languages are members. Maybe only in the aspect that I think that I haven’t seen until now teams much better than Southampton. It (a top-four finish) would be fantastic. But we said before, you live game by game and we have to work hard Lorem ipsum dolor sit amet, adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo. Lorem ipsum dolor sit amet, consectetur elit. Ut elit tellus, nec ullamcorper mattis,leo.consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.consectetur adipiscing elit..</p>
+	    </div>
+	    
+	    <div class="col-md-8">
+            <div class="buttonz addpro_buttonz">
+                <button type="button" id="addBtn" value="${name }">${name }</button>
+                <c:if test="${status ne 'u' }">
+               		<button type="button" id="listBtn">목록</button>
+                </c:if>
+                <c:if test="${status eq 'u' }">
+                	<button type="button" id="cancelBtn">취소</button>
+                </c:if>
+            </div>
+        </div>
+	  </div>
+	</div>
+  </div>
+</div>
+
+<script>
+$(function () {
+	var prodList = $(".prodList");
+	var delFrm = $("#delFrm");
+	var prod_update = $(".prod_update");
+	var delBtn = $(".delBtn");
+	var searchForm = $("#searchForm")
+	
+	prod_update.on("click", function () {
+	    var prodNo = $(this).data("prodno"); 
+	    location.href = "/goods/update.do?goodsNo=" + prodNo;
+	});
+
+	$('.all-slct').on("click",function(){
+		$(this).toggleClass('active');
+	    $(".sngl-slct").toggleClass('active'); 
+	});
+	
+	var newBtn = $("#newBtn");
+	var pagingArea = $("#pagingArea");
+	
+	pagingArea.on("click", "a", function (event) {
+		event.preventDefault();
+		var pageNo = $(this).data("page");
+		searchForm.find("#page").val(pageNo);
+		searchForm.submit();
+	});
+	
+	newBtn.on("click", function () {
+		location.href = "/goods/form.do";
+	});
+	
+	delBtn.on("click", function (event) {
+		event.preventDefault();
+		
+		if (confirm("상품을 정말 삭제 하시겠습니까?")) {
+			var goodsNo = $(this).data("goodsno");
+			delFrm.find("#gNo").val(goodsNo);
+			delFrm.submit();
+		}
+	});
+	
+});
+</script>

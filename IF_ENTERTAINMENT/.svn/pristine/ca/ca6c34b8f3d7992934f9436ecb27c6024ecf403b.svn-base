@@ -1,0 +1,179 @@
+package kr.or.ddit.controller.goods;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import kr.or.ddit.service.goods.IGoodsService;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.goods.CartVO;
+import kr.or.ddit.vo.goods.GoodsVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 굿즈 조회 컨트롤러
+ * @author 조재훈, 성이수
+ * 조재훈 - 유저가 굿즈샵에서 굿즈를 조회
+ * 성이수 - 관리자가 상품관리 페이지에서 상품리스트를 조회
+ */
+@Controller
+@Slf4j
+@RequestMapping("/goods")
+public class GoodsRetrieveController {
+	
+	@Inject
+	private IGoodsService goodsService;
+
+	/*
+	 * 1. 대분류는 아티스트를 선택하여 샵을 들어가면
+	 * 2. 소분류는 앨범, 멤버십, 포토카드 등
+	 * 3. 
+	 */
+	
+	@RequestMapping(value = "/list.do")
+	public String goodsList(
+			@RequestParam(name ="page", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(required = false, defaultValue = "title") String searchType,
+			@RequestParam(required = false) String searchWord,
+			Model model) {
+		PaginationInfoVO<GoodsVO> pagingVO = new PaginationInfoVO<GoodsVO>();
+		
+		if (StringUtils.isNotBlank(searchWord)) {
+			pagingVO.setSearchType(searchType);
+			pagingVO.setSearchWord(searchWord);
+			
+			model.addAttribute("searchType", searchType);
+			model.addAttribute("searchWord", searchWord);
+		}
+		
+		pagingVO.setCurrentPage(currentPage);
+		int totalRecord = goodsService.selectProdListCount(pagingVO);
+		pagingVO.setTotalRecord(totalRecord);
+		
+		List<GoodsVO> prodList = goodsService.selectProdList(pagingVO);
+		pagingVO.setDataList(prodList);
+		
+		model.addAttribute("pagingVO", pagingVO);
+		
+		return "admin/goods/productList";
+	}
+	
+	@RequestMapping(value = "/shopList.do")
+	public String goodsShopList(
+			@RequestParam(name ="page", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(required = false) String searchWord,
+			Model model,
+			@RequestParam("agId") String goodsArtist,
+			String gcId,
+			@RequestParam(value ="sort",required = false ) String sort
+			) { 
+		log.info("sort ??@@" + sort);
+		PaginationInfoVO<GoodsVO> pagingVO = new PaginationInfoVO<GoodsVO>(16,5);
+		pagingVO.setGoodsArtist(goodsArtist);
+		
+		if(sort != null) {
+		    pagingVO.setSort(sort); 
+		    
+		}
+		if(gcId != null) {
+			pagingVO.setGcId(gcId);
+		}
+		
+		if (StringUtils.isNotBlank(searchWord)) {
+			pagingVO.setSearchWord(searchWord);
+			
+			model.addAttribute("searchWord", searchWord);
+		}
+		
+		pagingVO.setCurrentPage(currentPage);
+		int totalRecord = goodsService.selectGoodsListCount(pagingVO);
+		pagingVO.setTotalRecord(totalRecord);
+		
+		List<GoodsVO> prodList = goodsService.selectGoodsList(pagingVO);
+		List<GoodsVO> gcList = goodsService.selectGcId(goodsArtist);
+		log.info("gcList" + gcList);
+		List<GoodsVO> newProdList = new ArrayList<GoodsVO>();
+		Set<String> existingGcIds = new HashSet<String>();
+		for(GoodsVO gv : gcList) {
+		    if (!existingGcIds.contains(gv.getGcId())) {
+		        newProdList.add(gv);
+		        existingGcIds.add(gv.getGcId());
+		    }
+		}
+		log.info("adminList --- > " + newProdList);
+		pagingVO.setDataList(prodList);
+		model.addAttribute("pagingVO", pagingVO);
+		model.addAttribute("newProdList", newProdList);
+		model.addAttribute("agId", goodsArtist);
+		model.addAttribute("searchWord",searchWord);
+		model.addAttribute("gcId",gcId);
+		
+		
+		return "goods/goodsShop";
+	}
+	@RequestMapping(value = "/shopDetail.do")
+	public String goodsShopDetail(Model model, String goodsNo) {
+		GoodsVO goodsVO = goodsService.goodsShopDetail(goodsNo);
+		log.info("goodsVO ??!" + goodsVO);
+		model.addAttribute("goodsVO",goodsVO);
+		
+		return "goods/goodsDetail";
+	}
+	
+	@RequestMapping(value = "/goodsCart.do" , method=RequestMethod.GET)
+	public String goodsCart(Model model, CartVO cartVO) {
+		String userNo = "1036";
+		cartVO.setUserNo(userNo);
+		List<CartVO> list = goodsService.goodsCart(userNo);
+		log.info("cartVOasdf ???" + cartVO);
+		log.info("list ???" + list);
+		model.addAttribute("list",list);
+		
+		return "goods/goodsCart";
+	}
+	
+	@RequestMapping(value = "/goodsCart.do" , method=RequestMethod.POST)
+	public ResponseEntity<String> goodsCartInsert(@RequestBody CartVO cartVO) {
+        String userNo = "1036";
+        int status = 0;
+        cartVO.setUserNo(userNo);
+        int count = goodsService.selectOne(cartVO);
+        log.info("count ???" + count);
+        if(count<1) {
+        	status = goodsService.goodsCartInsert(cartVO);
+        }
+        
+        log.info("status ???" + status);
+        
+        if (status > 0) { 
+            return new ResponseEntity<String>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+        }
+    }
+	@RequestMapping(value = "/goodsCartDelete.do" , method=RequestMethod.POST)
+	public ResponseEntity<String> goodsCartDelete(@RequestBody CartVO cartVO) {
+		int status = 0;
+		log.info("cartVO ???" + cartVO);
+		status = goodsService.goodsCartDelete(cartVO);
+		
+		if (status > 0) { 
+			return new ResponseEntity<String>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+		}
+	}
+}

@@ -1,0 +1,136 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+		<div class="topbar stick">
+			<div class="logo">
+				<a title="" href="newsfeed.html"><img src="images/logo_2.png" alt=""></a>
+			</div>
+			<div class="top-area">
+				<ul class="setting-area">
+					<li>
+						<a href="/goods/goodsCart.do" title="장바구니" data-ripple="">
+							<span>카트</span>
+							<em class="bg-red">5</em>
+						</a>
+					</li>
+					<li>
+						<a href="/goods/myOrder.do" title="주문/배송" data-ripple="">
+							<span>주문/배송</span>
+							<i class="fa-solid fa-caret-down"></i>
+						</a>
+						<div class="dropdowns">
+							<ul class="drops-menu">
+								<li>
+									<div>
+										<div class="mesg-meta">
+											<h6><a href="/goods/myOrder.do" title="주문내역">주문내역</a></h6>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div>
+										<div class="mesg-meta">
+											<h6><a href="/goods/order/issuelist.do" title="교환/취소내역">교환/취소내역</a></h6>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div>
+										<div class="mesg-meta">
+											<h6><a href="/goods/address/manage.do" title="배송주소">배송 주소 관리</a></h6>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<a href="/goods/notice/userlist.do" title="공지사항" data-ripple="">
+							<span>공지사항</span>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="Messages" data-ripple="">
+							<span>샵 고객센터</span>
+							<i class="fa-solid fa-caret-down"></i>
+						</a>
+						<div class="dropdowns">
+							<ul class="drops-menu">
+								<li>
+									<div>
+										<div class="mesg-meta">
+											<h6><a href="#" title="">자주 묻는 질문</a></h6>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div>
+										<div class="mesg-meta">
+											<h6><a href="/goods/inquiry/userlist.do" title="">1:1 문의</a></h6>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li><a href="#" title="Languages" data-ripple=""><i>
+								<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+									fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"
+									stroke-linejoin="round" class="feather feather-globe">
+									<circle cx="12" cy="12" r="10"></circle>
+									<line x1="2" y1="12" x2="22" y2="12"></line>
+									<path
+										d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+									</path>
+								</svg></i>
+							<span>한국어</span>
+							<i class="fa-solid fa-caret-down"></i>
+						</a>
+						<div class="dropdowns languages">
+							<div data-gutter="10" class="row">
+								<div class="col-md-3">
+									<ul class="dropdown-meganav-select-list-lang">
+										<li class="active">
+											<a href="#">
+												<img title="Image Title" alt="Image Alternative text"
+													src="images/flags/US.png">English(US)
+											</a>
+										</li>
+										<li class="active">
+											<a href="#">
+												<img title="Image Title" alt="Image Alternative text"
+													src="images/flags/KOR.png">한국어
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<img title="Image Title" alt="Image Alternative text"
+													src="images/flags/JP.png">日本語
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<img title="Image Title" alt="Image Alternative text"
+													src="images/flags/CN.png">简体中文
+											</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+				<div class="user-img">
+					<h5>YISOO723</h5>
+					<img src="images/resources/admin.jpg" alt="">
+					<span class="status f-online"></span>
+					<div class="user-setting">
+						<ul class="chat-setting">
+							<li><a href="#" title=""><span class="status f-online"></span>yisoo723@naver.com</a></li>
+						</ul>
+						<ul class="log-out">
+							<li><a href="logout.html" title=""><i class="ti-power-off"></i>log out</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div><!-- topbar -->

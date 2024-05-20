@@ -1,0 +1,68 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<span class="create-post">오디션일정확인</span>
+	<div class="title-block search_box">
+		<div class="row">
+			<div class="col-lg-6">
+				<div class="row merged20">
+					<div class="col-lg-7 col-md-7 col-sm-7">
+						<form method="post">
+							<input type="hidden" name="page" id="page"/>
+							
+							<input type="text" name="searchWord" value="${searchWord }" placeholder="Search...">
+							<button type="submit">
+								<i class="fa-regular fa-magnifying-glass"></i>
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="central-meta">
+		<div class="row">
+			<table class="table table-responsive">
+				<thead>
+					<tr align="center">
+						<th width="6%">No.</th>
+						<th width="76%">Title</th>
+						<th width="14%">Date</th>
+					</tr>
+				</thead>
+				<tbody class="ent-sched-tbody">
+					<c:set value="${pagingVO.auditionList }" var="auditionList"/>
+					<c:choose>
+						<c:when test="${empty auditionList }">
+							<tr>
+								<td colspan="3"> 조회하신 게시글이 존재하지 않습니다.</td>
+							</tr>
+						</c:when>
+						<c:otherwise>
+							<c:forEach items="${auditionList }" var="audition">
+								<tr>
+									<td align="center">${audition.bfNo }</td>
+									<td>
+										<a href="/entertain/audition/scheduleDetail.do?bfNo=${audition.bfNo }" title="">
+											${audition.bfTitle }
+										</a>
+									</td>
+									<td align="center">${audition.bfRegdate }</td>
+								</tr>
+							</c:forEach>
+						</c:otherwise>
+					</c:choose>
+				</tbody>
+			</table>
+			
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+package kr.or.ddit.mapper.entertain;
+
+import java.util.List;
+
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.AuditionBoardVO;
+
+public interface IAuditionMapper {
+
+	public int selectNoticeCount(PaginationInfoVO<AuditionBoardVO> pagingVO);
+
+	public List<AuditionBoardVO> auditionScheduleList(PaginationInfoVO<AuditionBoardVO> pagingVO);
+
+//	public void incrementHit(int bfNo);
+
+	public AuditionBoardVO auditionScheduleDetail(int bfNo);
+
+
+}

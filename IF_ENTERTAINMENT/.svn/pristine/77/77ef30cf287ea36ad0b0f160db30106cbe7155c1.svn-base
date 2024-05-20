@@ -1,0 +1,124 @@
+package kr.or.ddit.controller.community;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import kr.or.ddit.service.community.ISurveyService;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.community.SurveyFormVO;
+import kr.or.ddit.vo.community.SurveyQuestionVO;
+import kr.or.ddit.vo.community.SurveyResultVO;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+
+
+/**
+ * 설문조사 내역 조회 컨트롤러(관리자)
+ * @author 홍진영
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/survey")
+public class SurveyRetrieveController {
+
+	@Inject
+	private ISurveyService surveyService;
+	
+	@RequestMapping(value="/list.do")
+	public String surveyList(Model model,
+		@RequestParam(name ="page", required = false, defaultValue = "1") int currentPage,
+		@RequestParam(required = false) String searchWord
+			) {
+		
+		PaginationInfoVO<SurveyFormVO> pagingVO = new PaginationInfoVO<SurveyFormVO>();
+		
+		if(StringUtils.isNotBlank(searchWord)) {
+			pagingVO.setSearchWord(searchWord);
+			model.addAttribute("searchWord", searchWord);
+		}
+		
+		pagingVO.setCurrentPage(currentPage);
+		int totalRecord = surveyService.selectSurveyCount(pagingVO);
+		pagingVO.setTotalRecord(totalRecord);
+		
+		List<SurveyFormVO> surveyFormList = surveyService.selectSurveyList(pagingVO);
+		pagingVO.setDataList(surveyFormList);
+		
+		model.addAttribute("pagingVO", pagingVO);
+		
+		return "admin/community/surveyList";
+	}
+	
+	// 설문 상세 조회 메서드
+	@RequestMapping(value="/detail.do", method = RequestMethod.GET)
+	public String surveyDetail(int sfNo, Model model) {
+		SurveyFormVO surveyFormVO = surveyService.selectSurvey(sfNo);
+		model.addAttribute("surveyFormVO", surveyFormVO);
+		log.info("### surveyFormVO : {}", surveyFormVO);
+		return "admin/community/surveyDetail";
+	}
+	
+	// 설문 결과 조회 메서드
+	@RequestMapping(value="/getResult", method = RequestMethod.GET)
+	public ResponseEntity<List<SurveyResultVO>> getResult(int sfNo, Model model){
+		log.info("설문 결과 조회를 위한 설문번호 : {}", sfNo);
+		ResponseEntity<List<SurveyResultVO>> entity = null;
+		
+		// 설문지 번호에 해당하는 설문결과 리스트를 받아온다.
+		List<SurveyResultVO> surveyResultList = surveyService.getsurveyResultList(sfNo);
+		
+		log.info("surveyResultList : {}", surveyResultList);
+		
+			/*
+			 * surveyResultList에는 설문지(질문, 보기), 설문응답내용 들이 들어있다.
+			 * 설문지에 있는 문제당 보기들을 맵에 저장하여 SurveyQuestionVO에 저장한다.
+			 * 보기별 키 설정 ( 초기값 = (key = 보기내용, value = 0) )
+			 */
+		
+			// 
+			for(int i = 0; i < surveyResultList.get(0).getQuestionList().size(); i++) {
+				List<SurveyQuestionVO> sqList = surveyResultList.get(0).getQuestionList();
+				Map<String, Integer> countMap = new HashMap<String, Integer>();
+				
+				for(int j = 0; j < sqList.get(i).getOptionList().size(); j++) {
+					String key = sqList.get(i).getOptionList().get(j).getSoContent();
+					countMap.put(key, 0);
+//					log.info("#### 옵션 카운트 전 countMap : {}", countMap);
+					
+					for (SurveyResultVO srVO : surveyResultList) {
+						List<String> answerList = srVO.getAnswerList();
+						
+						for (String answers : answerList) {
+							String[] selectedOptions = answers.split(",");
+							
+							for (String selectedOption : selectedOptions) {
+								if(countMap.containsKey(selectedOption)) {
+									countMap.put(selectedOption, countMap.get(selectedOption) + 1);
+								}
+							}
+						}
+					}
+				}
+				log.info("#### 옵션 카운트 후 countMap : {}", countMap);
+			}
+			
+			model.addAttribute("surveyResultList", surveyResultList);
+			entity = new ResponseEntity<List<SurveyResultVO>>(surveyResultList, HttpStatus.OK);
+		return entity;
+	}
+	
+}

@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.IStatisticMapper">
+
+<!-- 커뮤니티 아티스트별 통계를 내기 위한 그룹 리스트를 커뮤니티 가입자가 많은 순으로 가져온다.  -->
+<select id="selectAgIdList" resultType="String">
+	SELECT
+	    com.ag_id
+	FROM
+	    community com
+	LEFT OUTER JOIN
+	    "USER" u ON com.user_no = u.user_no
+	LEFT OUTER JOIN
+	    member m ON u.user_no = m.user_no
+	LEFT OUTER JOIN
+	    artist_group ag ON com.ag_id = ag.ag_id
+	WHERE
+	    ag.ag_delyn = 'N'
+	    and m.member_delyn = 'N'
+	    and u.user_type = '2'
+	GROUP BY
+	    com.ag_id
+	ORDER BY
+	    SUM(CASE WHEN m.member_gender = 'M' THEN 1 ELSE 0 END) + 
+	    SUM(CASE WHEN m.member_gender = 'F' THEN 1 ELSE 0 END) DESC
+</select>
+
+<!-- 커뮤니티 가입 기간이 있을 경우 where조건 추가 -->
+<sql id="registerSearch">
+	<if test="duration != null and duration == '7DAY'">
+		<![CDATA[
+			and com.cj_date >= (SYSDATE - INTERVAL '7'DAY) AND com.cj_date <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '1MONTH'">
+		<![CDATA[
+			and com.cj_date >= (SYSDATE - INTERVAL '1'MONTH) AND com.cj_date <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '3MONTH'">
+		<![CDATA[
+			and com.cj_date >= (SYSDATE - INTERVAL '3'MONTH) AND com.cj_date <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '6MONTH'">
+		<![CDATA[
+			and com.cj_date >= (SYSDATE - INTERVAL '6'MONTH) AND com.cj_date <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '1YEAR'">
+		<![CDATA[
+			and com.cj_date >= (SYSDATE - INTERVAL '1'YEAR) AND com.cj_date <= SYSDATE
+		]]>
+	</if>
+</sql>
+
+<!-- 키워드 분석 기간이 있을 경우 where조건 추가 -->
+<sql id="keywordSearch">
+	<if test="duration != null and duration == '7DAY'">
+		<![CDATA[
+			and f.feed_regdate >= (SYSDATE - INTERVAL '7'DAY) AND f.feed_regdate <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '1MONTH'">
+		<![CDATA[
+			and f.feed_regdate >= (SYSDATE - INTERVAL '1'MONTH) AND f.feed_regdate <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '3MONTH'">
+		<![CDATA[
+			and f.feed_regdate >= (SYSDATE - INTERVAL '3'MONTH) AND f.feed_regdate <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '6MONTH'">
+		<![CDATA[
+			and f.feed_regdate >= (SYSDATE - INTERVAL '6'MONTH) AND f.feed_regdate <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '1YEAR'">
+		<![CDATA[
+			and f.feed_regdate >= (SYSDATE - INTERVAL '1'YEAR) AND f.feed_regdate <= SYSDATE
+		]]>
+	</if>
+</sql>
+
+<!-- agId가 넘어왔을 경우 where 조건 추가  -->
+<sql id="artistSearch">
+	<if test="agId != null and agId != ''">
+		and ag_id = #{agId}
+	</if>
+</sql>
+
+<!-- agId가 넘어왔을 경우 goods_artist로 where 조건 추가  -->
+<sql id="goodsArtistSearch">
+	<if test="agId != null and agId != ''">
+		and goods_artist = #{agId}
+	</if>
+</sql>
+
+<select id="selectMemberRateList" parameterType="statisticInfoVO" resultType="memberRateVO">
+	SELECT
+	    com.ag_id AS ag_id,
+	    SUM(CASE WHEN m.member_gender = 'M' THEN 1 ELSE 0 END) AS male_count,
+	    SUM(CASE WHEN m.member_gender = 'F' THEN 1 ELSE 0 END) AS female_count,
+	    SUM(CASE WHEN m.member_gender = 'M' THEN 1 ELSE 0 END) + SUM(CASE WHEN m.member_gender = 'F' THEN 1 ELSE 0 END) AS total_count
+	FROM
+	    community com
+	LEFT OUTER JOIN
+	    "USER" u ON com.user_no = u.user_no
+	LEFT OUTER JOIN
+	    member m ON u.user_no = m.user_no
+	LEFT OUTER JOIN
+	    artist_group ag ON com.ag_id = ag.ag_id
+	WHERE
+	    ag.ag_delyn = 'N'
+	    and m.member_delyn = 'N'
+	    and u.user_type = '2'
+	<include refid="registerSearch"/>
+	GROUP BY
+	    com.ag_id
+	ORDER BY
+	    total_count DESC
+</select>
+
+<!-- 남성 키워드 분석 -->
+<select id="selectMaleKeywordList" resultType="keywordVO">
+	SELECT
+	    f.feed_content,
+	    m.member_gender
+	FROM 
+	    feed f
+	LEFT JOIN member m ON f.user_no = m.user_no
+	WHERE 
+	    feed_type = '1'
+	    and feed_content is not null
+	    and m.member_gender is not null
+        and m.member_gender = 'M'
+        <include refid="keywordSearch"/>
+        <include refid="artistSearch"/>
+</select>
+
+<!-- 여성 키워드 분석 -->
+<select id="selectFemaleKeywordList" resultType="keywordVO">
+	SELECT
+	    f.feed_content,
+	    m.member_gender
+	FROM 
+	    feed f
+	LEFT JOIN member m ON f.user_no = m.user_no
+	WHERE 
+	    feed_type = '1'
+	    and feed_content is not null
+	    and m.member_gender is not null
+        and m.member_gender = 'F'
+        <include refid="keywordSearch"/>
+        <include refid="artistSearch"/>
+</select>
+
+<!-- 연령 분석 기간이 있을 경우 where조건 추가 -->
+<sql id="ageSearch">
+	<if test="duration != null and duration == '7DAY'">
+		<![CDATA[
+			AND com.cj_date >= (SYSDATE - INTERVAL '7' DAY) AND com.cj_date <= SYSDATE
+	        AND member_regdate >= (SYSDATE - INTERVAL '7' DAY) AND member_regdate <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '1MONTH'">
+		<![CDATA[
+			AND com.cj_date >= (SYSDATE - INTERVAL '1' MONTH) AND com.cj_date <= SYSDATE
+	        AND member_regdate >= (SYSDATE - INTERVAL '1' MONTH) AND member_regdate <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '3MONTH'">
+		<![CDATA[
+			AND com.cj_date >= (SYSDATE - INTERVAL '3' MONTH) AND com.cj_date <= SYSDATE
+	        AND member_regdate >= (SYSDATE - INTERVAL '3' MONTH) AND member_regdate <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '6MONTH'">
+		<![CDATA[
+			AND com.cj_date >= (SYSDATE - INTERVAL '6' MONTH) AND com.cj_date <= SYSDATE
+	        AND member_regdate >= (SYSDATE - INTERVAL '6' MONTH) AND member_regdate <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '1YEAR'">
+		<![CDATA[
+			AND com.cj_date >= (SYSDATE - INTERVAL '12' MONTH) AND com.cj_date <= SYSDATE
+	        AND member_regdate >= (SYSDATE - INTERVAL '12' MONTH) AND member_regdate <= SYSDATE
+		]]>
+	</if>
+</sql>
+
+<!-- 커뮤니티 가입연령 리스트 조회 -->
+<select id="selectMemberAgeList" resultType="memberRateVO">
+	SELECT
+	    age_groups.age_group,
+	    NVL(SUM(CASE WHEN subquery.member_gender = 'F' THEN 1 ELSE 0 END), 0) AS female_count,
+	    NVL(SUM(CASE WHEN subquery.member_gender = 'M' THEN 1 ELSE 0 END), 0) AS male_count
+	FROM
+	    (SELECT '10대 이하' AS age_group FROM DUAL
+	     UNION SELECT '20대' FROM DUAL
+	     UNION SELECT '30대' FROM DUAL
+	     UNION SELECT '40대' FROM DUAL
+	     UNION SELECT '50대 이상' FROM DUAL) age_groups
+	LEFT OUTER JOIN
+	    (SELECT
+	        CASE
+	        <![CDATA[
+	            WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, TO_DATE(member_birth, 'yy/mm/dd')) / 12) < 20 THEN '10대 이하'
+	            WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, TO_DATE(member_birth, 'yy/mm/dd')) / 10) < 30 THEN '20대'
+	            WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, TO_DATE(member_birth, 'yy/mm/dd')) / 10) < 40 THEN '30대'
+	            WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, TO_DATE(member_birth, 'yy/mm/dd')) / 10) < 50 THEN '40대'
+	            ELSE '50대 이상'
+	        ]]>
+	        END AS age_group,
+	        member_gender
+	    FROM
+	        member m 
+	    LEFT OUTER JOIN
+	        community com on (m.user_no = com.user_no)
+	    LEFT OUTER JOIN 
+	        "USER" u on (m.user_no = u.user_no)
+	    WHERE
+	        u.user_type = '2'
+	        <include refid="ageSearch"/>
+        	<include refid="artistSearch"/>
+
+	    ) subquery ON (age_groups.age_group = subquery.age_group)
+	GROUP BY
+	    age_groups.age_group
+	ORDER BY
+	    age_groups.age_group DESC
+</select>
+
+<!-- 기간별, 아티스트별 커뮤니티 가입 성별 정보 조회 -->
+<select id="selectMemberGenderList" resultType="memberRateVO">
+	select
+	    nvl(SUM(CASE WHEN member_gender = 'F' THEN 1 ELSE 0 END), 0) AS female_count,
+	    nvl(SUM(CASE WHEN member_gender = 'M' THEN 1 ELSE 0 END), 0) AS male_count
+	from 
+	    member m
+	left outer join "USER" u on(m.user_no = u.user_no)
+	left outer join community com on(m.user_no = com.user_no)
+	where 
+	    u.user_type = '2'
+	    <include refid="registerSearch"/>
+        <include refid="artistSearch"/>
+</select>
+
+<!-- #### 굿즈샵 통계 시작 #### -->
+<!-- 아티스트 별 판매금액을 기반결로 조회 -->
+<sql id="artistSalesSearch">
+	<if test="duration != null and duration == '7DAY'">
+		<![CDATA[
+			and ord.order_date >= (SYSDATE - INTERVAL '7' DAY) AND ord.order_date <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '1MONTH'">
+		<![CDATA[
+			and ord.order_date >= (SYSDATE - INTERVAL '1' MONTH) AND ord.order_date <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '3MONTH'">
+		<![CDATA[
+			and ord.order_date >= (SYSDATE - INTERVAL '3' MONTH) AND ord.order_date <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '6MONTH'">
+		<![CDATA[
+			and ord.order_date >= (SYSDATE - INTERVAL '6' MONTH) AND ord.order_date <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '1YEAR'">
+		<![CDATA[
+			and ord.order_date >= (SYSDATE - INTERVAL '1' YEAR) AND ord.order_date <= SYSDATE
+		]]>
+	</if>
+</sql>
+
+<select id="selectArtistSalesList" resultType="goodsSalesVO">
+	select
+	    g.goods_artist,
+	    nvl(sum(od.od_quantity * od.od_price), 0) as total_price
+	from
+	    goods g
+	left outer join order_detail od on g.goods_no = od.goods_no
+	left outer join order_issue oi on od.order_no = oi.order_no
+	left outer join "ORDER" ord on od.order_no = ord.order_no
+	where 
+	    (oi.gui_type != 1 or oi.gui_type is null) 
+		<include refid="artistSalesSearch"/>
+	group by
+	    g.goods_artist
+	order by
+	    total_price desc, g.goods_artist
+</select>
+
+<!-- 기간별 판매매출 상위 5개의 아티스트를 가져오고 해당 아티스트의 5개 상위 판매 품목리스트 조회 -->
+<resultMap type="goodsSalesVO" id="topSalesMap">
+	<result property="goodsArtist" column="goods_artist"/>
+	<collection property="goodsList" resultMap="detailSalesMap"/>
+</resultMap>
+
+<resultMap type="goodsVO" id="detailSalesMap">
+	<result property="goodsNo" column="goods_no"/>
+	<result property="goodsName" column="goods_name"/>
+	<result property="goodsTotalPrice" column="goods_total_price"/>
+</resultMap>
+
+<select id="selectTopSalesList" resultMap="topSalesMap">
+	WITH top_artists AS (
+	    SELECT 
+	        ROWNUM AS rnum,
+	        a.*
+	    FROM (
+	        SELECT
+	            g.goods_artist,
+	            NVL(SUM(od.od_quantity * od.od_price), 0) as total_price
+	        FROM
+	            goods g
+	        LEFT OUTER JOIN order_detail od ON g.goods_no = od.goods_no
+	        LEFT OUTER JOIN order_issue oi ON od.order_no = oi.order_no
+	        LEFT OUTER JOIN "ORDER" ord ON od.order_no = ord.order_no
+	        WHERE
+	            (oi.gui_type != 1 OR oi.gui_type is null)
+	            <include refid="artistSalesSearch"/>
+	        GROUP BY
+	            g.goods_artist
+	        ORDER BY
+	            total_price DESC, g.goods_artist
+	    ) a
+	    WHERE 
+	    	<![CDATA[
+	        ROWNUM <= 7
+	        ]]>
+	),
+	top_goods AS (
+	    SELECT
+	        g.goods_artist,
+	        od.goods_no,
+	        SUM(od.od_quantity * od.od_price) AS goods_total_price,
+	        (SELECT goods_name FROM goods WHERE goods_no = od.goods_no) AS "goods_name",
+	        ROW_NUMBER() OVER (PARTITION BY g.goods_artist ORDER BY SUM(od.od_quantity * od.od_price) DESC) AS rank
+	    FROM 
+	        goods g
+	    LEFT OUTER JOIN order_detail od ON g.goods_no = od.goods_no
+	    LEFT OUTER JOIN order_issue oi ON od.order_no = oi.order_no
+	    LEFT OUTER JOIN "ORDER" ord ON od.order_no = ord.order_no
+	    WHERE 
+	        g.goods_artist IN (SELECT goods_artist FROM top_artists)
+	        AND (oi.gui_type != 1 OR oi.gui_type is null)
+	        <include refid="artistSalesSearch"/>
+	    GROUP BY 
+	        g.goods_artist, od.goods_no
+	)
+	SELECT 
+	    ta.goods_artist,
+	    tg."goods_name",
+	    tg.goods_no,
+	    tg.goods_total_price
+	FROM 
+	    top_artists ta
+	JOIN 
+	    top_goods tg ON ta.goods_artist = tg.goods_artist
+	WHERE
+	    goods_total_price is not null
+		<![CDATA[
+	    and tg.rank <= 6
+		]]>
+	ORDER BY 
+	    ta.rnum, tg.goods_total_price DESC
+</select>
+
+<!-- 남녀별 판매금액을 조회한다. -->
+<select id="selectGenderSalesList" resultType="goodsSalesVO">
+	SELECT
+<!-- 	    g.goods_artist, -->
+	    SUM(CASE WHEN m.member_gender = 'M' THEN NVL(od.od_quantity * od.od_price, 0) ELSE 0 END) AS male_sales,
+	    SUM(CASE WHEN m.member_gender = 'F' THEN NVL(od.od_quantity * od.od_price, 0) ELSE 0 END) AS female_sales
+	FROM
+	    goods g
+	LEFT OUTER JOIN order_detail od ON g.goods_no = od.goods_no
+	LEFT OUTER JOIN order_issue oi ON od.order_no = oi.order_no
+	LEFT OUTER JOIN "ORDER" ord ON od.order_no = ord.order_no
+	LEFT OUTER JOIN member m ON ord.user_no = m.user_no
+	WHERE
+	    (oi.gui_type != 1 OR oi.gui_type is null)
+		<include refid="artistSalesSearch"/>
+        <include refid="goodsArtistSearch"/>
+</select>
+
+<!-- 연도별 매출액을 조회한다. -->
+<select id="selectYearSalesList" resultType="GoodsSalesVO">
+	SELECT
+	    TO_CHAR(o.ORDER_DATE, 'YYYY') AS order_year,
+	    NVL(SUM(NVL(o.ORDER_TOTALPRICE, 0)), 0) AS total_price
+	FROM
+	    "ORDER" o
+	left outer join order_issue oi on o.order_no = oi.order_no
+	JOIN
+	    "MEMBER" m ON o.USER_NO = m.USER_NO
+	where 
+	    (oi.gui_type != 1 OR oi.gui_type is null)
+	GROUP BY
+	    TO_CHAR(o.ORDER_DATE, 'YYYY')
+	ORDER BY
+	    TO_CHAR(o.ORDER_DATE, 'YYYY')
+</select>
+
+</mapper>

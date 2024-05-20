@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.ISignMapper">
+
+ 	<select id="idCheck" parameterType="string" resultType="userVO">
+		select user_id
+		from "USER"
+		where user_id = #{userId}
+	</select>
+
+	<insert id="signupUser" parameterType="userVO" useGeneratedKeys="true">
+		<selectKey keyProperty="userNo" resultType="int" order="BEFORE">
+			select seq_user.nextval from dual
+		</selectKey>
+		insert into "USER"(
+			user_no
+			, user_id
+			, user_pw
+			, user_name
+			, user_type
+			, user_profile
+			,enabled
+		)values(
+			  #{userNo}
+			, #{userId}
+			, #{userPw}
+			, #{userName}
+			, #{userType}
+			, #{userProfile}
+			, #{enabled}
+		)
+	</insert>
+	
+	<insert id="createAuth" parameterType="userAuthVO">
+		insert into user_auth(
+			user_no,
+			auth
+		)values(
+			#{userNo}, #{auth}
+		)
+	</insert>
+	
+	<insert id="createMember" parameterType="memberVO">
+	
+		insert into member(
+			USER_NO
+			, MEMBER_TELNO
+			, MEMBER_EMAIL
+			, MEMBER_BIRTH
+			, MEMBER_GENDER
+			, MEMBER_POSTCODE
+			, MEMBER_ADDRESS1
+			, MEMBER_ADDRESS2
+			, MEMBER_REGDATE
+			, MEMBER_NOTIFICATION
+			, MEMBER_LGNPATH
+		)values(
+			#{userNo}
+			, #{memberTelno}
+			, #{memberEmail}
+			, #{memberBirth}
+			, #{memberGender}
+			, #{memberPostcode}
+			, #{memberAddress1}
+			, #{memberAddress2}
+			, sysdate
+			, #{memberNotification}
+			, #{memberLgnpath}
+		)
+	
+	
+	</insert>
+	<insert id="createMemberAddress">
+		INSERT INTO member_address (
+		MA_NUMBER
+		, MA_POSTCODE
+		, MA_ADDRESS1
+		, MA_ADDRESS2
+		, MA_RECIEVER
+		, MA_TELNO
+		, MA_DEFAULT
+		, MA_PLACE
+		, USER_NO
+		
+		)
+		VALUES (
+		SEQ_MEMBER_ADDRESS.nextval
+		, #{memberPostcode}
+		, #{memberAddress1}
+		, #{memberAddress2}
+		, #{maReciever}
+		, #{memberTelno}
+		, #{maDefault}
+		, #{maPlace}
+		, #{userNo}
+		)
+	</insert>
+	<insert id="createNotiType" parameterType="notiTypeVO">
+	    insert into NOTIFICATION_TYPE(
+	    <selectKey keyProperty="ntNo" resultType="int" order="BEFORE">
+			select seq_NOTIFICATION_TYPE.nextval from dual
+		</selectKey>
+	        nt_No
+	        , nt_Sms
+	        , nt_Email
+	        , nt_Web
+	        , user_No
+	    ) values(
+	        #{ntNo}
+	        , #{ntSms}
+	        , #{ntEmail}
+	        , #{ntWeb}
+	        , #{userNo}
+	    )
+	</insert>
+	
+	
+	<insert id="createNotiSetting" parameterType="notiSettionVO">
+	    insert into NOTIFICATION_SETTING(
+	        ns_Id
+	        , ns_Goods
+	        , ns_Artist
+	        , ns_Company
+	        , nt_No
+	        , user_No
+	    ) values(
+	        SEQ_NOTIFICATION_SETTING.nextval
+	        , #{nsGoods}
+	        , #{nsArtist}
+	        , #{nsCompany}
+	        , #{ntNo}
+	        , #{userNo}
+	    )
+	</insert>
+	
+	<!-- 시큐리티 -->
+	<resultMap type="userVO" id="userMap">
+		<id property="userNo" column="user_no"/>
+		<result property="userNo" column="user_no"/>
+		<result property="userId" column="user_id"/>
+		<result property="userPw" column="user_pw"/>
+		<result property="userType" column="user_type"/>
+		<result property="userProfile" column="user_profile"/>
+		<result property="enabled" column="enabled"/>
+		<result property="memberTelno" column="member_telno"/>
+		<result property="memberEmail" column="member_email"/>
+		<result property="memberBirth" column="member_birth"/>
+		<result property="memberGender" column="member_gender"/>
+		<result property="memberPostcode" column="member_postcode"/>
+		<result property="memberAddress1" column="member_address1"/>
+		<result property="memberAddress2" column="member_address2"/>
+		<result property="memberRegdate" column="member_regdate"/>
+		<result property="memberNotification" column="member_notification"/>
+		<result property="memberLgnpath" column="member_lgnpath"/>
+		<result property="artistBirth" column="artist_birth"/>
+		<result property="artistIntro" column="artist_intro"/>
+		<result property="artistFakename" column="artist_fakename"/>
+		<result property="agId" column="ag_id"/>
+		<collection property="authList" resultMap="authMap"/>
+	</resultMap>	
+	
+	<resultMap type="userAuthVO" id="authMap">
+		<result property="auth" column="auth"/>
+	</resultMap>
+	
+	<select id="readByUserId" parameterType="String" resultMap="userMap">
+		select
+		    u.user_no, user_name, user_id, user_pw, user_type, user_profile, enabled,
+		    member_telno, member_email, member_birth, member_gender, member_postcode, member_address1,
+		    member_address2, member_regdate, member_notification, member_lgnpath,
+		    artist_birth, artist_intro, artist_fakename, ag_id,
+		    auth
+		from "USER" u
+		left outer join member m on(u.user_no = m.user_no)
+		left outer join artist a on (u.user_no = a.user_no)
+		left outer join user_auth ua on(u.user_no = ua.user_no)
+		where m.member_delyn = 'N' and m.member_stopyn = 'N' and user_id = #{username}
+	</select>
+
+</mapper>

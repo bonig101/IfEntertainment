@@ -1,0 +1,24 @@
+package kr.or.ddit.service.impl.entertain;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.entertain.ICompanyNewsMapper;
+import kr.or.ddit.service.entertain.ICompanyNewsService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.entertain.CompanyNoticeVO;
+import kr.or.ddit.vo.entertain.IREventVO;
+
+@Service
+public class CompanyNewsServiceImpl implements ICompanyNewsService {
+
+	@Inject
+	private ICompanyNewsMapper companyNewsMapper;
+
+	
+}

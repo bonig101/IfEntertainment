@@ -1,0 +1,42 @@
+package kr.or.ddit.controller.community;
+
+import javax.inject.Inject;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import kr.or.ddit.service.community.ILiveService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 라이브방송 컨트롤러
+ * @author 서어진
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/feed/live")
+public class LiveController {
+	// (이건 API를 몰라서 따로 빠져야 하는지 아직 미정)
+	// 일반 회원이 라이브 탭을 누르면 실시간 방송중인 내용 및 지난 라이브 목록을 확인이 가능하다.
+	// 아티스트가 라이브 탭을 누르면 일반 사용자에게는 없는 [방송하기]라는 버튼이 나타난다.
+	
+	// 방송시작 메서드
+	
+	// 방송종료 메서드
+	
+	// 일반 사용자가 실시간 방송중인 정보 클릭하면 방송에 입장되는 메서드 등등
+	
+	@Inject
+	private ILiveService liveService;
+	
+	/* @PreAuthorize("hasRole('ROLE_MEMBER')") */
+	@RequestMapping(value="/live.do", method = RequestMethod.GET)
+	public String getOnLive(Model model){
+		model.addAttribute("status", 4);
+		return "community/getOnLive";
+	}
+
+}

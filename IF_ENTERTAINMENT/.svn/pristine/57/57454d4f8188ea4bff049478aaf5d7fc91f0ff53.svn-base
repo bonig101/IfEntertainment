@@ -1,0 +1,172 @@
+package kr.or.ddit.service.impl.community;
+
+import java.io.File;
+import java.util.List;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.or.ddit.mapper.community.IFeedMapper;
+import kr.or.ddit.service.community.IFeedService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.community.MainArtistVO;
+import kr.or.ddit.vo.community.MainArtistGroupVO;
+import kr.or.ddit.vo.community.FeedAttachFileVO;
+import kr.or.ddit.vo.community.FeedCommentVO;
+import kr.or.ddit.vo.community.FeedVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class FeedServiceImpl implements IFeedService {
+
+	@Inject
+	private IFeedMapper feedMapper;
+
+	@Override
+	public int selectFeedListCount(PaginationInfoVO<FeedVO> pagingVO) {
+		return feedMapper.selectFeedListCount(pagingVO);
+	}
+
+	@Override
+	public List<FeedVO> selectFeedList(PaginationInfoVO<FeedVO> pagingVO) {
+		return feedMapper.selectFeedList(pagingVO);
+	}
+
+	@Override
+	public void deleteFeed(FeedVO feedVO) {
+		feedMapper.deleteFeed(feedVO);
+		log.info("feedVOfeedVOfeedVO"+feedVO);
+	}
+
+	@Override
+	public FeedVO feedListDetail(int feedNo) {
+		return feedMapper.feedListDetail(feedNo);
+	}
+
+	@Override
+	public ServiceResult insertFeed(HttpServletRequest req, FeedVO feedVO) {
+		ServiceResult result = null;
+		
+		int status = feedMapper.insertFeed(feedVO);
+		if(status > 0) {
+			 List<FeedAttachFileVO> fileList = feedVO.getFeedFileList();
+			 
+			 try {
+				 feedUpload(fileList, feedVO.getFeedNo(), req);
+			 } catch (Exception e) {
+				 e.printStackTrace();
+			 }
+			 
+			 result = ServiceResult.OK;
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	private void feedUpload(List<FeedAttachFileVO> fileList, int feedNo, HttpServletRequest req) {
+	    String savePath = "/resources/feed/";
+	    
+	    if(fileList != null && fileList.size() > 0) {
+	        for (FeedAttachFileVO feedFileVO : fileList) {
+	            MultipartFile item = feedFileVO.getItem();
+	            if (item != null && !item.isEmpty()) {
+	                String savedName = UUID.randomUUID().toString();
+	                savedName += "_" + item.getOriginalFilename();
+	                String saveLocate = req.getServletContext().getRealPath(savePath);
+	                File file = new File(saveLocate);
+	                if(!file.exists()) {    
+	                    file.mkdirs();       
+	                }
+	                saveLocate += File.separator + savedName; // 실제 업로드할 경로
+	                
+	                try {
+	                    File uploadedFile = new File(saveLocate);
+	                    item.transferTo(uploadedFile);
+	                    
+	                    feedFileVO.setFeedNo(feedNo);
+	                    feedFileVO.setFaSavepath(saveLocate);
+	                    feedFileVO.setFaSavedname(savedName);
+	                    feedMapper.insertFeedFile(feedFileVO); 
+	                } catch (Exception e) {
+	                    e.printStackTrace();
+	                }
+	            }
+	        }
+	    }
+	}
+
+	@Override
+	public int selectCommentListCount(PaginationInfoVO<FeedCommentVO> pagingVO) {
+		return feedMapper.selectCommentListCount(pagingVO);
+	}
+
+	@Override
+	public List<FeedCommentVO> selectCommentList(PaginationInfoVO<FeedCommentVO> pagingVO) {
+		return feedMapper.selectCommentList(pagingVO);
+	}
+
+	@Override
+	public FeedCommentVO feedCommentListDetail(int fcNo) {
+		
+		return feedMapper.feedCommentListDetail(fcNo);
+	}
+
+	@Override
+	public void deleteComment(FeedCommentVO commentVO) {
+		log.info("commentVOcommentVO"+commentVO);
+		feedMapper.deleteComment(commentVO);
+	}
+
+	@Override
+	public void updateComment(FeedCommentVO commentVO) {
+		feedMapper.updateComment(commentVO);
+	}
+
+	@Override
+	public List<MainArtistGroupVO> selectArtist() {
+
+		return feedMapper.selectArtist();
+	}
+
+	@Override
+	public ServiceResult updateFeed(HttpServletRequest req, FeedVO feedVO) {
+		ServiceResult result = null;
+		int status = feedMapper.updateFeed(feedVO);
+		// 수정 성공
+		if(status > 0) {	
+			feedMapper.deleteFeedFile(feedVO .getFeedNo());
+			List<FeedAttachFileVO> FeedFileList = feedVO.getFeedFileList();
+			
+			try {
+				feedUpload(FeedFileList, feedVO.getFeedNo(), req);
+				
+				Integer[] delFeedNo = feedVO.getDelFeedNo();
+				if(delFeedNo != null) {
+					for(int i = 0; i < delFeedNo.length; i++) {
+						FeedAttachFileVO FeedAttachFileVO = 
+								feedMapper.selectFeedFile(delFeedNo[i]);
+						File file = new File(FeedAttachFileVO.getFaSavepath());
+						file.delete();	
+					}
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+			result = ServiceResult.OK;
+		}else { 	
+			// 수정 실패
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+
+}

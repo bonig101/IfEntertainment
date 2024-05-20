@@ -1,0 +1,367 @@
+package kr.or.ddit.service.impl.goods;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.or.ddit.mapper.goods.IGoodsMapper;
+import kr.or.ddit.service.goods.IGoodsService;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.vo.common.PaginationInfoVO;
+import kr.or.ddit.vo.common.PaginationInfoVO2;
+import kr.or.ddit.vo.entertain.ArtistGroupVO;
+import kr.or.ddit.vo.goods.CartVO;
+import kr.or.ddit.vo.goods.GoodsAttachfileVO;
+import kr.or.ddit.vo.goods.GoodsCategoryVO;
+import kr.or.ddit.vo.goods.GoodsTagVO;
+import kr.or.ddit.vo.goods.GoodsVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class GoodsServiceImpl implements IGoodsService {
+
+	@Inject
+	private IGoodsMapper goodsMapper;
+
+	@Override
+	public int selectProdListCount(PaginationInfoVO<GoodsVO> pagingVO) {
+		return goodsMapper.selectProdListCount(pagingVO);
+	}
+
+	@Override
+	public List<GoodsVO> selectProdList(PaginationInfoVO<GoodsVO> pagingVO) {
+		return goodsMapper.selectProdList(pagingVO);
+	}
+
+	@Override
+	public List<ArtistGroupVO> selectAritstList() {
+		return goodsMapper.selectAritstList();
+	}
+
+	@Override
+	public List<GoodsCategoryVO> selectCategoryList() {
+		return goodsMapper.selectCategoryList();
+	}
+
+	@Override
+	public ServiceResult insertProd(HttpServletRequest req, GoodsVO goodsVO) {
+		ServiceResult result = null;
+
+		String thumnail = null;
+		try {
+			thumnail = prodThumFileUpload(goodsVO.getGoodsThumb(), goodsVO, req);
+
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+
+		goodsVO.setGoodsThumbnail(thumnail);
+
+		int status = goodsMapper.insertProd(goodsVO);
+
+		String[] goodsTag = goodsVO.getGoodsTag();
+		if (status > 0) {
+
+			for (String tag : goodsTag) {
+				GoodsTagVO goodsTagVO = new GoodsTagVO(goodsVO.getGoodsNo(), tag);
+				goodsMapper.insertGoodsTag(goodsTagVO);
+			}
+
+			List<GoodsAttachfileVO> prodFileList = goodsVO.getGoodsFileList();
+			try {
+				prodFileUpload(prodFileList, goodsVO.getGoodsNo(), req);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			result = ServiceResult.OK;
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+	
+	@Override
+	public ServiceResult updateProd(HttpServletRequest req, GoodsVO goodsVO) {
+		
+		ServiceResult result = null;
+		
+		String thumnail = null;
+		try {
+			
+			if (StringUtils.isBlank(goodsVO.getGoodsThumb().getOriginalFilename())) {
+				String defaultthumb = goodsMapper.selectprodthumb(goodsVO.getGoodsNo());
+				goodsVO.setGoodsThumbnail(defaultthumb);
+			}else {
+				thumnail = prodThumFileUpload(goodsVO.getGoodsThumb(), goodsVO, req);
+				goodsVO.setGoodsThumbnail(thumnail);
+			}
+			
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		int status = goodsMapper.updateProd(goodsVO);
+		
+		if (status > 0) {
+			
+				String[] goodsTag = goodsVO.getGoodsTag();
+				goodsMapper.deleteTagList(goodsVO.getGoodsNo());
+				
+				for (String tag : goodsTag) {
+					GoodsTagVO goodsTagVO = new GoodsTagVO(goodsVO.getGoodsNo(), tag);
+					goodsMapper.insertGoodsTag(goodsTagVO);
+				}
+				
+				List<GoodsAttachfileVO> prodFileList = goodsVO.getGoodsFileList();
+				
+				try {
+					prodFileUpload(prodFileList, goodsVO.getGoodsNo(), req);
+					
+					Integer[] delProdNo = goodsVO.getDelProdNo();
+					
+					if (delProdNo != null) {
+						for (int i = 0; i < delProdNo.length; i++) {
+							GoodsAttachfileVO prodFileVO = 
+									goodsMapper.selectProdFile(delProdNo[i]);
+							
+							goodsMapper.deleteProdFiledel(delProdNo[i]);
+							File file = new File(req.getServletContext().getRealPath("/"+prodFileVO.getGaDetailimg()));
+							file.delete();
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				result = ServiceResult.OK;
+			}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+	
+
+	private String prodThumFileUpload(MultipartFile goodsThumb, GoodsVO goodsVO, HttpServletRequest req)
+			throws Exception {
+
+		String savePath = "/resources/upload/";
+
+		String saveLocate = null;
+		if (goodsThumb != null) {
+			String saveName = UUID.randomUUID().toString();
+			saveName += "_" + goodsVO.getGoodsThumb().getOriginalFilename();
+			
+			saveLocate = req.getServletContext().getRealPath(savePath);
+
+			File file = new File(saveLocate);
+			if (!file.exists()) {
+				file.mkdirs();
+			}
+
+			saveLocate += saveName;
+
+			File saveFile = new File(saveLocate);
+			goodsVO.getGoodsThumb().transferTo(saveFile);
+
+			savePath += saveName;
+
+		}
+		return savePath;
+	}
+
+	private void prodFileUpload(List<GoodsAttachfileVO> prodFileList, int goodsNo, HttpServletRequest req)
+			throws Exception {
+
+		if (prodFileList != null) {
+			if (prodFileList.size() > 0) {
+				for (GoodsAttachfileVO goodsFileVO : prodFileList) {
+					String savePath = "/resources/goods/";
+					String saveName = UUID.randomUUID().toString();
+					saveName += "_" + goodsFileVO.getFileName();
+					String saveLocate = req.getServletContext().getRealPath(savePath + goodsNo);
+					
+					File file = new File(saveLocate);
+					if (!file.exists()) {
+						file.mkdirs();
+					}
+
+					// saveLocate += "/" + saveName;
+					savePath += goodsNo + "/" + saveName;
+					saveLocate = saveLocate + File.separator + saveName;
+
+					goodsFileVO.setGoodsNo(goodsNo);
+					goodsFileVO.setGaDetailimg(savePath);
+
+					goodsMapper.insertProdFile(goodsFileVO);
+
+					File saveFile = new File(saveLocate);
+					goodsFileVO.getItem().transferTo(saveFile);
+				}
+			}
+		}
+	}
+
+	@Override
+	public GoodsVO selectProd(int goodsNo) {
+		return goodsMapper.selectProd(goodsNo);
+	}
+
+	@Override
+	public ServiceResult deleteProd(HttpServletRequest req, int goodsNo) {
+		ServiceResult result = null;
+
+		GoodsVO goodsVO = goodsMapper.selectProd(goodsNo);
+		// 상품 번호에 해당하는 상세이미지 삭제
+		goodsMapper.deleteProdFile(goodsNo);
+		// 상품 번호에 해당하는 상품태그 삭제
+		goodsMapper.deleteProdTag(goodsNo);
+
+		// 상품 삭제(사실은 update)
+		int status = goodsMapper.deleteProd(goodsNo);
+
+		if (status > 0) {
+			List<GoodsAttachfileVO> goodsFileList = goodsVO.getGoodsFileList();
+
+			try {
+				if (goodsFileList != null) {
+					String[] fileName = goodsFileList.get(0).getFileName().split("/");
+					String name = fileName[0];
+					deleteFodler(req, name);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	private void deleteFodler(HttpServletRequest req, String name) {
+		File folder = new File(name);
+
+		try {
+			if (folder.exists()) {
+				File[] folderFileList = folder.listFiles();
+
+				for (int i = 0; i < folderFileList.length; i++) {
+					if (folderFileList[i].isFile()) {
+						folderFileList[i].delete();
+					} else {
+						deleteFodler(req, folderFileList[i].getPath());
+					}
+				}
+				folder.delete();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public List<GoodsVO> selectGoodsList(PaginationInfoVO<GoodsVO> pagingVO) {
+		return goodsMapper.selectGoodsList(pagingVO);
+	}
+
+	@Override
+	public int selectGoodsListCount(PaginationInfoVO<GoodsVO> pagingVO) {
+		return goodsMapper.selectGoodsListCount(pagingVO);
+	}
+
+	@Override
+	public List<GoodsVO> selectGcId(String goodsArtist) {
+		return goodsMapper.selectGcId(goodsArtist);
+	}
+
+	@Override
+	public GoodsVO goodsShopDetail(String goodsNo) {
+		return goodsMapper.goodsShopDetail(goodsNo);
+	}
+
+	@Override
+	public List<CartVO> goodsCart(String userNo) {
+		return goodsMapper.goodsCart(userNo);
+	}
+
+	@Override
+	public int goodsCartInsert(CartVO cartVO) {
+		int status =0;
+		status = goodsMapper.goodsCartInsert(cartVO);
+		return status;
+	}
+
+	@Override
+	public int selectOne(CartVO cartVO) {
+		int count = 0;
+		count = goodsMapper.selectOne(cartVO);
+		return count;
+	}
+
+	@Override
+	public int goodsCartDelete(CartVO cartVO) {
+		int status =0;
+		status = goodsMapper.goodsCartDelete(cartVO);
+		return status;
+	}
+
+	@Override
+	public int goodsCartUpdate(CartVO cartVO) {
+		int status =0;
+		status = goodsMapper.goodsCartUpdate(cartVO);
+		return status;
+	}
+
+	@Override
+	public List<CartVO> goodsQuantity(List<CartVO> list) {
+		 List<CartVO> quantityList = new ArrayList<>();
+		 for (CartVO cartVO : list) {
+		        String goodsNo = cartVO.getGoodsNo();
+		        CartVO goodsArtist = goodsMapper.goodsQuantity(goodsNo);
+		        quantityList.add(goodsArtist);
+		    }
+		return quantityList;
+	}
+
+	@Override
+	public String membershipAuthSelect(GoodsVO goodsVO) {
+		return goodsMapper.membershipAuthSelect(goodsVO);
+	}
+
+	@Override
+	public Integer membershipProdWhether(GoodsVO goodsVO) {
+		return goodsMapper.membershipProdWhether(goodsVO);
+	}
+
+	@Override
+	public List<CartVO> gcIdList(List<CartVO> list) {
+		 List<CartVO> gcList = new ArrayList<>();
+		 for (CartVO cartVO : list) {
+		        String goodsNo = cartVO.getGoodsNo();
+		        CartVO gcId = goodsMapper.gcIdList(goodsNo);
+		        gcList.add(gcId);
+		    }
+		return gcList;
+	}
+
+	@Override
+	public String gaDetailimgSelect(String goodsNo) {
+		return goodsMapper.gaDetailimgSelect(goodsNo);
+	}
+
+	@Override
+	public List<GoodsVO> recommendGoodsList(String goodsNo) {
+		
+		return goodsMapper.recommendGoodsList(goodsNo);
+	}
+
+	
+}

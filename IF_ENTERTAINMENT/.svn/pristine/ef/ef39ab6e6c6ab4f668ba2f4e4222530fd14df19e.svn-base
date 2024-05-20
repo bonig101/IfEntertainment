@@ -1,0 +1,32 @@
+package kr.or.ddit.vo.entertain;
+
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import lombok.Data;
+
+@Data
+public class ArtistGroupVO {
+	 private String agId;
+	 private String agName;
+	 private String agDate;
+	 private String agIntro;
+	 private String agProfile;
+	 private String agDelyn;
+	 private List<ArtistVO> artistList;
+     private int artistCount;
+     private String artistFakename;
+     private String artistBirth;
+     private String artistIntro;
+     private MultipartFile agPhoto;
+    
+     
+     public ArtistGroupVO() {}
+   
+	public ArtistGroupVO(MultipartFile agPhoto) {
+		if(agPhoto != null ) {
+			this.agPhoto = agPhoto;
+		}
+	}
+}

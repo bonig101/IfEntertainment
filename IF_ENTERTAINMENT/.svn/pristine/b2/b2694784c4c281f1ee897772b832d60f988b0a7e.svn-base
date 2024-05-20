@@ -1,0 +1,13 @@
+package kr.or.ddit.vo.statistic;
+
+import lombok.Data;
+
+/**
+ * 아티스트별 굿즈 판매액결과를 담기 위한 VO
+ * @author 홍진영
+ */
+@Data
+public class GoodsSalesVO {
+	private String goodsArtist;
+	private int totalPrice;
+}

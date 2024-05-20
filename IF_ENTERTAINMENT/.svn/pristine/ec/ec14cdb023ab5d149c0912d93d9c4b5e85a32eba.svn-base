@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.IStatisticMapper">
+
+<!-- 커뮤니티 아티스트별 통계를 내기 위한 그룹 리스트를 커뮤니티 가입자가 많은 순으로 가져온다.  -->
+<select id="selectAgIdList" resultType="String">
+	SELECT
+	    com.ag_id
+	FROM
+	    community com
+	LEFT OUTER JOIN
+	    "USER" u ON com.user_no = u.user_no
+	LEFT OUTER JOIN
+	    member m ON u.user_no = m.user_no
+	LEFT OUTER JOIN
+	    artist_group ag ON com.ag_id = ag.ag_id
+	WHERE
+	    ag.ag_delyn = 'N'
+	    and m.member_delyn = 'N'
+	GROUP BY
+	    com.ag_id
+	ORDER BY
+	    SUM(CASE WHEN m.member_gender = 'M' THEN 1 ELSE 0 END) + 
+	    SUM(CASE WHEN m.member_gender = 'F' THEN 1 ELSE 0 END) DESC
+</select>
+
+<!-- 커뮤니티 가입 기간이 있을 경우 where조건 추가 -->
+<sql id="registerSearch">
+	<if test="duration != null and duration == '7DAY'">
+		<![CDATA[
+			and com.cj_date >= (SYSDATE - INTERVAL '7'DAY) AND com.cj_date <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '1MONTH'">
+		<![CDATA[
+			and com.cj_date >= (SYSDATE - INTERVAL '1'MONTH) AND com.cj_date <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '3MONTH'">
+		<![CDATA[
+			and com.cj_date >= (SYSDATE - INTERVAL '3'MONTH) AND com.cj_date <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '6MONTH'">
+		<![CDATA[
+			and com.cj_date >= (SYSDATE - INTERVAL '6'MONTH) AND com.cj_date <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '1YEAR'">
+		<![CDATA[
+			and com.cj_date >= (SYSDATE - INTERVAL '1'YEAR) AND com.cj_date <= SYSDATE
+		]]>
+	</if>
+</sql>
+
+<!-- 키워드 분석 기간이 있을 경우 where조건 추가 -->
+<sql id="keywordSearch">
+	<if test="duration != null and duration == '7DAY'">
+		<![CDATA[
+			and f.feed_regdate >= (SYSDATE - INTERVAL '7'DAY) AND f.feed_regdate <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '1MONTH'">
+		<![CDATA[
+			and f.feed_regdate >= (SYSDATE - INTERVAL '1'MONTH) AND f.feed_regdate <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '3MONTH'">
+		<![CDATA[
+			and f.feed_regdate >= (SYSDATE - INTERVAL '3'MONTH) AND f.feed_regdate <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '6MONTH'">
+		<![CDATA[
+			and f.feed_regdate >= (SYSDATE - INTERVAL '6'MONTH) AND f.feed_regdate <= SYSDATE
+		]]>
+	</if>
+	<if test="duration != null and duration == '1YEAR'">
+		<![CDATA[
+			and f.feed_regdate >= (SYSDATE - INTERVAL '1'YEAR) AND f.feed_regdate <= SYSDATE
+		]]>
+	</if>
+</sql>
+
+<!-- agId가 넘어왔을 경우 where 조건 추가  -->
+<sql id="artistSearch">
+	<if test="agId != null and agId != ''">
+		and ag_id = #{agId}
+	</if>
+</sql>
+
+<select id="selectMemberRateList" parameterType="statisticInfoVO" resultType="memberRateVO">
+	SELECT
+	    com.ag_id AS ag_id,
+	    SUM(CASE WHEN m.member_gender = 'M' THEN 1 ELSE 0 END) AS male_count,
+	    SUM(CASE WHEN m.member_gender = 'F' THEN 1 ELSE 0 END) AS female_count,
+	    SUM(CASE WHEN m.member_gender = 'M' THEN 1 ELSE 0 END) + SUM(CASE WHEN m.member_gender = 'F' THEN 1 ELSE 0 END) AS total_count
+	FROM
+	    community com
+	LEFT OUTER JOIN
+	    "USER" u ON com.user_no = u.user_no
+	LEFT OUTER JOIN
+	    member m ON u.user_no = m.user_no
+	LEFT OUTER JOIN
+	    artist_group ag ON com.ag_id = ag.ag_id
+	WHERE
+	    ag.ag_delyn = 'N'
+	    and m.member_delyn = 'N'
+	<include refid="registerSearch"/>
+	GROUP BY
+	    com.ag_id
+	ORDER BY
+	    total_count DESC
+</select>
+
+<!-- 남성 키워드 분석 -->
+<select id="selectMaleKeywordList" resultType="keywordVO">
+	SELECT
+	    f.feed_content,
+	    m.member_gender
+	FROM 
+	    feed f
+	LEFT JOIN member m ON f.user_no = m.user_no
+	WHERE 
+	    feed_type = '1'
+	    and feed_content is not null
+	    and m.member_gender is not null
+        and m.member_gender = 'M'
+        <include refid="keywordSearch"/>
+        <include refid="artistSearch"/>
+</select>
+
+<!-- 여성 키워드 분석 -->
+<select id="selectFemaleKeywordList" resultType="keywordVO">
+	SELECT
+	    f.feed_content,
+	    m.member_gender
+	FROM 
+	    feed f
+	LEFT JOIN member m ON f.user_no = m.user_no
+	WHERE 
+	    feed_type = '1'
+	    and feed_content is not null
+	    and m.member_gender is not null
+        and m.member_gender = 'F'
+        <include refid="keywordSearch"/>
+        <include refid="artistSearch"/>
+</select>
+
+
+</mapper>

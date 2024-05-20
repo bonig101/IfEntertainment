@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.community.IJoinMapper">
+
+	<select id="selectmyMembershipList" parameterType="int" resultType="communityVO">
+		SELECT 
+		    CJ.AG_ID,
+		    AG.AG_PROFILE
+		FROM 
+		    COMMUNITY CJ
+		LEFT OUTER JOIN 
+		    ARTIST_GROUP AG ON CJ.AG_ID = AG.AG_ID
+		LEFT OUTER JOIN 
+		    "USER" U ON CJ.USER_NO = U.USER_NO
+		WHERE 
+		    CJ.USER_NO = #{userNo}
+	</select>
+
+
+
+</mapper>

@@ -1,0 +1,42 @@
+package kr.or.ddit.controller.community;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import kr.or.ddit.service.community.IFeedService;
+import kr.or.ddit.vo.community.FeedCommentVO;
+import kr.or.ddit.vo.community.FeedVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 피드 상세내용 컨트롤러
+ * @author 임민혁
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/feed")
+public class FeedDetailController {
+	// 좌측 - 사진, 글 / 우측 - 댓글창 (템플릿 있음)
+	
+	@Inject
+	private IFeedService feedService;
+	
+	
+	@RequestMapping(value="/admin/feedListDetail.do", method = RequestMethod.GET)
+	public String feedListDeatail(@RequestParam int feedNo,Model model) {
+		FeedVO feedVO = feedService.feedListDetail(feedNo);
+		model.addAttribute("feed",feedVO);
+		return "admin/community/feedListDetail";
+	}
+	@RequestMapping(value="/admin/feedCommentListDetail.do", method = RequestMethod.GET)
+	public String feedCommentListDeatail(@RequestParam int fcNo,Model model) {
+		FeedCommentVO fcVO = feedService.feedCommentListDetail(fcNo);
+		model.addAttribute("comment",fcVO);
+		return "admin/community/feedCommentListDetail";
+	}
+}

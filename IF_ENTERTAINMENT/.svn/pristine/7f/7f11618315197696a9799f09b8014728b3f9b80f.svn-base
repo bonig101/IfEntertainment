@@ -1,0 +1,30 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style type="text/css">
+
+@font-face {
+	font-family: 'GmarketSansMedium';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
+		format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+body {
+	font-family: 'GmarketSansMedium', sans-serif;
+}
+
+</style>
+<div class="col-lg-3">
+	<aside class="sidebar static left">
+		<div class="widget stick-widget">
+			<h4 class="widget-title">Investors</h4>
+			<ul class="naves">
+				<li><a href="/entertain/irFile/list.do" title="">IR 자료실</a></li>
+				<li><a href="/entertain/ir/userlist.do" title="">IR 행사일정</a></li>
+				<li><a href="/entertain/stock/info.do" title="">주가정보</a></li>
+				<li><a href="/entertain/finance/finance.do" title="">재무정보</a></li>
+			</ul>
+		</div>
+	</aside>
+</div>

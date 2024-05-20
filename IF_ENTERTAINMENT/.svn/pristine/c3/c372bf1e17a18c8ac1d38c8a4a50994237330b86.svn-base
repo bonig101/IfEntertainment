@@ -1,0 +1,236 @@
+package kr.or.ddit.controller.community;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import kr.or.ddit.service.community.ISurveyService;
+import kr.or.ddit.util.MediaUtils;
+import kr.or.ddit.util.ServiceResult;
+import kr.or.ddit.util.UploadFileUtils;
+import kr.or.ddit.vo.community.SurveyFormVO;
+import kr.or.ddit.vo.community.SurveyVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 설문조사 등록 컨트롤러(관리자)
+ * 설문조사 실시 컨트롤러(사용자)
+ * @author 홍진영
+ */
+@Controller
+@Slf4j
+@RequestMapping("/community/survey")
+public class SurveyInsertController {
+
+	@Inject
+	private ISurveyService surveyService;
+	
+	/**
+	 * @author 홍진영
+	 * @return 설문지 등록 폼 jsp경로 리턴
+	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value="/register.do", method = RequestMethod.GET)
+	public String registerSurveyForm() {
+		return "admin/community/surveyRegisterForm";
+	}
+	
+	/**
+	 * 설문지 등록 메서드
+	 * @param surveyFormVO
+	 * @param model
+	 * @param ra
+	 * @param req
+	 * @return - 실패 : 작성폼 경로 리턴
+	 * @return - 성공 : 리스트 경로 리턴
+	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value="/register.do", method = RequestMethod.POST)
+	public String registerSurvey(SurveyFormVO surveyFormVO, Model model,
+			RedirectAttributes ra, HttpServletRequest req
+			) {
+		
+		log.info("surveyFormVO : {}", surveyFormVO);
+		String goPage="";
+		
+		Map<String, String> errors = new HashMap<String, String>();
+		
+		if(StringUtils.isBlank(surveyFormVO.getSfTitle())) {
+			errors.put("sfTitle", "설문지 제목을 입력해주세요");
+		}
+		
+		if(surveyFormVO.getSfRegdate() == null ) {
+			errors.put("sfRegdate", "설문지 시작일을 입력해주세요");
+		}
+		
+		if(surveyFormVO.getSfEnddate() == null ) {
+			errors.put("sfEnddate", "설문지 마감일을 입력해주세요");
+		}
+		
+		if(surveyFormVO.getSfFile() == null ) {
+			errors.put("sfFile", "설문지 썸네일을 등록해주세요");
+		}
+		
+		if(surveyFormVO.getSurveyQuestionList() == null || 
+			surveyFormVO.getSurveyQuestionList().size() == 0) {
+			errors.put("surveyQuestionList", "설문지 질문을 다시 확인 해주세요");
+		}
+		
+		if (errors.size() > 0) {
+			model.addAttribute("errors", errors);
+			model.addAttribute("surveyFormVO", surveyFormVO);
+			goPage = "admin/community/surveyRegisterForm";
+		}else {
+			if(surveyFormVO.getSfDisplay() == null || surveyFormVO.getSfDisplay().equals("")) {
+				surveyFormVO.setSfDisplay("N");
+			}
+			ServiceResult result = surveyService.insertSurvey(req, surveyFormVO);
+			
+			if(result.equals(ServiceResult.OK)) {
+				ra.addFlashAttribute("message", "설문지 등록에 성공하였습니다.");
+				goPage = "redirect:/community/survey/list.do";
+			} else {
+				model.addAttribute("message", "서버에러! 다시 시도해주세요!");
+				model.addAttribute("surveyFormVO", surveyFormVO);
+				goPage = "admin/community/surveyRegisterForm";
+			}
+		}
+		
+		return goPage;
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value="/conductSurvey.do", method = RequestMethod.POST)
+	public String conductSurvey(Model model, SurveyVO surveyVO,
+			RedirectAttributes ra) {
+		log.info("사용자가 응답한 surveyVO : {}", surveyVO);
+		String goPage = "";
+		if(surveyVO != null) {
+			// 하드코딩 - 설문을 실시하는 유저 정보를 저장한다.
+			surveyVO.setUserNo(30);
+			
+			ServiceResult result = surveyService.conductSurvey(surveyVO);
+			
+			if(result.equals(ServiceResult.OK)) {
+				ra.addFlashAttribute("message", "설문에 참여해주셔서 감사합니다!");
+				goPage = "redirect:/community/main.do";
+			} else {
+				model.addAttribute("message", "서버오류! 설문이 정상적으로 제출되지 않았습니다.");
+				goPage = "/community/main.do";
+			}
+		}
+		return goPage;
+	}
+	
+	/**
+	 * jsp에서 썸네일을 업로드하면 해당파일을 저장한다.
+	 * @param file - 업로드한 파일
+	 * @param req - 서버 경로를 가져오기 위함
+	 * @return 썸네일 미리보여주기를 위해 저장된 파일의 이름을 리턴 
+	 * @throws Exception
+	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value="/uploadAjax", method = RequestMethod.POST, 
+			produces = "text/plain;charset=utf-8")
+	public ResponseEntity<String> uploadAjax(MultipartFile file,
+			HttpServletRequest req) throws Exception{
+		log.info("originalFileName : " + file.getOriginalFilename());
+		
+		// savedName은 /2024/03/06/UUID_원본파일명을 리턴한다
+		String savedName = UploadFileUtils.uploadFile(req.getServletContext().getRealPath("/resources/survey/"), 
+				file.getOriginalFilename(), file.getBytes());
+		return new ResponseEntity<String>(savedName, HttpStatus.OK);
+	}
+	
+	/**
+	 * 이미지를 클릭시 미리보기를 띄워주는 메서드
+	 * @param fileName - 저장될 파일 이름
+	 * @param req - 이미지 경로를 저장하기 위함
+	 * @return 성공시 미리볼 수 있는 이미지 데이터를 리턴한다.
+	 */
+	@ResponseBody
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value="/displayFile", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> displayFile(String fileName, HttpServletRequest req){
+		InputStream in = null;
+		ResponseEntity<byte[]> entity = null;
+		
+		log.info("fileName(displayFile) : " + fileName);
+		
+		String formatName = fileName.substring(fileName.lastIndexOf(".") + 1);
+		MediaType mType = MediaUtils.getMediaType(formatName);
+		HttpHeaders headers = new HttpHeaders();
+		
+		try {
+			in = new FileInputStream(req.getServletContext().getRealPath("/resources/survey/") + fileName);
+			if(mType != null) {
+				headers.setContentType(mType);
+			} else {
+				fileName = fileName.substring(fileName.indexOf("_") + 1);
+				headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+				headers.add("Content-Disposition", "attachment; filename=\"" +
+						new String(fileName.getBytes("UTF-8"), "ISO-8859-1") + "\"");
+			}
+			entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in),
+					headers, HttpStatus.CREATED);
+		} catch (Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
+		} finally {
+			try {
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return entity;
+	} 
+	
+	/**
+	 * 팝업이 존재하는지 확인하고 그 결과값을 리턴해준다.
+	 * @return - 현재 팝업이 게시되어 있는 설문이 존재한 경우 EXIST 리턴
+	 * @return - 게시되어 있는 팝업이 없는경우 NOTEXIST 리턴
+	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@ResponseBody
+	@RequestMapping(value="/popupcheck", method = RequestMethod.GET)
+	public ResponseEntity<ServiceResult> popupCheck (){
+		ServiceResult result = surveyService.popupCheck();
+		return new ResponseEntity<ServiceResult>(result, HttpStatus.OK);
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@ResponseBody
+	@RequestMapping(value="/finishSurveyAjax", method= RequestMethod.GET)
+	public ResponseEntity<String> finishSurveyAjax(){
+		ResponseEntity<String> entity = null;
+		ServiceResult result = surveyService.finishSurveyAjax();
+		
+		if(result.equals(ServiceResult.OK)) {
+			entity = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+		}
+		
+		return entity;
+	}
+	
+}

@@ -1,0 +1,15 @@
+package kr.or.ddit.mapper.goods;
+
+import java.util.List;
+
+import kr.or.ddit.vo.goods.AddressVO;
+import kr.or.ddit.vo.goods.CartVO;
+
+public interface IGoodsPurchaseMapper {
+
+	public List<CartVO> cartSelect(String userNo);
+	public CartVO selectArtist(String goodsNo);
+	public List<AddressVO> addressSelect(String userNo);
+	public String selectUserName(String userNo);
+
+}

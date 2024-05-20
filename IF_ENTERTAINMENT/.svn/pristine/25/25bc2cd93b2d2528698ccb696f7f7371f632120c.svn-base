@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.goods.IInquiryMapper">
+
+	<update id="updateInquiry" parameterType="goodsInquiryVO">
+		update GOODS_INQUIRY 
+		    set
+		gi_reply =  #{giReply},
+		gi_ansdate = sysdate
+		where gi_no = #{giNo}
+	</update>
+
+	<select id="selectInquiry" parameterType="int" resultType="goodsInquiryVO">
+		select 
+		    gi_no, gi_type, gi_title, gi_content, gi_reply ,gi_regdate, gi_ansdate
+		    , (select user_id from "USER" where user_no = gi.user_no) as "USER_ID"
+		from GOODS_INQUIRY gi left outer join "USER" u on(gi.user_no = u.user_no)
+		where gi_no = #{giNo}
+	</select>
+
+	<sql id="goodsinquirySearch">
+		<where>
+			<if test="searchType != null and searchType == 'question'">
+				and gi_content like '%'||#{searchWord}||'%'
+			</if>
+			<if test="searchType != null and searchType == 'userid'">
+				and USER_ID like '%'||#{searchWord}||'%'
+			</if>
+		</where>
+	</sql>
+
+	<select id="selectInquiryListCount" parameterType="pagingVO" resultType="int">
+		select count(gi_no)
+		from GOODS_INQUIRY
+		<include refid="goodsinquirySearch"></include>
+	</select>
+	
+	<select id="selectInquiryList" parameterType="pagingVO" resultType="goodsInquiryVO">
+		SELECT b.*
+			FROM (
+			    SELECT a.*, ROW_NUMBER() OVER (ORDER BY GI_REGDATE DESC, GI_REPLY NULLS FIRST) AS rnum	
+			    FROM (
+			        SELECT 
+			            GI.GI_NO, 
+			            (SELECT USER_ID FROM "USER" WHERE USER_NO = GI.USER_NO) AS "USER_ID", 
+			            GI_TYPE, 
+			            GI_TITLE, 
+			            GI_CONTENT, 
+			            GI_REPLY, 
+			            GI_REGDATE, 
+			            GI_ANSDATE
+			        FROM GOODS_INQUIRY GI LEFT OUTER JOIN "USER" U ON (GI.USER_NO = U.USER_NO)
+			        <include refid="goodsinquirySearch"></include>
+			        ORDER BY GI_REGDATE DESC
+			    ) a
+			) b
+			<![CDATA[
+			where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+			]]>
+	</select>
+
+</mapper>

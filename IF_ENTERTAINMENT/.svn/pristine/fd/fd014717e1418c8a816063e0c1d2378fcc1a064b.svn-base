@@ -1,0 +1,62 @@
+/**
+ * 웹 소캣 인스턴스 생성
+ */
+
+let ws = null;
+
+function socketConnect(id){
+	ws = connection("ws://localhost/notiserver/" + id);
+}
+
+$(document).ready(function() {
+
+	ws.onopen = function() {
+		// 서버에 접속을 하였을 경우 별도의 이벤트 처리가 필요할경우 작성한다.
+	};
+	ws.onmessage = function(message) {
+		// 수신된 메시지를 받아서 처리 하는 영역
+		console.log("message", message);
+
+		alert(JSON.stringify(message.data));
+		
+		$(".noti").css("display", "block");
+// 		alert("소켓옴");
+	};
+	ws.onerror = function(message) {
+		// 서버에서 에러 메시지가 반환이 되었을경우 처리..
+	};
+
+	$("#testBtn").on("click", function () {
+		alert("소켓테스트");
+		
+		var sendMsg = {
+				key:"test"
+		};
+		
+		ws.send(
+			JSON.stringify(sendMsg)
+		); 
+	});
+	
+});
+
+/**
+ * 웹 소캣 connection 연결부
+ */
+function connection(url) {
+	if ('WebSocket' in window) {
+		return new WebSocket(url);
+	} else if ('MozWebSocket' in window) {
+		return new MozWebSocket(url);
+	} else {
+		Console.log('Error: WebSocket is not supported by this browser.');
+		return null;
+	}
+}
+ 
+/**
+ * 페이지를 벗어 날을때 웹소켓 닫기..
+ */
+window.onbeforeunload = function() {
+	ws.close();
+};

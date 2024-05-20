@@ -1,0 +1,15 @@
+package kr.or.ddit.vo.community;
+
+import lombok.Data;
+
+@Data
+public class FeedAttachFileVO {
+	 private int faNo;
+	 private String faName;
+	 private int faSize;
+	 private String faMime;
+	 private String faSavepath;
+	 private String faFancysize;
+	 private String faFilter;
+	 private int feedNo;
+}

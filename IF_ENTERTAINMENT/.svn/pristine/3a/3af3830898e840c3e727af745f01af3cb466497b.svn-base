@@ -1,0 +1,179 @@
+/* ****************
+ *  일정 편집
+ * ************** */
+
+var editEvent = function (event, element, view) {
+	var asNo = event._id;
+	console.log("설명: ",event); // 설명 확인
+    
+    $('#deleteEvent').data('asNo', asNo);
+    $('#updateEvent').data('event', event);
+
+    $('.popover.fade.top').remove();
+    $(element).popover("hide");
+
+    if (event.allDay === true) {
+        editAllDay.prop('checked', true);
+    } else {
+        editAllDay.prop('checked', false);
+    }
+
+    if (event.end === null) {
+        event.end = event.start;
+    }
+
+    if (event.allDay === true && event.end !== event.start) {
+        editEnd.val(moment(event.end).subtract(1, 'days').format('YYYY-MM-DD HH:mm'))
+    } else {
+        editEnd.val(event.end.format('YYYY-MM-DD HH:mm'));
+    }
+
+    modalTitle.html('일정 수정');
+    editTitle.val(event.title);
+    editStart.val(event.start.format('YYYY-MM-DD HH:mm'));
+    editType.val(event.type);
+    editDesc.val(event.description);
+    editColor.val(event.backgroundColor).css('color', event.backgroundColor);
+
+    addBtnContainer.hide();
+    modifyBtnContainer.show();
+    eventModal.modal('show');
+
+    //업데이트 버튼 클릭시
+    $('#updateEvent').unbind();
+    $('#updateEvent').on('click', function () {
+    var event = $(this).data('event');
+    console.log("event ? ",event);
+
+        if (editStart.val() > editEnd.val()) {
+            alert('끝나는 날짜가 앞설 수 없습니다.');
+            return false;
+        }
+
+        if (editTitle.val() === '') {
+            alert('일정명은 필수입니다.')
+            return false;
+        }
+
+        var statusAllDay;
+        var startDate;
+        var endDate;
+        var displayDate;
+
+        if (editAllDay.is(':checked')) {
+            statusAllDay = true;
+            startDate = moment(editStart.val()).format('YYYY-MM-DD');
+            endDate = moment(editEnd.val()).format('YYYY-MM-DD');
+            displayDate = moment(editEnd.val()).add(1, 'days').format('YYYY-MM-DD');
+        } else {
+            statusAllDay = false;
+            startDate = editStart.val();
+            endDate = editEnd.val();
+            displayDate = endDate;
+        }
+
+        eventModal.modal('hide');
+
+        event.allDay = statusAllDay;
+        event.title = editTitle.val();
+        event.start = startDate;
+        event.end = displayDate;
+        event.type = editType.val();
+        event.backgroundColor = editColor.val();
+        event.description = editDesc.val();
+		
+		var data = {
+			_id: event._id,
+		 	title: event.title,
+            start: event.start,
+            end: event.end,
+            description: event.description,
+            type: event.type,
+            agId: event.agId,
+            username : event.username,
+            backgroundColor: event.backgroundColor,
+            textColor: event.textColor,
+            allDay: false
+		
+		
+		}
+		console.log("data ?",data);
+		
+        $("#calendar").fullCalendar('updateEvent', event);
+
+        //일정 업데이트
+        $.ajax({
+            type: "POST",
+            url: "/community/artist/schedule/update.do",
+		    contentType: "application/json", 
+		    data: JSON.stringify(data), 
+            success: function (response) {
+                Swal.fire({
+                        icon: "success",
+                        title: "일정 수정이 완료되었습니다.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+            },
+            error : function (error) {
+            	Swal.fire({
+                        icon: "error",
+                        title: "일정 삭제에 실패하였습니다.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+            }
+        });
+
+    });
+};
+
+// 삭제버튼
+$('#deleteEvent').on('click', function () {
+    var asNo = $(this).data('asNo');
+    
+    Swal.fire({
+        title: '정말 삭제하시겠습니까?',
+        text: "이 작업은 되돌릴 수 없습니다!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '예, 삭제합니다!',
+        cancelButtonText: '아니요, 취소합니다!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "post",
+                url: "/community/artist/schedule/delete.do",
+                data: {
+                    asNo: asNo
+                },
+                success: function(response) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "일정 삭제가 완료되었습니다.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        // 여기에서 모달을 숨깁니다.
+                        $('#eventModal').modal('hide');
+                        $('#calendar').fullCalendar('removeEvents', asNo); // 특정 이벤트만 삭제
+                        $('#calendar').fullCalendar('refetchEvents'); // 이벤트를 다시 불러옴
+                    });
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "일정 삭제에 실패하였습니다.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        } else {
+            // 삭제 취소 시, 모달을 숨기는 로직도 추가할 수 있습니다.
+            $('#eventModal').modal('hide');
+        }
+    });
+});
